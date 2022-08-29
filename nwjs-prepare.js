@@ -18,23 +18,25 @@ let nwjsConfig = {
     icon: (projectPackageJson.build || {}).icon,
     scripts: projectPackageJson.scripts
 }
-let windowConfig = (projectPackageJson.config || {}).window || {}
 
+let windowConfig = (projectPackageJson.config || {}).window || {}
 const indexHtml = windowConfig.index || "index.html"
-const appJsContents = `nw.Window.open('${indexHtml}', {
-    title: ${JSON.stringify(nwjsConfig.appName)},
-    width: ${windowConfig.width},
-    height: ${windowConfig.height},
-    min_width: ${windowConfig.minWidth},
-    min_height: ${windowConfig.minHeight},
-    resizable: ${windowConfig.resizable === false ? "false" : "true"},
-    icon: ${JSON.stringify(nwjsConfig.icon)}
-}, function(win) {
-});`
+const nwWindowOpenConfig = {
+    title: nwjsConfig.appName,
+    width: windowConfig.width,
+    height: windowConfig.height,
+    min_width: windowConfig.minWidth,
+    min_height: windowConfig.minHeight,
+    resizable: windowConfig.resizable,
+    icon: nwjsConfig.icon
+}
+const appJsContents = `nw.Window.open('${indexHtml}', ${JSON.stringify(nwWindowOpenConfig)}, function(win) {});`
 fs.writeFileSync(path.join(obfuscatedProjectPath, "app.js"), appJsContents, {encoding:'utf8'})
 
-nwjsConfig.icon = path.join('./www', nwjsConfig.icon)
-nwjsConfig.files = (nwjsConfig.files || ["**/**"]).map(file => path.join(obfuscatedProjectPath, file))
+if (nwjsConfig.icon) {
+    nwjsConfig.icon = path.join('./www', nwjsConfig.icon)
+}
+nwjsConfig.files = nwjsConfig.files.map(file => path.join(obfuscatedProjectPath, file))
 nwjsConfig.runScript = function(script) {
     if (script === undefined) {
         return
