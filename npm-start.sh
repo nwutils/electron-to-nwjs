@@ -25,7 +25,7 @@ rm -rf _www/node_modules
 if [[ $OSTYPE == 'darwin'* ]]; then
     ditto obfuscated_code/ _www
 else
-    cp obfuscated_code/index.js _www/index.js
+    rsync -av obfuscated_code/ _www/
 fi
 rm -r obfuscated_code
 

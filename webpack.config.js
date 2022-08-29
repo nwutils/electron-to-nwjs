@@ -14,22 +14,20 @@ const nwjsConfig = projectPackageJson.nwjs || {}
 const windowConfig = nwjsConfig.window || {}
 const indexHtml = windowConfig.index || "index.html"
 
-// TODO: Add support to HTML files with multiple scripts being imported
 var indexHtmlContents = fs.readFileSync(path.join(projectPath, indexHtml), {encoding: 'utf-8'})
 const $ = cheerio.load(indexHtmlContents);
 var scripts = $('script[src]')
-var scriptSrc = scripts.attr('src');
-const indexJs = scriptSrc
+const jsFiles = scripts.map(function() { return $(this).attr('src'); }).get()
 
-module.exports = {
+module.exports = (env, argv) => ({
     target: ['nwjs', 'node5'],
     entry: {
-        main: ['babel-polyfill', path.resolve(__dirname, './www', indexJs)]
+        main: ['babel-polyfill'].concat(jsFiles.map(jsFile => path.resolve(__dirname, './www', jsFile))),
     },
     mode: "production",
     output: {
         path: path.resolve(__dirname, "./_www"),
-        filename: indexJs
+        filename: jsFiles[0]
     },
     experiments: {
         topLevelAwait: true
@@ -42,17 +40,7 @@ module.exports = {
                 exclude: /node_modules/,
                 options: {
                   search: '__dirname',
-                  replace: `
-                            function() {
-                                let execPath = process.execPath
-                                let isDebug = execPath.endsWith("/nw") || execPath.endsWith("\\nw.exe")
-                                if (isDebug) {
-                                    return process.cwd()
-                                } else {
-                                    return require('path').dirname(execPath)
-                                }
-                            }()
-                           `,
+                  replace: env.prod ? "(require('path').dirname(process.execPath))" : "(process.cwd())",
                   flags: 'g'
                 }
             },
@@ -73,4 +61,4 @@ module.exports = {
     optimization: {
         minimize: false
     }
-};
+});

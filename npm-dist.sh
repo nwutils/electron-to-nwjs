@@ -9,7 +9,7 @@ cd ../
 # Building web contents
 rm -r _www || true
 mkdir -p _www/
-./node_modules/.bin/webpack -c webpack.config.js || exit 0
+./node_modules/.bin/webpack -c webpack.config.js --env prod || exit 0
 
 rm -rf ./obfuscated_code
 ./node_modules/.bin/javascript-obfuscator ./_www --output ./obfuscated_code \
@@ -29,7 +29,7 @@ rm -rf _www/node_modules
 if [[ $OSTYPE == 'darwin'* ]]; then
     ditto obfuscated_code/ _www
 else
-    cp obfuscated_code/index.js _www/index.js
+    rsync -av obfuscated_code/ _www/
 fi
 rm -r obfuscated_code
 
