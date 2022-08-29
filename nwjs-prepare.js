@@ -2,11 +2,13 @@ const fs = require('fs')
 const path = require('path')
 const child_process = require('child_process')
 
-const obfuscatedProjectPath = path.join('.', '_www')
 const projectPath = path.resolve(__dirname, '.', 'www')
 const projectPackagePath = path.resolve(projectPath, 'package.json')
 const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
 const projectPackageJson = JSON.parse(projectPackageStr)
+
+const obfuscatedProjectPath = path.join('.', '_www')
+const mainFilePath = path.join(obfuscatedProjectPath, projectPackageJson.main)
 
 let appName = (projectPackageJson.build || {}).productName || projectPackageJson.name || "Unknown"
 let authorName = (projectPackageJson.author || {}).name || "Unknown"
@@ -31,7 +33,7 @@ const nwWindowOpenConfig = {
     icon: nwjsConfig.icon
 }
 const appJsContents = `nw.Window.open('${indexHtml}', ${JSON.stringify(nwWindowOpenConfig)}, function(win) {});`
-fs.writeFileSync(path.join(obfuscatedProjectPath, "app.js"), appJsContents, {encoding:'utf8'})
+fs.writeFileSync(mainFilePath, appJsContents, {encoding:'utf8'})
 
 if (nwjsConfig.icon) {
     nwjsConfig.icon = path.join('./www', nwjsConfig.icon)
