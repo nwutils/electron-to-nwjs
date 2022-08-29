@@ -37,7 +37,6 @@ module.exports = (env, argv) => ({
             {
                 test: /\.js$/,
                 loader: 'string-replace-loader',
-                exclude: /node_modules/,
                 options: {
                   search: '__dirname',
                   replace: env.prod ? "(require('path').dirname(process.execPath))" : "(process.cwd())",
