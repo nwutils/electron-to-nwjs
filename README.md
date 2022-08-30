@@ -14,6 +14,12 @@ Depending of your project, everything may work out of the box, as long as you fo
 
 If your project follows the requirements mentioned in the Requirements section, you should be fine.
 
+## My application needs to build some files before starting
+We have support to the `nwjs:dist` script in that case.
+
+## My application needs to perform some actions after building
+We have support to the `nwjs:postdist` script in that case.
+
 ## References
 - https://nwjs.readthedocs.io/en/latest/For%20Users/Getting%20Started/
 - https://github.com/nwjs-community/nw-builder
