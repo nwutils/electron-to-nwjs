@@ -6,6 +6,9 @@ Depending of your project, everything may work out of the box, as long as you fo
 - Your app must have only a single window;
 - You must not import `electron`, or any eletron-related lib, like `electron-remote`, inside your renderer process.
 
+## Special features
+- `__dirname` usually isn't available for NW.js, but with PEAWXP, it is.
+
 ## How do I use your project?
 - Clone this repository;
 - Open a terminal in the repository folder;
