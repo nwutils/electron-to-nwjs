@@ -4,8 +4,7 @@ This project name is an acronym to "Port your Electron app to Windows XP using N
 ## Requirements
 Depending of your project, everything may work out of the box, as long as you follow the requirements below:
 - Your app must have only a single window;
-- You must not import `electron`, or any eletron-related lib, like `electron-remote`, inside your renderer process;
-- Your index.html file must import only one JS file.
+- You must not import `electron`, or any eletron-related lib, like `electron-remote`, inside your renderer process.
 
 ## How do I use your project?
 - Clone this repository;

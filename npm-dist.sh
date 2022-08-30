@@ -3,7 +3,7 @@
 # Building CSS
 cd www/
 npm install
-npm run nwjsdist --if-present
+npm run nwjs:dist --if-present
 cd ../
 
 # Building web contents

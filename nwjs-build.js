@@ -20,7 +20,7 @@ var nw = new NwBuilder({
 nw.on('log', console.log);
 
 nw.build().then(function(){
-    config.runScript(config.scripts.nwjspostdist)
+    config.runScript(config.scripts["nwjs:postdist"])
 })
 .catch(function(error) {
     console.error(error);
