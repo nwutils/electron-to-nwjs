@@ -10,14 +10,15 @@ const projectPackageJson = JSON.parse(projectPackageStr)
 const obfuscatedProjectPath = path.join('.', '_www')
 const mainFilePath = path.join(obfuscatedProjectPath, projectPackageJson.main)
 
-let appName = (projectPackageJson.build || {}).productName || projectPackageJson.name || "Unknown"
+let build = (projectPackageJson.build || {})
+let appName = (build.win || {}).productName || build.productName || projectPackageJson.name || "Unknown"
 let authorName = (projectPackageJson.author || {}).name || "Unknown"
 let nwjsConfig = {
     appName: appName,
     company: authorName,
-    copyright: (projectPackageJson.build || {}).copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
-    files: (projectPackageJson.build || {}).files || ["**/**"],
-    icon: (projectPackageJson.build || {}).icon,
+    copyright: (build.win || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
+    files: (build.win || {}).files || build.files || ["**/**"],
+    icon: (build.win || {}).icon || build.icon,
     scripts: projectPackageJson.scripts
 }
 
@@ -38,6 +39,7 @@ fs.writeFileSync(mainFilePath, appJsContents, {encoding:'utf8'})
 if (nwjsConfig.icon) {
     nwjsConfig.icon = path.join('./www', nwjsConfig.icon)
 }
+nwjsConfig.files.push("package.json")
 nwjsConfig.files = nwjsConfig.files.map(file => path.join(obfuscatedProjectPath, file))
 nwjsConfig.runScript = function(script) {
     if (script === undefined) {

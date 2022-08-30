@@ -3,7 +3,7 @@
 # Building CSS
 cd www/
 npm install
-npm run nwjsdist
+npm run nwjsdist --if-present
 cd ../
 
 # Building web contents
@@ -37,5 +37,6 @@ rm -r obfuscated_code
 find _www -empty -type d -delete
 
 # NW.js build
+echo "Building app..."
 node nwjs-build.js
 rm -rf _www
