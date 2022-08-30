@@ -21,7 +21,7 @@ We have support to the `nwjs:dist` script in that case.
 We have support to the `nwjs:postdist` script in that case.
 
 ## Roadmap
-The Electron main file should be loaded to retrieve informations about the project, like the name of the main HTML file, the window size, and the window min and max sizes. In the meanwhile, you can config that by adding the property `config` to your project package.json file and filling it like that:
+The Electron main file should be loaded to retrieve informations about the project, like the name of the main HTML file, the window size, and the window minimum size. In the meanwhile, you can config that by adding the property `config` to your project package.json file and filling it like that:
 
 ```
   "config": {
