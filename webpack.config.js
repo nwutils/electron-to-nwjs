@@ -18,6 +18,11 @@ listHtmls.forEach(htmlPath => {
     jsFiles.push(...scripts.map(function() { return $(this).attr('src'); }).get())
 })
 
+const aliases = {}
+const fakeLibsFolder = path.resolve(__dirname, "fakelibs", (env.main === true ? "main" : "renderer"))
+const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
+dependenciesThatShouldBeFaked.forEach(dep => aliases[dep] = path.join(fakeLibsFolder, deb))
+
 module.exports = (env, argv) => ({
     target: ['nwjs', 'node5'],
     entry: {
@@ -27,6 +32,9 @@ module.exports = (env, argv) => ({
     output: {
         path: path.resolve(__dirname, "./_www"),
         filename: jsFiles[0]
+    },
+    resolve: {
+        alias: aliases
     },
     experiments: {
         topLevelAwait: true
@@ -39,6 +47,15 @@ module.exports = (env, argv) => ({
                 options: {
                   search: '__dirname',
                   replace: env.prod ? "(require('path').dirname(process.execPath))" : "(process.cwd())",
+                  flags: 'g'
+                }
+            },
+            {
+                test: /\.js$/,
+                loader: 'string-replace-loader',
+                options: {
+                  search: '__is_packaged',
+                  replace: env.prod ? "true" : "false",
                   flags: 'g'
                 }
             },
