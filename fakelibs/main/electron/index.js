@@ -25,14 +25,21 @@ const globalShortcut = {
 }
 
 class WebContents {
+    _events = {}
+    dispatchEvent(event) {
+        let listener = this._events[event.type];
+        if (listener) {
+            listener(event);
+        }
+    }
+
+
     constructor(opts) {
         if (opts === undefined) opts = {};
     }
 
     on(event, listener) {
-        if (event === 'did-finish-load') {
-
-        }
+        this._events[event] = listener;
         return this;
     }
 }
@@ -66,7 +73,7 @@ class BrowserWindow {
         // kiosk
         this.title = opts.title || "NW.js";
         this.icon = opts.icon;
-        this.showOnStart = opts.show === undefined ? true : opts.show;
+        this.showValue = opts.show === undefined ? true : opts.show;
         // paintWhenInitiallyHidden
         this.frame = opts.frame === undefined ? true : opts.frame;
         this.parent = opts.parent === undefined ? null : opts.parent;
@@ -122,12 +129,16 @@ class BrowserWindow {
     // isDestroyed
     show() {
         this.window.show();
+        this.window.showValue = true;
     }
     // showInactive
     hide() {
         this.window.hide();
+        this.window.showValue = false;
     }
-    // isVisible
+    isVisible() {
+        return this.window.showValue;
+    }
     // isModal
     maximize() {
         this.window.maximize();
@@ -271,7 +282,7 @@ class BrowserWindow {
                 fullscreen: that.fullscreen,
                 // show_in_taskbar
                 frame: that.frame,
-                show: that.showOnStart,
+                show: that.showValue,
                 // kiosk
                 transparent: that.transparent
             }, 
