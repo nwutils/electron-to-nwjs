@@ -1,0 +1,1 @@
+require('electron').app.dispatchEvent(new Event("ready"));

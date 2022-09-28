@@ -1,6 +1,19 @@
 const app = {
+    _events: {},
+    dispatchEvent(event) {
+        let listener = this._events[event.type];
+        if (listener) {
+            listener(event);
+        }
+    },
+
+
     name: __nwjs_app_name,
-    quit: function() {
+    on(event, listener) {
+        this._events[event] = listener;
+        return this;
+    },
+    quit() {
 
     }
 }

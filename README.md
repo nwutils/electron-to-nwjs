@@ -4,7 +4,8 @@ This project name is an acronym to "Port your Electron app to Windows XP using N
 ## Requirements
 Depending of your project, everything may work out of the box, as long as you follow the requirements below:
 - Your app must have only a single window;
-- You must not import `electron`, or any eletron-related lib, like `electron-remote`, inside your renderer process.
+- You must not import `electron`, or any eletron-related lib, like `electron-remote`, inside your renderer process;
+- You need `rsync`, `npm` and `nodejs` installed in your system.
 
 ## Special features
 - `__dirname` usually isn't available for NW.js, but with PEAWXP, it is.
