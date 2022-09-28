@@ -7,19 +7,33 @@ const path = require('path')
 const cheerio = require('cheerio')
 const child_process = require('child_process')
 
-const projectPath = path.resolve(__dirname, '.', 'www')
-const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: projectPath, encoding: 'utf8'})
-const listHtmls = listHtmlsStr.split("\n").filter(line => line.trim().length > 0 && !line.startsWith("./node_modules/"))
 const jsFiles = []
-listHtmls.forEach(htmlPath => {
-    const indexHtmlContents = fs.readFileSync(path.join(projectPath, htmlPath), {encoding: 'utf-8'})
-    const $ = cheerio.load(indexHtmlContents);
-    const scripts = $('script[src]')
-    jsFiles.push(...scripts.map(function() { return $(this).attr('src'); }).get())
-})
+var fakeLibsFolder = ""
+if (env.main === true) {
+    const projectPath = path.resolve(__dirname, '.', 'www')
+    const projectPackagePath = path.resolve(projectPath, 'package.json')
+    const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
+    const projectPackageJson = JSON.parse(projectPackageStr)
+    const mainFile = projectPackageJson.main;
+    jsFiles.push(mainFile);
+
+    fakeLibsFolder = path.resolve(__dirname, "fakelibs", "main")
+}
+else {
+    const projectPath = path.resolve(__dirname, '.', 'www')
+    const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: projectPath, encoding: 'utf8'})
+    const listHtmls = listHtmlsStr.split("\n").filter(line => line.trim().length > 0 && !line.startsWith("./node_modules/"))
+    listHtmls.forEach(htmlPath => {
+        const indexHtmlContents = fs.readFileSync(path.join(projectPath, htmlPath), {encoding: 'utf-8'})
+        const $ = cheerio.load(indexHtmlContents);
+        const scripts = $('script[src]')
+        jsFiles.push(...scripts.map(function() { return $(this).attr('src'); }).get())
+    })
+
+    fakeLibsFolder = path.resolve(__dirname, "fakelibs", "renderer")
+}
 
 const aliases = {}
-const fakeLibsFolder = path.resolve(__dirname, "fakelibs", (env.main === true ? "main" : "renderer"))
 const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
 dependenciesThatShouldBeFaked.forEach(dep => aliases[dep] = path.join(fakeLibsFolder, deb))
 

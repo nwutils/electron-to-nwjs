@@ -10,6 +10,7 @@ cd ../
 rm -r _www || true
 mkdir -p _www/
 ./node_modules/.bin/webpack -c webpack.config.js || exit 0
+./node_modules/.bin/webpack -c webpack.config.js --env main || exit 0
 
 rm -rf ./obfuscated_code
 cp -r ./_www ./obfuscated_code
