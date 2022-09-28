@@ -8,33 +8,17 @@ const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'
 const projectPackageJson = JSON.parse(projectPackageStr)
 
 const obfuscatedProjectPath = path.join('.', '_www')
-const mainFilePath = path.join(obfuscatedProjectPath, projectPackageJson.main)
 
 let build = (projectPackageJson.build || {})
-let appName = (build.win || {}).productName || build.productName || projectPackageJson.name || "Unknown"
 let authorName = (projectPackageJson.author || {}).name || "Unknown"
 let nwjsConfig = {
-    appName: appName,
+    appName: (build.win || {}).productName || build.productName || projectPackageJson.name || "Unknown",
     company: authorName,
     copyright: (build.win || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
     files: (build.win || {}).files || build.files || ["**/**"],
     icon: (build.win || {}).icon || build.icon,
     scripts: projectPackageJson.scripts
 }
-
-let windowConfig = (projectPackageJson.config || {}).window || {}
-const indexHtml = windowConfig.index || "index.html"
-const nwWindowOpenConfig = {
-    title: nwjsConfig.appName,
-    width: windowConfig.width,
-    height: windowConfig.height,
-    min_width: windowConfig.minWidth,
-    min_height: windowConfig.minHeight,
-    resizable: windowConfig.resizable,
-    icon: nwjsConfig.icon
-}
-const appJsContents = `nw.Window.open('${indexHtml}', ${JSON.stringify(nwWindowOpenConfig)}, function(win) {});`
-fs.writeFileSync(mainFilePath, appJsContents, {encoding:'utf8'})
 
 if (nwjsConfig.icon) {
     nwjsConfig.icon = path.join('./www', nwjsConfig.icon)

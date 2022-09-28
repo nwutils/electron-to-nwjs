@@ -7,20 +7,20 @@ const path = require('path')
 const cheerio = require('cheerio')
 const child_process = require('child_process')
 
+const projectPath = path.resolve(__dirname, '.', 'www')
+const projectPackagePath = path.resolve(projectPath, 'package.json')
+const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
+const projectPackageJson = JSON.parse(projectPackageStr)
+
 const jsFiles = []
 var fakeLibsFolder = ""
 if (env.main === true) {
-    const projectPath = path.resolve(__dirname, '.', 'www')
-    const projectPackagePath = path.resolve(projectPath, 'package.json')
-    const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
-    const projectPackageJson = JSON.parse(projectPackageStr)
     const mainFile = projectPackageJson.main;
     jsFiles.push(mainFile);
 
     fakeLibsFolder = path.resolve(__dirname, "fakelibs", "main")
 }
 else {
-    const projectPath = path.resolve(__dirname, '.', 'www')
     const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: projectPath, encoding: 'utf8'})
     const listHtmls = listHtmlsStr.split("\n").filter(line => line.trim().length > 0 && !line.startsWith("./node_modules/"))
     listHtmls.forEach(htmlPath => {
@@ -68,7 +68,16 @@ module.exports = (env, argv) => ({
                 test: /\.js$/,
                 loader: 'string-replace-loader',
                 options: {
-                  search: '__is_packaged',
+                  search: '__nwjs_app_name',
+                  replace: JSON.stringify((projectPackageJson.build || {}).productName || projectPackageJson.name),
+                  flags: 'g'
+                }
+            },
+            {
+                test: /\.js$/,
+                loader: 'string-replace-loader',
+                options: {
+                  search: '__nwjs_is_packaged',
                   replace: env.prod ? "true" : "false",
                   flags: 'g'
                 }

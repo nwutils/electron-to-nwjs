@@ -1,4 +1,5 @@
 const app = {
+    name: __nwjs_app_name,
     quit: function() {
 
     }
@@ -399,5 +400,5 @@ module.exports = {
     app,
     BrowserWindow, 
     globalShortcut, 
-    isPackaged: __is_packaged
+    isPackaged: __nwjs_is_packaged
 }
