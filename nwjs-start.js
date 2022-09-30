@@ -4,7 +4,7 @@ var NwBuilder = require('nw-builder');
 var nw = new NwBuilder({
     appName: config.appName,
     files: config.files,
-    version: '0.67.1' // required to work on any modern system
+    version: '0.68.1' // required to work on Ubuntu and Debian
 });
 
 nw.on('log', console.log);

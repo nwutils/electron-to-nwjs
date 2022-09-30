@@ -13,11 +13,7 @@ mkdir -p _www/
 ./node_modules/.bin/webpack -c webpack.config.js --env prod --env main || exit 0
 
 rm -rf ./obfuscated_code
-./node_modules/.bin/javascript-obfuscator ./_www --output ./obfuscated_code \
-               --disable-console-output true \
-               --debug-protection true \
-               --debug-protection-interval true \
-               --self-defending true
+cp -r ./_www ./obfuscated_code
 
 rm -rf _www
 cp -r www _www

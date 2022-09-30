@@ -38,9 +38,12 @@ module.exports = (env, argv) => {
     const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
     dependenciesThatShouldBeFaked.forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
 
-    const files = ['babel-polyfill'].concat(jsFiles.map(jsFile => path.resolve(__dirname, './www', jsFile)));
+    const files = jsFiles.map(jsFile => path.resolve(__dirname, './www', jsFile));
     if (env.main === true) {
         files.push(path.resolve(__dirname, './fakelibs', 'post-main.js'));
+    }
+    else {
+        files.unshift('babel-polyfill');
     }
 
     return {

@@ -36,4 +36,4 @@ find _www -empty -type d -delete
 # NW.js run
 echo "Starting app..."
 node nwjs-start.js
-#rm -rf _www
+rm -rf _www
