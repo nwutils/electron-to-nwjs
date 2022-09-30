@@ -13,6 +13,9 @@ const app = {
         this._events[event] = listener;
         return this;
     },
+    disableHardwareAcceleration() {
+
+    },
     quit() {
 
     }
@@ -33,6 +36,26 @@ const globalShortcut = {
     }
 }
 
+const shell = {
+
+}
+
+const systemPreferences = {
+
+}
+
+const ipcMain = {
+    
+}
+
+const Menu = {
+    
+}
+
+const nativeTheme = {
+    
+}
+
 class WebContents {
     _events = {}
     dispatchEvent(event) {
@@ -51,6 +74,14 @@ class WebContents {
         this._events[event] = listener;
         return this;
     }
+}
+
+const commandLine = {
+
+}
+
+const dialog = {
+
 }
 
 class BrowserWindow {
@@ -122,52 +153,72 @@ class BrowserWindow {
         // accessibleTitle
     }
 
+    async _getWindow() {
+        const that = this
+        const attachOn = function() {
+            return new Promise((resolve, reject) => {
+                if (that.window) {
+                    return resolve(that.window);
+                }
+                setTimeout(100, () => {
+                    attachOn().then(resolve, reject)
+                })
+            })
+        }
+        return await attachOn()
+    }
     destroy() {
-        this.window.close(true);
+        this._getWindow().then(win => win.close(true));
     }
     close() {
-        this.window.close();
+        this._getWindow().then(win => win.close());
     }
     focus() {
-        this.window.focus();
+        this._getWindow().then(win => win.focus());
     }
     blur() {
-        this.window.blur();
+        this._getWindow().then(win => win.blur());
     }
     // isFocused
     // isDestroyed
     show() {
-        this.window.show();
-        this.window.showValue = true;
+        const that = this
+        this._getWindow().then(win => {
+            win.show();
+            that.showValue = true;
+        });
     }
     // showInactive
     hide() {
-        this.window.hide();
-        this.window.showValue = false;
+        const that = this
+        this._getWindow().then(win => {
+            win.hide();
+            that.showValue = false;
+        });
     }
     isVisible() {
-        return this.window.showValue;
+        return this.showValue;
     }
     // isModal
     maximize() {
-        this.window.maximize();
+        this._getWindow().then(win => win.maximize());
     }
     unmaximize() {
-        this.window.unmaximize();
+        this._getWindow().then(win => win.unmaximize());
     }
     // isMaximized
     minimize() {
-        this.window.minimize();
+        this._getWindow().then(win => win.minimize());
     }
     restore() {
-        this.window.restore();
+        this._getWindow().then(win => win.restore());
     }
     // isMinimized
     setFullScreen(flag) {
         if (flag) {
-            this.window.enterFullscreen();
+            this._getWindow().then(win => win.enterFullscreen());
         } else {
-            this.window.leaveFullscreen();
+            this._getWindow().then(win => win.leaveFullscreen());
         }
     }
     isFullScreen() {
@@ -188,22 +239,25 @@ class BrowserWindow {
     // setEnabled
     // isEnabled
     setSize(width, height) {
-        this.window.resizeTo(width, height);
+        this._getWindow().then(win => win.resizeTo(width, height));
     }
     // getSize
     // setContentSize
     // getContentSize
     setMinimumSize(width, height) {
-        this.window.setMinimumSize(width, height);
+        this._getWindow().then(win => win.setMinimumSize(width, height));
     }
     // getMinimumSize
     setMaximumSize(width, height) {
-        this.window.setMaximumSize(width, height);
+        this._getWindow().then(win => win.setMaximumSize(width, height));
     }
     // getMaximumSize
     setResizable(resizable) {
-        this.resizable = resizable;
-        this.window.setResizable(resizable);
+        const that = this
+        this._getWindow().then(win => {
+            win.setResizable(resizable);
+            that.resizable = resizable;
+        });
     }
     isResizable() {
         return this.resizable;
@@ -219,7 +273,7 @@ class BrowserWindow {
     // setClosable
     // isClosable
     setAlwaysOnTop(flag) {
-        this.window.setAlwaysOnTop(flag);
+        this._getWindow().then(win => win.setAlwaysOnTop(flag));
     }
     isAlwaysOnTop() {
         return this.window.isAlwaysOnTop;
@@ -227,22 +281,22 @@ class BrowserWindow {
     // moveAbove
     // moveTop
     center() {
-        this.window.setPosition('center');
+        this._getWindow().then(win => win.setPosition('center'));
     }
     // setPosition
     // getPosition
     setTitle(title) {
-        this.window.title = title;
+        this._getWindow().then(win => win.title = title);
     }
     getTitle() {
         return this.window.title;
     }
     // setSheetOffset
     flashFrame(flag) {
-        this.window.requestAttention(true);
+        this._getWindow().then(win => win.requestAttention(true));
     }
     setSkipTaskbar(skip) {
-        this.window.setShowInTaskbar(skip);
+        this._getWindow().then(win => win.setShowInTaskbar(skip));
     }
     // setKiosk
     // isKiosk
@@ -262,12 +316,14 @@ class BrowserWindow {
     capturePage(rect) {
         if (rect !== undefined) throw new Error("Unsupported operation")
 
-        const window = this.window;
+        const that = this;
         return new Promise((resolve, reject) => {
-            window.capturePage((base64Image) => {
-                reject();
-            },
-            {format:'png', datatype:'raw'});
+            that._getWindow().then(win => {
+                win.capturePage((base64Image) => {
+                    reject();
+                },
+                {format:'png', datatype:'raw'});
+            });
         });
     }
     _load(url) {
@@ -308,15 +364,18 @@ class BrowserWindow {
         return await this._load(filePath)
     }
     reload() {
-        this.window.reload();
+        this._getWindow().then(win => win.reload());
     }
     // setMenu
     // removeMenu
     // setProgressBar
     // setOverlayIcon
     setHasShadow(hasShadow) {
-        this.hasShadowValue = hasShadow;
-        this.window.setShadow(hasShadow);
+        const that = this
+        this._getWindow().then(win => {
+            that.hasShadowValue = hasShadow;
+            win.setShadow(hasShadow);
+        });
     }
     hasShadow() {
         return this.hasShadowValue;
@@ -364,74 +423,51 @@ class BrowserWindow {
     // setTitleBarOverlay(options)
 
     on(event, callback) {
+        let nwjsEvent = event
         // 'page-title-updated'
         
-        if (event === 'close') {
-            return this.window.on('close', callback);
-        }
-        if (event === 'closed') {
-            return this.window.on('closed', callback);
-        }
-
-        // 'session-end'
-        // 'unresponsive'
-        // 'responsive'
-        
-        if (event === 'blur') {
-            return this.window.on('blur', callback);
-        }
-        if (event === 'focus') {
-            return this.window.on('focus', callback);
-        }
-
-        // 'show'
-        // 'hide'
-        // 'ready-to-show'
-        
-        if (event === 'maximize') {
-            return this.window.on('maximize', callback);
-        }
-
-        // 'unmaximize'
-        
-        if (event === 'minimize') {
-            return this.window.on('minimize', callback);
-        }
-        if (event === 'restore') {
-            return this.window.on('restore', callback);
-        }
-        
-        // 'will-resize'
-        // 'resize'
-
-        if (event === 'resized') {
-            return this.window.on('resize', callback);
-        }
-        
-        // 'will-move'
-        // 'move'
-        
-        if (event === 'moved') {
-            return this.window.on('move', callback);
-        }
-        if (event === 'enter-full-screen') {
-            return this.window.on('enter-fullscreen', callback);
-        }
-        if (event === 'leave-full-screen') {
-            return this.window.on('leave-fullscreen', callback);
+        switch(event) {
+            case 'close':             nwjsEvent = 'close';          break;
+            case 'closed':            nwjsEvent = 'closed';         break;
+            // 'session-end'
+            // 'unresponsive'
+            // 'responsive'
+            case 'blur':              nwjsEvent = 'blur';           break;
+            case 'focus':             nwjsEvent = 'focus';          break;
+            // 'show'
+            // 'hide'
+            // 'ready-to-show'
+            case 'maximize':          nwjsEvent = 'maximize';         break;
+            // 'unmaximize'
+            case 'minimize':          nwjsEvent = 'minimize';         break;
+            case 'restore':           nwjsEvent = 'restore';          break;
+            // 'will-resize'
+            // 'resize'
+            case 'resized':           nwjsEvent = 'resize';           break;
+            // 'will-move'
+            // 'move'
+            case 'moved':             nwjsEvent = 'move';             break;
+            case 'enter-full-screen': nwjsEvent = 'enter-fullscreen'; break;
+            case 'leave-full-screen': nwjsEvent = 'leave-fullscreen'; break;
+            // 'enter-html-full-screen'
+            // 'leave-html-full-screen'
+            // 'always-on-top-changed'
         }
 
-        // 'enter-html-full-screen'
-        // 'leave-html-full-screen'
-        // 'always-on-top-changed'
-
-        throw new Error("Unknown event type");
+        this._getWindow().then(win => win.on(nwjsEvent, callback));
     }
 }
 
 module.exports = {
     app,
-    BrowserWindow, 
-    globalShortcut, 
-    isPackaged: __nwjs_is_packaged
+    BrowserWindow,
+    commandLine,
+    dialog,
+    globalShortcut,
+    ipcMain,
+    isPackaged: __nwjs_is_packaged,
+    nativeTheme,
+    Menu,
+    shell,
+    systemPreferences
 }
