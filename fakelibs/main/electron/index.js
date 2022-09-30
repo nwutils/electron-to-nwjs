@@ -20,7 +20,16 @@ const app = {
 
 const globalShortcut = {
     register(combination, callback) {
-
+        var option = {
+            key: combination,
+            active: callback,
+            failed: function(msg) {
+                console.error(msg);
+            }
+        };
+        
+        var shortcut = new nw.Shortcut(option);
+        nw.App.registerGlobalHotKey(shortcut);
     }
 }
 
