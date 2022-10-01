@@ -1,12 +1,12 @@
 const fs = require('fs')
 const path = require('path')
-const electron = require('../electron')
+const electron = require('electron')
 
 class Store {
     constructor(opts) {
         this._beforeEachMigration = opts.beforeEachMigration
         this._name = opts.name || 'config'
-        this._cwd = opts.cwd || app.getPath('userData')
+        this._cwd = opts.cwd || electron.app.getPath('userData')
         this._encryptionKey = opts.encryptionKey
         this._fileExtension = opts.fileExtension || 'json'
         this._clearInvalidConfig = opts.clearInvalidConfig === undefined ? false : opts.clearInvalidConfig
