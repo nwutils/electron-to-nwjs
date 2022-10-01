@@ -17,7 +17,7 @@ const app = {
 
     },
     quit() {
-
+        nw.App.quit()
     }
 }
 
@@ -44,8 +44,31 @@ const systemPreferences = {
 
 }
 
+const ipcSharedMemory = {
+    on: {},
+    handle: {}
+}
+
+const ipcRenderer = {
+    send(channel, ...args) {
+        args = args.map((x) => x)
+        args.unshift(null) // TODO: event
+        ipcSharedMemory.on[channel].apply(null, args)
+    },
+    async invoke(channel, ...args) {
+        args = args.map((x) => x)
+        args.unshift(null) // TODO: event
+        return await ipcSharedMemory.handle[channel].apply(null, args)
+    }
+}
+
 const ipcMain = {
-    
+    on(channel, callback) {
+        ipcSharedMemory.on[channel] = callback
+    },
+    handle(channel, asyncCallback) {
+        ipcSharedMemory.handle[channel] = asyncCallback
+    }
 }
 
 const Menu = {
@@ -53,7 +76,11 @@ const Menu = {
 }
 
 const nativeTheme = {
-    
+    shouldUseDarkColors: false,
+    themeSource: 'system',
+    shouldUseHighContrastColors: false,
+    shouldUseInvertedColorScheme: false,
+    inForcedColorsMode: false
 }
 
 class WebContents {
@@ -77,7 +104,11 @@ class WebContents {
 }
 
 const commandLine = {
-
+    appendSwitch(key, value) {
+        if (key === "disable-http-cache") {
+            nw.App.clearCache()
+        }
+    }
 }
 
 const dialog = {
@@ -465,6 +496,7 @@ module.exports = {
     dialog,
     globalShortcut,
     ipcMain,
+    ipcRenderer,
     isPackaged: __nwjs_is_packaged,
     nativeTheme,
     Menu,
