@@ -2,6 +2,9 @@ const autoUpdater = {
     checkForUpdates() {
 
     },
+    checkForUpdatesAndNotify() {
+
+    },
     on(channel, callback) {
 
     },
