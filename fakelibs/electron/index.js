@@ -1,3 +1,6 @@
+const os = require('os');
+const path = require('path');
+
 const app = {
     _events: {},
     dispatchEvent(event) {
@@ -9,6 +12,33 @@ const app = {
 
 
     name: __nwjs_app_name,
+    async getFileIcon(filePath) {
+
+    },
+    getPath(name) {
+        switch(name) {
+            case "home": return os.homedir();
+            case "appData": return path.dirname(this.getPath("userData"));
+            case "userData": return nw.App.dataPath;
+            case "sessionData": break;
+            case "temp": break;
+            case "exe": return process.execPath;
+            case "module": break;
+            case "desktop": break;
+            case "documents": break;
+            case "downloads": break;
+            case "music": break;
+            case "pictures": break;
+            case "videos": break;
+            case "recent": break;
+            case "logs": break;
+            case "crashDumps": break;
+        }
+        throw new Error("Unknown path name: %s".replace("%s", name));
+    },
+    getVersion() {
+        return __nwjs_app_version;
+    },
     on(event, listener) {
         this._events[event] = listener;
         return this;
@@ -18,6 +48,9 @@ const app = {
     },
     quit() {
         nw.App.quit()
+    },
+    setAsDefaultProtocolClient(protocol, path, args) {
+
     }
 }
 
@@ -37,7 +70,9 @@ const globalShortcut = {
 }
 
 const shell = {
+    showItemInFolder(item) {
 
+    }
 }
 
 const systemPreferences = {
@@ -45,29 +80,45 @@ const systemPreferences = {
 }
 
 const ipcSharedMemory = {
-    on: {},
-    handle: {}
+    send: {},
+    invoke: {}
 }
 
 const ipcRenderer = {
+    on(channel, callback) {
+        const win = nw.Window.get()
+        const browserWindow = BrowserWindow.fromId(parseInt(win.id))
+        browserWindow.webContents._ipcEvents[channel] = callback
+        return this
+    },
     send(channel, ...args) {
+        const win = nw.Window.get()
+        const event = {sender:win.webContents}
+        
         args = args.map((x) => x)
-        args.unshift(null) // TODO: event
-        ipcSharedMemory.on[channel].apply(null, args)
+        args.unshift(channel)
+        args.unshift(event)
+        
+        ipcSharedMemory.send[channel].apply(null, args)
     },
     async invoke(channel, ...args) {
+        const win = nw.Window.get()
+        const event = {sender:win.webContents}
+        
         args = args.map((x) => x)
-        args.unshift(null) // TODO: event
-        return await ipcSharedMemory.handle[channel].apply(null, args)
+        args.unshift(channel)
+        args.unshift(event)
+
+        return await ipcSharedMemory.invoke[channel].apply(null, args)
     }
 }
 
 const ipcMain = {
     on(channel, callback) {
-        ipcSharedMemory.on[channel] = callback
+        ipcSharedMemory.send[channel] = callback
     },
     handle(channel, asyncCallback) {
-        ipcSharedMemory.handle[channel] = asyncCallback
+        ipcSharedMemory.invoke[channel] = asyncCallback
     }
 }
 
@@ -85,6 +136,7 @@ const nativeTheme = {
 
 class WebContents {
     _events = {}
+    _ipcEvents = {}
     dispatchEvent(event) {
         let listener = this._events[event.type];
         if (listener) {
@@ -95,11 +147,23 @@ class WebContents {
 
     constructor(opts) {
         if (opts === undefined) opts = {};
+        this.id = opts.id
     }
 
+    closeDevTools() {
+
+    }
     on(event, listener) {
         this._events[event] = listener;
         return this;
+    }
+    send(channel, ...args) {
+        const event = {sender:this}
+        
+        const args = args.map(x => x)
+        args.unshift(event)
+
+        this._ipcEvents[channel].apply(null, args)
     }
 }
 
@@ -112,10 +176,20 @@ const commandLine = {
 }
 
 const dialog = {
+    showMessageBoxSync(window, opts) {
 
+    },
+    showOpenDialog(window, opts) {
+
+    },
+    showSaveDialog(window, opts) {
+
+    }
 }
 
 class BrowserWindow {
+    static _windowById = {}
+
     constructor(opts) {
         if (opts === undefined) opts = {};
         else opts = JSON.parse(JSON.stringify(opts));
@@ -173,8 +247,8 @@ class BrowserWindow {
         // titleBarOverlay
 
 
-        this.webContents = new WebContents();
         this.id = Math.floor(Math.random() * 1000000000);
+        this.webContents = new WebContents({id:this.id});
         // visibleOnAllWorkspaces
         // menuBarVisible
         // kiosk
@@ -182,6 +256,15 @@ class BrowserWindow {
         // representedFilename
         // excludedFromShownWindowsMenu
         // accessibleTitle
+
+        BrowserWindow._windowById[id] = this
+    }
+
+    static fromId(id) {
+        return BrowserWindow._windowById[id]
+    }
+    static fromWebContents(webContents) {
+        return BrowserWindow._windowById[webContents.id]
     }
 
     async _getWindow() {
