@@ -171,7 +171,7 @@ class WebContents {
     send(channel, ...args) {
         const event = {sender:this}
         
-        args = args.map(x => x)
+        const args = args.map(x => x)
         args.unshift(event)
 
         this._ipcEvents[channel].apply(null, args)
