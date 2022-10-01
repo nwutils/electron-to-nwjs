@@ -14,12 +14,10 @@ module.exports = (env, argv) => {
     const projectPackageJson = JSON.parse(projectPackageStr)
 
     const jsFiles = []
-    var fakeLibsFolder = ""
+    var fakeLibsFolder = path.resolve(__dirname, "fakelibs")
     if (env.main === true) {
         const mainFile = projectPackageJson.main;
         jsFiles.push(mainFile);
-
-        fakeLibsFolder = path.resolve(__dirname, "fakelibs", "main")
     }
     else {
         const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: projectPath, encoding: 'utf8'})
@@ -30,8 +28,6 @@ module.exports = (env, argv) => {
             const scripts = $('script[src]')
             jsFiles.push(...scripts.map(function() { return $(this).attr('src'); }).get())
         })
-
-        fakeLibsFolder = path.resolve(__dirname, "fakelibs", "renderer")
     }
 
     const aliases = {}
