@@ -46,14 +46,8 @@ const app = {
     disableHardwareAcceleration() {
 
     },
-    isInApplicationsFolder() {
-
-    },
     quit() {
         nw.App.quit()
-    },
-    relaunch() {
-
     },
     setAsDefaultProtocolClient(protocol, path, args) {
 
@@ -129,9 +123,7 @@ const ipcMain = {
 }
 
 const Menu = {
-    setApplicationMenu() {
-        
-    }
+    
 }
 
 const nativeTheme = {
@@ -152,13 +144,10 @@ class WebContents {
         }
     }
 
+
     constructor(opts) {
         if (opts === undefined) opts = {};
         this.id = opts.id
-
-        this.session = {}
-        this.session.webRequest = {}
-        this.session.webRequest.onHeadersReceived = (opts, callback) => {}
     }
 
     closeDevTools() {
