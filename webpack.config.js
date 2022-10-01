@@ -73,6 +73,15 @@ module.exports = (env, argv) => {
                     test: /\.js$/,
                     loader: 'string-replace-loader',
                     options: {
+                    search: '__nwjs_app_version',
+                    replace: JSON.stringify(projectPackageJson.version),
+                    flags: 'g'
+                    }
+                },
+                {
+                    test: /\.js$/,
+                    loader: 'string-replace-loader',
+                    options: {
                     search: '__nwjs_app_name',
                     replace: JSON.stringify((projectPackageJson.build || {}).productName || projectPackageJson.name),
                     flags: 'g'

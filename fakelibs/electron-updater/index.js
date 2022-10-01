@@ -1,5 +1,14 @@
 const autoUpdater = {
+    checkForUpdates() {
+
+    },
+    on(channel, callback) {
+
+    },
     setFeedURL(url) {
+
+    },
+    quitAndInstall() {
 
     }
 }
