@@ -92,36 +92,44 @@ const ipcSharedMemory = {
 
 const ipcRenderer = {
     on(channel, callback) {
-        const win = nw.Window.get()
-        const browserWindow = BrowserWindow.fromId(parseInt(win.id))
-        browserWindow.webContents._ipcEvents[channel] = callback
+        const win = BrowserWindow.getCurrentWindow()
+        win.webContents._ipcEvents[channel] = callback
         return this
     },
     send(channel, ...args) {
-        const win = nw.Window.get()
-        const event = {sender:win.webContents}
+        const event = new Event(channel)
+        event.sender = BrowserWindow.getCurrentWindow().webContents
         
         args = args.map((x) => x)
-        args.unshift(channel)
         args.unshift(event)
         
-        ipcSharedMemory.send[channel].apply(null, args)
+        const callbacks = ipcSharedMemory.send[channel]
+        if (callbacks === undefined) {
+            return
+        }
+        callbacks.forEach(callback => callback.apply(null, args))
     },
     async invoke(channel, ...args) {
-        const win = nw.Window.get()
-        const event = {sender:win.webContents}
+        const event = new Event(channel)
+        event.sender = BrowserWindow.getCurrentWindow().webContents
         
         args = args.map((x) => x)
-        args.unshift(channel)
         args.unshift(event)
 
-        return await ipcSharedMemory.invoke[channel].apply(null, args)
+        const callback = ipcSharedMemory.invoke[channel]
+        if (callback === undefined) {
+            return
+        }
+        return await callback.apply(null, args)
     }
 }
 
 const ipcMain = {
     on(channel, callback) {
-        ipcSharedMemory.send[channel] = callback
+        if (ipcSharedMemory.send[channel] === undefined) {
+            ipcSharedMemory.send[channel] = []
+        }
+        ipcSharedMemory.send[channel].push(callback)
     },
     handle(channel, asyncCallback) {
         ipcSharedMemory.invoke[channel] = asyncCallback
@@ -164,17 +172,22 @@ class WebContents {
     closeDevTools() {
 
     }
-    on(event, listener) {
-        this._events[event] = listener;
+    on(channel, callback) {
+        this._events[channel] = callback;
         return this;
     }
     send(channel, ...args) {
-        const event = {sender:this}
+        const event = new Event(channel)
+        event.sender = this
         
-        args = args.map(x => x)
+        args = args.map((x) => x)
         args.unshift(event)
 
-        this._ipcEvents[channel].apply(null, args)
+        const callback = this._ipcEvents[channel]
+        if (callback === undefined) {
+            return
+        }
+        callback.apply(null, args)
     }
 }
 
@@ -268,7 +281,7 @@ class BrowserWindow {
         // excludedFromShownWindowsMenu
         // accessibleTitle
 
-        BrowserWindow._windowById[id] = this
+        BrowserWindow._windowById[this.id] = this
     }
 
     static fromId(id) {
@@ -276,6 +289,10 @@ class BrowserWindow {
     }
     static fromWebContents(webContents) {
         return BrowserWindow._windowById[webContents.id]
+    }
+    static getCurrentWindow() {
+        const win = nw.Window.get()
+        return Object.values(BrowserWindow._windowById).filter(bw => bw.title === win.title).shift()
     }
 
     async _getWindow() {
