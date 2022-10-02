@@ -24,21 +24,8 @@ We have support to the `nwjs:predist` script in that case.
 ## My application needs to perform some actions after building
 We have support to the `nwjs:postdist` script in that case.
 
-## Roadmap
-The Electron main file should be loaded to retrieve informations about the project, like the name of the main HTML file, the window size, and the window minimum size. In the meanwhile, you can config that by adding the property `config` to your project package.json file and filling it like that:
-
-```
-  "config": {
-    "window": {
-      "index": "index.html",
-      "resizable": true,
-      "height": 750,
-      "width": 1200,
-      "minHeight": 720,
-      "minWidth": 1200
-    }
-  }
-```
+## How does it work?
+The Electron main file is converted into the NW.js main file using webpack, by replacing the Electron modules with compatibility layers that make them use the NW.js commands instead. So you don't need to change anything in your Electron project, unless you need to add a prebuild/postbuild script.
 
 ## References
 - https://nwjs.readthedocs.io/en/latest/For%20Users/Getting%20Started/
