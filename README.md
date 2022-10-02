@@ -1,5 +1,5 @@
-# PEAWXP NW.js
-This project name is an acronym to "Port your Electron app to Windows XP using NW.js". This project aims to run an Electron single window app in Windows XP. It was made in a way that you can actually create an Electron application, and then port it to NW.js almost instantly.
+# ElectroNW.js
+This project aims to build an Electron app as a NW.js app.
 
 ## Requirements
 Depending of your project, everything may work out of the box, as long as you follow the requirements below:
