@@ -7,8 +7,6 @@ const projectPackagePath = path.resolve(projectPath, 'package.json')
 const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
 const projectPackageJson = JSON.parse(projectPackageStr)
 
-const obfuscatedProjectPath = path.join('.', '_www')
-
 let build = (projectPackageJson.build || {})
 let authorName = (projectPackageJson.author || {}).name || "Unknown"
 let nwjsConfig = {
@@ -23,8 +21,15 @@ let nwjsConfig = {
 if (nwjsConfig.icon) {
     nwjsConfig.icon = path.join('./www', nwjsConfig.icon)
 }
+if (!nwjsConfig.files.includes("**/**")) {
+    nwjsConfig.files.unshift("**/**")
+}
 nwjsConfig.files.push("package.json")
-nwjsConfig.files = nwjsConfig.files.map(file => path.join(obfuscatedProjectPath, file))
+nwjsConfig.files = nwjsConfig.files.map(file => {
+    const ignorable = file.startsWith("!")
+    if (ignorable) file = file.substring(1)
+    return (ignorable?"!":"") + path.join('_www', file)
+})
 nwjsConfig.runScript = function(script) {
     if (script === undefined) {
         return

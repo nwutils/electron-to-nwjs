@@ -3,11 +3,11 @@
 # Building CSS
 cd www/
 npm install
-npm run nwjs:predist --if-present
+npm run nwjs:prebuild --if-present
 cd ../
 
 # Building web contents
-rm -r _www || true
+rm -rf _www || true
 mkdir -p _www/
 ./node_modules/.bin/webpack -c webpack.config.js --env prod || exit 0
 ./node_modules/.bin/webpack -c webpack.config.js --env prod --env main || exit 0

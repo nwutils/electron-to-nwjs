@@ -16,8 +16,11 @@ module.exports = (env, argv) => {
     const jsFiles = []
     var fakeLibsFolder = path.resolve(__dirname, "fakelibs")
     if (env.main === true) {
-        const mainFile = projectPackageJson.main;
-        jsFiles.push(mainFile);
+        const mainFile = (projectPackageJson.nwjs || {}).main || projectPackageJson.main;
+        jsFiles.push(mainFile)
+    }
+    else if ((projectPackageJson.nwjs || {}).jsFiles !== undefined) {
+        jsFiles.push(...(projectPackageJson.nwjs || {}).jsFiles)
     }
     else {
         const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: projectPath, encoding: 'utf8'})
@@ -34,23 +37,28 @@ module.exports = (env, argv) => {
     const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
     dependenciesThatShouldBeFaked.forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
 
-    const files = jsFiles.map(jsFile => path.resolve(__dirname, './www', jsFile));
+    const jsFileByOutputFile = {}
     if (env.main === true) {
-        files.push(path.resolve(__dirname, './fakelibs', 'post-main.js'));
+        jsFileByOutputFile[jsFiles[0]] = [
+            path.resolve(__dirname, './www', jsFiles[0]),
+            path.resolve(__dirname, './fakelibs', 'post-main.js')
+        ]
     }
     else {
-        files.unshift('babel-polyfill');
+        // TODO: That may be needed later
+        //files.unshift('babel-polyfill');
+        jsFiles.forEach(jsFile => {
+            jsFileByOutputFile[jsFile] = [path.resolve(__dirname, './www', jsFile)]
+        })
     }
 
     return {
         target: ['nwjs', 'node5'],
-        entry: {
-            main: files,
-        },
+        entry: jsFileByOutputFile,
         mode: "production",
         output: {
             path: path.resolve(__dirname, "./_www"),
-            filename: jsFiles[0]
+            filename: '[name].js'
         },
         resolve: {
             alias: aliases
@@ -64,36 +72,36 @@ module.exports = (env, argv) => {
                     test: /\.js$/,
                     loader: 'string-replace-loader',
                     options: {
-                    search: '__dirname',
-                    replace: env.prod ? "(require('path').dirname(process.execPath))" : "(process.cwd())",
-                    flags: 'g'
+                        search: '__dirname',
+                        replace: env.prod ? "(require('path').dirname(process.execPath))" : "(process.cwd())",
+                        flags: 'g'
                     }
                 },
                 {
                     test: /\.js$/,
                     loader: 'string-replace-loader',
                     options: {
-                    search: '__nwjs_app_version',
-                    replace: JSON.stringify(projectPackageJson.version),
-                    flags: 'g'
+                        search: '__nwjs_app_version',
+                        replace: JSON.stringify(projectPackageJson.version),
+                        flags: 'g'
                     }
                 },
                 {
                     test: /\.js$/,
                     loader: 'string-replace-loader',
                     options: {
-                    search: '__nwjs_app_name',
-                    replace: JSON.stringify((projectPackageJson.build || {}).productName || projectPackageJson.name),
-                    flags: 'g'
+                        search: '__nwjs_app_name',
+                        replace: JSON.stringify((projectPackageJson.build || {}).productName || projectPackageJson.name),
+                        flags: 'g'
                     }
                 },
                 {
                     test: /\.js$/,
                     loader: 'string-replace-loader',
                     options: {
-                    search: '__nwjs_is_packaged',
-                    replace: env.prod ? "true" : "false",
-                    flags: 'g'
+                        search: '__nwjs_is_packaged',
+                        replace: env.prod ? "true" : "false",
+                        flags: 'g'
                     }
                 },
                 {
