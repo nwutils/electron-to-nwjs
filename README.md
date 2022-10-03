@@ -3,13 +3,14 @@ This project aims to build an Electron app as a NW.js app.
 
 ## Requirements
 Depending of your project, everything may work out of the box, as long as you follow the requirements below:
-- You need `rsync` (Linux only), `npm` and `nodejs` installed in your system.
+- You need `rsync` (Linux only), `npm` and `nodejs` installed in your system;
+- You must not replace the `require`s that reference electron-related libs with their contents (in case you use webpack, you can use `externals` to create an exception list including those).
 
 ## How do I use your project?
 - Clone this repository;
 - Open a terminal in the repository folder;
 - Clone your Electron project into a folder called `www`;
-- Run `npm run dist`.
+- Run `npm run start` or `npm run dist` in this project root folder.
 
 If your project follows the requirements mentioned in the Requirements section, you should be fine.
 
