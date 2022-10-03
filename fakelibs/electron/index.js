@@ -12,6 +12,12 @@ const app = {
 
 
     name: __nwjs_app_name,
+    commandLine: {
+        _lines: [],
+        appendSwitch(key, value) {
+            this._lines.push(value === undefined ? `--${key}` : `--${key}=${value}`)
+        }
+    },
     async getFileIcon(filePath) {
 
     },
@@ -176,10 +182,13 @@ class MenuItemConstructorOptions {
 }
 
 class Menu {
-    buildFromTemplate() {
+    static buildFromTemplate() {
         return new Menu()
     }
-    setApplicationMenu() {
+    static setApplicationMenu() {
+        
+    }
+    popup(options) {
         
     }
 }
@@ -230,13 +239,6 @@ class WebContents {
             return
         }
         callback.apply(null, args)
-    }
-}
-
-const commandLine = {
-    _lines: [],
-    appendSwitch(key, value) {
-        this._lines.push(value === undefined ? `--${key}` : `--${key}=${value}`)
     }
 }
 
@@ -673,7 +675,6 @@ class BrowserWindow {
 module.exports = {
     app,
     BrowserWindow,
-    commandLine,
     dialog,
     Event,
     globalShortcut,
