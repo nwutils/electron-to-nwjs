@@ -14,10 +14,8 @@ module.exports = (env, argv) => {
     const projectPackageJson = JSON.parse(projectPackageStr)
 
     const jsFiles = []
-    var fakeLibsFolder = path.resolve(__dirname, "fakelibs")
     if (env.main === true) {
-        const mainFile = (projectPackageJson.nwjs || {}).main || projectPackageJson.main;
-        jsFiles.push(mainFile)
+        jsFiles.push(projectPackageJson.main)
     }
     else if ((projectPackageJson.nwjs || {}).jsFiles !== undefined) {
         jsFiles.push(...(projectPackageJson.nwjs || {}).jsFiles)
@@ -34,13 +32,19 @@ module.exports = (env, argv) => {
     }
 
     const aliases = {}
+    const fakeLibsFolder = path.resolve(__dirname, "fakelibs")
     const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
     dependenciesThatShouldBeFaked.forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
 
+    const externals = {}
+    const webpackIgnoreList = (projectPackageJson.nwjs || {}).ignoreList || []
+    webpackIgnoreList.forEach(dep => externals[dep] = `require('${dep}')`)
+
     const jsFileByOutputFile = {}
     if (env.main === true) {
-        jsFileByOutputFile[jsFiles[0]] = [
-            path.resolve(__dirname, './www', jsFiles[0]),
+        let jsFile = jsFiles[0];
+        jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [
+            path.resolve(__dirname, './www', jsFile),
             path.resolve(__dirname, './fakelibs', 'post-main.js')
         ]
     }
@@ -48,7 +52,7 @@ module.exports = (env, argv) => {
         // TODO: That may be needed later
         //files.unshift('babel-polyfill');
         jsFiles.forEach(jsFile => {
-            jsFileByOutputFile[jsFile] = [path.resolve(__dirname, './www', jsFile)]
+            jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [path.resolve(__dirname, './www', jsFile)]
         })
     }
 
@@ -60,6 +64,7 @@ module.exports = (env, argv) => {
             path: path.resolve(__dirname, "./_www"),
             filename: '[name].js'
         },
+        externals: externals,
         resolve: {
             alias: aliases
         },
