@@ -11,12 +11,20 @@ const nwjs = projectPackageJson.nwjs || {}
 const nwjsBuildVersion = (nwjs.build || {}).version || nwjs.version || "0.68.1"
 const nwjsRunVersion = nwjs.version || "0.68.1"
 
+const buildProjectPath = path.resolve(__dirname, '.', '_www')
+const buildProjectPackagePath = path.resolve(buildProjectPath, 'package.json')
+let buildProjectPackageStr = fs.readFileSync(buildProjectPackagePath, {encoding: 'utf-8'})
+const buildProjectPackageJson = JSON.parse(buildProjectPackageStr)
+buildProjectPackageJson["chromium-args"] = "--enable-logging=stderr --mixed-context"
+buildProjectPackageStr = JSON.stringify(buildProjectPackageJson, null, 2)
+fs.writeFileSync(buildProjectPackagePath, buildProjectPackageStr, {encoding:'utf-8'})
+
 let build = (projectPackageJson.build || {})
 let authorName = (projectPackageJson.author || {}).name || "Unknown"
 let nwjsConfig = {
     buildConfig: {
         version: nwjsBuildVersion,
-        platforms: (nwjs.build || {}).platforms
+        platforms: (nwjs.build || {}).platforms || ["win32"]
     },
     runConfig: {
         version: nwjsRunVersion
