@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const electron = require('electron')
+const electron = require('../electron')
 
 class Store {
     constructor(opts) {

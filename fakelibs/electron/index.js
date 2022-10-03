@@ -95,13 +95,16 @@ const ipcSharedMemory = {
 
 const ipcRenderer = {
     on(channel, callback) {
-        const win = BrowserWindow.getCurrentWindow()
-        win.webContents._ipcEvents[channel] = callback
+        BrowserWindow._getCurrentWindowAsync().then(win => win.webContents._ipcEvents[channel] = callback)
         return this
     },
     send(channel, ...args) {
         const event = new Event(channel)
-        event.sender = BrowserWindow.getCurrentWindow().webContents
+        const win = BrowserWindow.getCurrentWindow()
+        if (!win) {
+            return
+        }
+        event.sender = win.webContents
         
         args = args.map((x) => x)
         args.unshift(event)
@@ -112,9 +115,30 @@ const ipcRenderer = {
         }
         callbacks.forEach(callback => callback.apply(null, args))
     },
+    sendSync(channel, ...args) {
+        const event = new Event(channel)
+        const win = BrowserWindow.getCurrentWindow()
+        if (!win) {
+            return
+        }
+        event.sender = win.webContents
+        
+        args = args.map((x) => x)
+        args.unshift(event)
+
+        const callback = ipcSharedMemory.invoke[channel]
+        if (callback === undefined) {
+            return
+        }
+        return callback.apply(null, args)
+    },
     async invoke(channel, ...args) {
         const event = new Event(channel)
-        event.sender = BrowserWindow.getCurrentWindow().webContents
+        const win = BrowserWindow.getCurrentWindow()
+        if (!win) {
+            return
+        }
+        event.sender = win.webContents
         
         args = args.map((x) => x)
         args.unshift(event)
@@ -305,6 +329,9 @@ class BrowserWindow {
         BrowserWindow._windowById[this.id] = this
     }
 
+    static getAllWindows() {
+        return Object.values(BrowserWindow._windowById)
+    }
     static fromId(id) {
         return BrowserWindow._windowById[id]
     }
@@ -312,8 +339,30 @@ class BrowserWindow {
         return BrowserWindow._windowById[webContents.id]
     }
     static getCurrentWindow() {
-        const win = nw.Window.get()
-        return Object.values(BrowserWindow._windowById).filter(bw => bw.title === win.title).shift()
+        try {
+            const win = nw.Window.get()
+            return BrowserWindow.getAllWindows().filter(bw => bw.title === win.title).shift()
+        }
+        catch(e) {
+            return undefined
+        }
+    }
+    static async _getCurrentWindowAsync() {
+        const that = this
+        const attachOn = function() {
+            return new Promise((resolve, reject) => {
+                if (that.window) {
+                    const fWin = BrowserWindow.getCurrentWindow()
+                    if (fWin) {
+                        return resolve(fWin);
+                    }
+                }
+                setTimeout(100, () => {
+                    attachOn().then(resolve, reject)
+                })
+            })
+        }
+        return await attachOn()
     }
 
     async _getWindow() {

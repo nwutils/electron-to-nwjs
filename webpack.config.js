@@ -37,7 +37,8 @@ module.exports = (env, argv) => {
     const aliases = {}
     const fakeLibsFolder = path.resolve(__dirname, "fakelibs")
     const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
-    dependenciesThatShouldBeFaked.forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
+    dependenciesThatShouldBeFaked.filter(dep => !dep.endsWith(".js"))
+        .forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
 
     const externals = {}
     const webpackIgnoreList = nwjs.ignoreList || []
