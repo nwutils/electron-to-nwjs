@@ -5,8 +5,8 @@ var nw = new NwBuilder({
     buildDir: './dist',
     files: config.files,
     flavor: 'normal',
-    platforms: ['win32'],
-    version: '0.14.7', // required to work on Windows XP
+    platforms: config.buildConfig.platforms,
+    version: config.buildConfig.version,
     winIco: config.icon,
     useRcedit: true,
     winVersionString: {

@@ -1,3 +1,7 @@
+class UpdateCheckResult {
+
+}
+
 const autoUpdater = {
     checkForUpdates() {
 
@@ -17,5 +21,6 @@ const autoUpdater = {
 }
 
 module.exports = {
-    autoUpdater
+    autoUpdater,
+    UpdateCheckResult
 }

@@ -7,9 +7,20 @@ const projectPackagePath = path.resolve(projectPath, 'package.json')
 const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
 const projectPackageJson = JSON.parse(projectPackageStr)
 
+const nwjs = projectPackageJson.nwjs || {}
+const nwjsBuildVersion = (nwjs.build || {}).version || nwjs.version || "0.68.1"
+const nwjsRunVersion = nwjs.version || "0.68.1"
+
 let build = (projectPackageJson.build || {})
 let authorName = (projectPackageJson.author || {}).name || "Unknown"
 let nwjsConfig = {
+    buildConfig: {
+        version: nwjsBuildVersion,
+        platforms: (nwjs.build || {}).platforms
+    },
+    runConfig: {
+        version: nwjsRunVersion
+    },
     appName: (build.win || {}).productName || build.productName || projectPackageJson.name || "Unknown",
     company: authorName,
     copyright: (build.win || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,

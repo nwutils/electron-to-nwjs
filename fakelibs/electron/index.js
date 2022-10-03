@@ -49,6 +49,9 @@ const app = {
     isInApplicationsFolder() {
 
     },
+    moveToApplicationsFolder() {
+
+    },
     quit() {
         nw.App.quit()
     },
@@ -136,7 +139,22 @@ const ipcMain = {
     }
 }
 
-const Menu = {
+class IpcMainEvent {
+
+}
+
+class Event {
+
+}
+
+class MenuItemConstructorOptions {
+
+}
+
+class Menu {
+    buildFromTemplate() {
+        return new Menu()
+    }
     setApplicationMenu() {
         
     }
@@ -209,6 +227,10 @@ const dialog = {
     showSaveDialog(window, opts) {
 
     }
+}
+
+class NewWindowWebContentsEvent {
+    
 }
 
 class BrowserWindow {
@@ -605,12 +627,16 @@ module.exports = {
     BrowserWindow,
     commandLine,
     dialog,
+    Event,
     globalShortcut,
     ipcMain,
+    IpcMainEvent,
     ipcRenderer,
     isPackaged: __nwjs_is_packaged,
     nativeTheme,
     Menu,
+    MenuItemConstructorOptions,
+    NewWindowWebContentsEvent,
     shell,
     systemPreferences
 }
