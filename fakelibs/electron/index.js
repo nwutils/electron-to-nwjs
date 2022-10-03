@@ -94,7 +94,7 @@ const systemPreferences = {
 
 }
 
-const ipcSharedMemory = {
+global.ipcSharedMemory = global.ipcSharedMemory || {
     send: {},
     invoke: {}
 }
@@ -107,15 +107,14 @@ const ipcRenderer = {
     send(channel, ...args) {
         const event = new Event(channel)
         const win = BrowserWindow.getCurrentWindow()
-        if (!win) {
-            return
+        if (win) {
+            event.sender = win.webContents
         }
-        event.sender = win.webContents
         
         args = args.map((x) => x)
         args.unshift(event)
         
-        const callbacks = ipcSharedMemory.send[channel]
+        const callbacks = global.ipcSharedMemory.send[channel]
         if (callbacks === undefined) {
             return
         }
@@ -132,7 +131,7 @@ const ipcRenderer = {
         args = args.map((x) => x)
         args.unshift(event)
 
-        const callback = ipcSharedMemory.invoke[channel]
+        const callback = global.ipcSharedMemory.invoke[channel]
         if (callback === undefined) {
             return
         }
@@ -141,17 +140,16 @@ const ipcRenderer = {
     async invoke(channel, ...args) {
         const event = new Event(channel)
         const win = BrowserWindow.getCurrentWindow()
-        if (!win) {
-            return
+        if (win) {
+            event.sender = win.webContents
         }
-        event.sender = win.webContents
         
         args = args.map((x) => x)
         args.unshift(event)
 
-        const callback = ipcSharedMemory.invoke[channel]
+        const callback = global.ipcSharedMemory.invoke[channel]
         if (callback === undefined) {
-            return
+            throw new Error("No function is prepared to answer this invoke")
         }
         return await callback.apply(null, args)
     }
@@ -159,13 +157,13 @@ const ipcRenderer = {
 
 const ipcMain = {
     on(channel, callback) {
-        if (ipcSharedMemory.send[channel] === undefined) {
-            ipcSharedMemory.send[channel] = []
+        if (global.ipcSharedMemory.send[channel] === undefined) {
+            global.ipcSharedMemory.send[channel] = []
         }
-        ipcSharedMemory.send[channel].push(callback)
+        global.ipcSharedMemory.send[channel].push(callback)
     },
     handle(channel, asyncCallback) {
-        ipcSharedMemory.invoke[channel] = asyncCallback
+        global.ipcSharedMemory.invoke[channel] = asyncCallback
     }
 }
 
@@ -346,6 +344,7 @@ class BrowserWindow {
             return BrowserWindow.getAllWindows().filter(bw => bw.title === win.title).shift()
         }
         catch(e) {
+            console.error(e)
             return undefined
         }
     }
