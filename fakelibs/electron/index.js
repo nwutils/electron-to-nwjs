@@ -210,10 +210,9 @@ class WebContents {
 }
 
 const commandLine = {
+    _lines: [],
     appendSwitch(key, value) {
-        if (key === "disable-http-cache") {
-            nw.App.clearCache()
-        }
+        this._lines.push(value === undefined ? `--${key}` : `--${key}=${value}`)
     }
 }
 

@@ -6,6 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const cheerio = require('cheerio')
 const child_process = require('child_process')
+const glob = require('simple-glob')
 
 module.exports = (env, argv) => {
     const projectPath = path.resolve(__dirname, '.', 'www')
@@ -20,7 +21,7 @@ module.exports = (env, argv) => {
         jsFiles.push(projectPackageJson.main)
     }
     else if (nwjs.jsFiles !== undefined) {
-        jsFiles.push(...nwjs.jsFiles)
+        jsFiles.push(...glob({cwd:projectPath}, nwjs.jsFiles))
     }
     else {
         const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: projectPath, encoding: 'utf8'})
