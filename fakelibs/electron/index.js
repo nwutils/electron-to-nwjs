@@ -94,85 +94,10 @@ const systemPreferences = {
 
 }
 
-global.ipcSharedMemory = global.ipcSharedMemory || {
-    send: {},
-    invoke: {}
-}
-
-const ipcRenderer = {
-    on(channel, callback) {
-        BrowserWindow._getCurrentWindowAsync().then(win => win.webContents._ipcEvents[channel] = callback)
-        return this
-    },
-    send(channel, ...args) {
-        const event = new Event(channel)
-        const win = BrowserWindow.getCurrentWindow()
-        if (win) {
-            event.sender = win.webContents
-        }
-        
-        args = args.map((x) => x)
-        args.unshift(event)
-        
-        const callbacks = global.ipcSharedMemory.send[channel]
-        if (callbacks === undefined) {
-            return
-        }
-        callbacks.forEach(callback => callback.apply(null, args))
-    },
-    sendSync(channel, ...args) {
-        const event = new Event(channel)
-        const win = BrowserWindow.getCurrentWindow()
-        if (!win) {
-            return
-        }
-        event.sender = win.webContents
-        
-        args = args.map((x) => x)
-        args.unshift(event)
-
-        const callback = global.ipcSharedMemory.invoke[channel]
-        if (callback === undefined) {
-            return
-        }
-        return callback.apply(null, args)
-    },
-    async invoke(channel, ...args) {
-        const event = new Event(channel)
-        const win = BrowserWindow.getCurrentWindow()
-        if (win) {
-            event.sender = win.webContents
-        }
-        
-        args = args.map((x) => x)
-        args.unshift(event)
-
-        const callback = global.ipcSharedMemory.invoke[channel]
-        if (callback === undefined) {
-            throw new Error("No function is prepared to answer this invoke")
-        }
-        return await callback.apply(null, args)
-    }
-}
-
-const ipcMain = {
-    on(channel, callback) {
-        if (global.ipcSharedMemory.send[channel] === undefined) {
-            global.ipcSharedMemory.send[channel] = []
-        }
-        global.ipcSharedMemory.send[channel].push(callback)
-    },
-    handle(channel, asyncCallback) {
-        global.ipcSharedMemory.invoke[channel] = asyncCallback
-    }
-}
-
-class IpcMainEvent {
-
-}
-
 class Event {
-
+    constructor(type) {
+        this.type = type
+    }
 }
 
 class MenuItemConstructorOptions {
@@ -384,7 +309,13 @@ class BrowserWindow {
         this._getWindow().then(win => win.close(true));
     }
     close() {
-        this._getWindow().then(win => win.close());
+        this._getWindow().then(win => {
+            win.close();
+
+            if (Object.keys(BrowserWindow._windowById).length === 0) {
+                app.dispatchEvent(new Event("window-all-closed"))
+            }
+        });
     }
     focus() {
         this._getWindow().then(win => win.focus());
@@ -669,6 +600,84 @@ class BrowserWindow {
 
         this._getWindow().then(win => win.on(nwjsEvent, callback));
     }
+}
+
+global.ipcSharedMemory = global.ipcSharedMemory || {
+    send: {},
+    invoke: {}
+}
+var ipcSharedMemory = global.ipcSharedMemory
+
+const ipcRenderer = {
+    on(channel, callback) {
+        BrowserWindow._getCurrentWindowAsync().then(win => win.webContents._ipcEvents[channel] = callback)
+        return this
+    },
+    send(channel, ...args) {
+        const event = new Event(channel)
+        const win = BrowserWindow.getCurrentWindow()
+        if (win) {
+            event.sender = win.webContents
+        }
+        
+        args = args.map((x) => x)
+        args.unshift(event)
+        
+        const callbacks = ipcSharedMemory.send[channel]
+        if (callbacks === undefined) {
+            return
+        }
+        callbacks.forEach(callback => callback.apply(null, args))
+    },
+    sendSync(channel, ...args) {
+        const event = new Event(channel)
+        const win = BrowserWindow.getCurrentWindow()
+        if (!win) {
+            return
+        }
+        event.sender = win.webContents
+        
+        args = args.map((x) => x)
+        args.unshift(event)
+
+        const callback = ipcSharedMemory.invoke[channel]
+        if (callback === undefined) {
+            return
+        }
+        return callback.apply(null, args)
+    },
+    async invoke(channel, ...args) {
+        const event = new Event(channel)
+        const win = BrowserWindow.getCurrentWindow()
+        if (win) {
+            event.sender = win.webContents
+        }
+        
+        args = args.map((x) => x)
+        args.unshift(event)
+
+        const callback = ipcSharedMemory.invoke[channel]
+        if (callback === undefined) {
+            throw new Error(`No function is prepared to answer the invoke of "${channel}" channel`)
+        }
+        return await callback.apply(null, args)
+    }
+}
+
+const ipcMain = {
+    on(channel, callback) {
+        if (ipcSharedMemory.send[channel] === undefined) {
+            ipcSharedMemory.send[channel] = []
+        }
+        ipcSharedMemory.send[channel].push(callback)
+    },
+    handle(channel, asyncCallback) {
+        ipcSharedMemory.invoke[channel] = asyncCallback
+    }
+}
+
+class IpcMainEvent {
+
 }
 
 module.exports = {

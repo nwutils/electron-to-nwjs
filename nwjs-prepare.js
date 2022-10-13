@@ -18,7 +18,7 @@ const buildProjectPackageJson = JSON.parse(buildProjectPackageStr)
 
 let flags = [
     "--enable-logging=stderr", // makes debugging easier
-    "--mixed-context", // otherwise, getElement* functions will be executed in a different context, because we are using require
+    //"--mixed-context", // otherwise, getElement* functions will be executed in a different context, because we are using require
     nwjs["chromium-args"] || ""
 ]
 buildProjectPackageJson["chromium-args"] = flags.join(" ")

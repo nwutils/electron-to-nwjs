@@ -33,6 +33,9 @@ rm -r obfuscated_code
 # Removing empty folders
 find _www -empty -type d -delete
 
+# Removing type="module"
+grep -rl "type=\"module\"" ./_www | xargs sed -i 's/type="module"//g'
+
 echo "Creating main HTML file..."
 node create-main-html.js
 
