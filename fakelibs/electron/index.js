@@ -1,6 +1,17 @@
 const os = require('os');
 const path = require('path');
 
+class NativeImage {
+    static createFromPath(filePath) {
+        var img = new NativeImage()
+        return img
+    }
+
+    toDataURL() {
+        return ""
+    }
+}
+
 const app = {
     _events: {},
     dispatchEvent(event) {
@@ -19,7 +30,7 @@ const app = {
         }
     },
     async getFileIcon(filePath) {
-
+        return NativeImage.createFromPath(filePath)
     },
     getPath(name) {
         switch(name) {
@@ -30,9 +41,9 @@ const app = {
             case "temp": break;
             case "exe": return process.execPath;
             case "module": break;
-            case "desktop": break;
-            case "documents": break;
-            case "downloads": break;
+            case "desktop": return path.join(this.getPath("home"), "Desktop");
+            case "documents": return path.join(this.getPath("home"), "Documents");
+            case "downloads": return path.join(this.getPath("home"), "Downloads");
             case "music": break;
             case "pictures": break;
             case "videos": break;
@@ -693,6 +704,7 @@ module.exports = {
     nativeTheme,
     Menu,
     MenuItemConstructorOptions,
+    NativeImage,
     NewWindowWebContentsEvent,
     shell,
     systemPreferences
