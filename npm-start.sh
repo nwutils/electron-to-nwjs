@@ -23,6 +23,7 @@ find _www -name "*.scss"  -type f -delete
 find _www -name "*.scssc" -type f -delete
 find _www -name ".DS_Store" -type f -delete
 rm -rf _www/node_modules
+cp -r ./www/node_modules ./_www/node_modules
 if [[ $OSTYPE == 'darwin'* ]]; then
     ditto obfuscated_code/ _www
 else
