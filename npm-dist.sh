@@ -33,7 +33,9 @@ rm -r obfuscated_code
 # Removing empty folders
 find _www -empty -type d -delete
 
-# NW.js build
+echo "Creating main HTML file..."
+node create-main-html.js
+
 echo "Building app..."
 node nwjs-build.js
 rm -rf _www

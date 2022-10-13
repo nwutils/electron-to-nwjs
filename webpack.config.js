@@ -117,6 +117,15 @@ module.exports = (env, argv) => {
                     test: /\.js$/,
                     loader: 'string-replace-loader',
                     options: {
+                        search: '__nwjs_is_main',
+                        replace: env.main ? "true" : "false",
+                        flags: 'g'
+                    }
+                },
+                {
+                    test: /\.js$/,
+                    loader: 'string-replace-loader',
+                    options: {
                         search: '__nwjs_is_packaged',
                         replace: env.prod ? "true" : "false",
                         flags: 'g'

@@ -15,7 +15,14 @@ const buildProjectPath = path.resolve(__dirname, '.', '_www')
 const buildProjectPackagePath = path.resolve(buildProjectPath, 'package.json')
 let buildProjectPackageStr = fs.readFileSync(buildProjectPackagePath, {encoding: 'utf-8'})
 const buildProjectPackageJson = JSON.parse(buildProjectPackageStr)
-buildProjectPackageJson["chromium-args"] = "--enable-logging=stderr --mixed-context"
+
+let flags = [
+    "--enable-logging=stderr", // makes debugging easier
+    "--mixed-context", // otherwise, getElement* functions will be executed in a different context, because we are using require
+    nwjs["chromium-args"] || ""
+]
+buildProjectPackageJson["chromium-args"] = flags.join(" ")
+
 buildProjectPackageStr = JSON.stringify(buildProjectPackageJson, null, 2)
 fs.writeFileSync(buildProjectPackagePath, buildProjectPackageStr, {encoding:'utf-8'})
 
