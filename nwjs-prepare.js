@@ -16,12 +16,13 @@ const buildProjectPackagePath = path.resolve(buildProjectPath, 'package.json')
 let buildProjectPackageStr = fs.readFileSync(buildProjectPackagePath, {encoding: 'utf-8'})
 const buildProjectPackageJson = JSON.parse(buildProjectPackageStr)
 
+// Mixed-context can't be used, otherwise the ipc methods won't work
 let flags = [
     "--enable-logging=stderr", // makes debugging easier
-    //"--mixed-context", // can't be used, otherwise the ipc methods won't work
     nwjs["chromium-args"] || ""
 ]
 buildProjectPackageJson["chromium-args"] = flags.join(" ")
+buildProjectPackageJson["node-remote"] = nwjs["node-remote"]
 
 buildProjectPackageStr = JSON.stringify(buildProjectPackageJson, null, 2)
 fs.writeFileSync(buildProjectPackagePath, buildProjectPackageStr, {encoding:'utf-8'})
