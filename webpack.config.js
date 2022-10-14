@@ -48,6 +48,7 @@ module.exports = (env, argv) => {
     if (env.main === true) {
         let jsFile = jsFiles[0];
         jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [
+            path.resolve(__dirname, './fakelibs', 'pre-main.js'),
             path.resolve(__dirname, './www', jsFile),
             path.resolve(__dirname, './fakelibs', 'post-main.js')
         ]

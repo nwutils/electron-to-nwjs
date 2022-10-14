@@ -511,6 +511,16 @@ class BrowserWindow {
             }, 
             (window) => {
                 that.window = window;
+                
+                // The position attribute not always work; this is a workaround
+                if (that.centerOnStart) {
+                    const screens = nw.Screen.screens
+                    if (screens.length === 1) {
+                        const screenSize = screens[0].bounds
+                        window.moveTo((screenSize.width - that.width)/2, (screenSize.height - that.height)/2)
+                    }
+                }
+
                 resolve();
             })
         })
