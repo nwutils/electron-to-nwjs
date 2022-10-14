@@ -37,9 +37,6 @@ find _www -empty -type d -delete
 # Removing type="module"
 grep -rl "type=\"module\"" ./_www | xargs sed -i 's/type="module"//g'
 
-echo "Creating main HTML file..."
-node create-main-html.js
-
 echo "Starting app..."
 node nwjs-start.js
 #rm -rf _www
