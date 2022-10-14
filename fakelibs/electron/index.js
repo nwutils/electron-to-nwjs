@@ -34,22 +34,22 @@ const app = {
     },
     getPath(name) {
         switch(name) {
-            case "home": return os.homedir();
-            case "appData": return path.dirname(this.getPath("userData"));
-            case "userData": return nw.App.dataPath;
+            case "home":        return os.homedir();
+            case "appData":     return path.dirname(this.getPath("userData"));
+            case "userData":    return path.dirname(nw.App.dataPath);
             case "sessionData": break;
-            case "temp": break;
-            case "exe": return process.execPath;
-            case "module": break;
-            case "desktop": return path.join(this.getPath("home"), "Desktop");
-            case "documents": return path.join(this.getPath("home"), "Documents");
-            case "downloads": return path.join(this.getPath("home"), "Downloads");
-            case "music": break;
-            case "pictures": break;
-            case "videos": break;
-            case "recent": break;
-            case "logs": break;
-            case "crashDumps": break;
+            case "temp":        break;
+            case "exe":         return process.execPath;
+            case "module":      break;
+            case "desktop":     return path.join(this.getPath("home"), "Desktop");
+            case "documents":   return path.join(this.getPath("home"), "Documents");
+            case "downloads":   return path.join(this.getPath("home"), "Downloads");
+            case "music":       return path.join(this.getPath("home"), "Music");
+            case "pictures":    return path.join(this.getPath("home"), "Pictures");
+            case "videos":      return path.join(this.getPath("home"), "Videos");
+            case "recent":      break;
+            case "logs":        break;
+            case "crashDumps":  break;
         }
         throw new Error("Unknown path name: %s".replace("%s", name));
     },
@@ -322,6 +322,7 @@ class BrowserWindow {
     close() {
         this._getWindow().then(win => {
             win.close();
+            delete BrowserWindow._windowById[win.id]
 
             if (Object.keys(BrowserWindow._windowById).length === 0) {
                 app.dispatchEvent(new Event("window-all-closed"))
