@@ -33,6 +33,12 @@ You must load it using the `<script>` tag. Using `require` will load the file in
 ### I'm receiving a CORS error in an iframe
 Add the attribute `nwfaketop` to that iframe.
 
+### Due to a specific need, I need to find out when I'm dealing with Electron and when I'm dealing with NW.js
+This is your new best friend:
+```
+const isNWJS = typeof nw !== 'undefined';
+```
+
 ## References
 - https://nwjs.readthedocs.io/en/latest/For%20Users/Getting%20Started/
 - https://github.com/nwjs-community/nw-builder
