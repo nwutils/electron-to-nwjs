@@ -252,8 +252,9 @@ class BrowserWindow {
         // titleBarOverlay
 
 
-        this.id = Math.floor(Math.random() * 1000000000);
-        this.webContents = new WebContents({id:this.id});
+        const id = Math.floor(Math.random() * 1000000000);
+        this.id = id;
+        this.webContents = new WebContents({id});
         // visibleOnAllWorkspaces
         // menuBarVisible
         // kiosk
@@ -262,7 +263,15 @@ class BrowserWindow {
         // excludedFromShownWindowsMenu
         // accessibleTitle
 
-        BrowserWindow._windowById[this.id] = this
+        BrowserWindow._windowById[id] = this
+
+        this.on('closed', function() {
+            delete BrowserWindow._windowById[id]
+
+            if (Object.keys(BrowserWindow._windowById).length === 0) {
+                app.dispatchEvent(new Event("window-all-closed"))
+            }
+        })
     }
 
     static getAllWindows() {
@@ -320,14 +329,7 @@ class BrowserWindow {
         this._getWindow().then(win => win.close(true));
     }
     close() {
-        this._getWindow().then(win => {
-            win.close();
-            delete BrowserWindow._windowById[win.id]
-
-            if (Object.keys(BrowserWindow._windowById).length === 0) {
-                app.dispatchEvent(new Event("window-all-closed"))
-            }
-        });
+        this._getWindow().then(win => win.close());
     }
     focus() {
         this._getWindow().then(win => win.focus());
