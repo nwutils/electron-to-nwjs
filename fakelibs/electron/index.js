@@ -1,6 +1,10 @@
 const os = require('os');
 const path = require('path');
 
+const throwUnsupportedException = function(reason) {
+    throw new Error(`electron-to-nwjs exception: ${reason}`)
+}
+
 class NativeImage {
     static createEmpty() {
         return new NativeImage()
@@ -218,7 +222,7 @@ const shell = {
     },
     openExternal(url, options) {
         if (options) {
-            throw new Error("electron-to-nwjs exception: openExternal can't support the options argument")
+            throwUnsupportedException("shell.openExternal can't support the options argument")
         }
         nw.Shell.openExternal(url)
     },
@@ -262,18 +266,16 @@ class WebContents {
     _eventsRequestCache = {}
     _events = {}
     
-    constructor(opts) {
-        if (opts === undefined) opts = {};
-        this.id = opts.id
 
+    constructor(win) {
+        this._window = win
+        
         this.session = {}
         this.session.webRequest = {}
         this.session.webRequest.onHeadersReceived = (opts, callback) => {}
     }
 
-    closeDevTools() {
 
-    }
     on(channel, callback) {
         this._events[channel] = callback;
         if (this._eventsRequestCache[channel]) {
@@ -281,6 +283,23 @@ class WebContents {
             delete this._eventsRequestCache[channel]
         }
         return this;
+    }
+
+
+    loadURL(url, options) {
+        if (options) {
+            throwUnsupportedException("WebContents.loadURL can't support the options argument")
+        }
+        this._window.window.location.href = url;
+    }
+    loadFile(filePath, options) {
+        if (options) {
+            throwUnsupportedException("WebContents.loadFile can't support the options argument")
+        }
+        this._window.window.location.href = filePath;
+    }
+    closeDevTools() {
+
     }
     send(channel, ...args) {
         const event = new Event(channel)
@@ -378,7 +397,7 @@ class BrowserWindow {
 
         const id = Math.floor(Math.random() * 1000000000);
         this.id = id;
-        this.webContents = new WebContents({id});
+        this.webContents = new WebContents(this);
         // visibleOnAllWorkspaces
         // menuBarVisible
         // kiosk
@@ -405,7 +424,7 @@ class BrowserWindow {
         return _windowById[id]
     }
     static fromWebContents(webContents) {
-        return _windowById[webContents.id]
+        return _windowById[webContents._window.id]
     }
     static getCurrentWindow() {
         const windowId = window.__nwjs_window_id
@@ -476,16 +495,16 @@ class BrowserWindow {
                 // kiosk
                 transparent: that.transparent
             }, 
-            (window) => {
-                that.window = window;
-                window.eval(null, `window.__nwjs_window_id = ${that.id};`)
+            (win) => {
+                that.window = win;
+                win.eval(null, `window.__nwjs_window_id = ${that.id};`)
                 
                 // The position attribute not always work; this is a workaround
                 if (that.centerOnStart) {
                     const screens = nw.Screen.screens
                     if (screens.length === 1) {
                         const screenSize = screens[0].bounds
-                        window.moveTo((screenSize.width - that.width)/2, (screenSize.height - that.height)/2)
+                        win.moveTo((screenSize.width - that.width)/2, (screenSize.height - that.height)/2)
                     }
                 }
 
@@ -641,7 +660,9 @@ class BrowserWindow {
     // focusOnWebView
     // blurWebView
     capturePage(rect) {
-        if (rect !== undefined) throw new Error("Unsupported operation")
+        if (rect !== undefined) {
+            throwUnsupportedException("BrowserWindow.capturePage can't support the rect argument")
+        }
 
         const that = this;
         return new Promise((resolve, reject) => {
