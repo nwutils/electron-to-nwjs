@@ -211,10 +211,17 @@ const globalShortcut = {
 
 const shell = {
     showItemInFolder(item) {
-
+        nw.Shell.showItemInFolder(item)
+    },
+    openPath(path) {
+        nw.Shell.openFile(path)
+    },
+    openExternal(url, options) {
+        if (options) {
+            throw new Error("electron-to-nwjs exception: openExternal can't support the options argument")
+        }
+        nw.Shell.openExternal(url)
     }
-    // openPath(path)
-    // openExternal(url[, options])
     // trashItem(path)
     // beep()
     // writeShortcutLink(shortcutPath[, operation], options) (Windows only)
