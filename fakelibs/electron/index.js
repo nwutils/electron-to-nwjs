@@ -656,19 +656,19 @@ const ipcRenderer = {
     sendSync(channel, ...args) {
         const event = new Event(channel)
         const win = BrowserWindow.getCurrentWindow()
-        if (!win) {
-            return
+        if (win) {
+            event.sender = win.webContents
         }
-        event.sender = win.webContents
         
         args = args.map((x) => x)
         args.unshift(event)
 
-        const callback = ipcSharedMemory.invoke[channel]
-        if (callback === undefined) {
+        const callback = ipcSharedMemory.send[channel]
+        if (callback === undefined || callback.length === 0) {
             return
         }
-        return callback.apply(null, args)
+        const val = callback[0].apply(null, args)
+        return val || event.returnValue
     },
     async invoke(channel, ...args) {
         const event = new Event(channel)
@@ -704,15 +704,13 @@ class IpcMainEvent {
 
 }
 
-module.exports = {
+const electron = {
     app,
     BrowserWindow,
     dialog,
     Event,
     globalShortcut,
-    ipcMain,
     IpcMainEvent,
-    ipcRenderer,
     isPackaged: __nwjs_is_packaged,
     nativeTheme,
     Menu,
@@ -722,3 +720,9 @@ module.exports = {
     shell,
     systemPreferences
 }
+if (__nwjs_is_main) {
+    electron.ipcMain = ipcMain
+} else {
+    electron.ipcRenderer = ipcRenderer
+}
+module.exports = electron
