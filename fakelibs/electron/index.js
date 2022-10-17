@@ -213,6 +213,12 @@ const shell = {
     showItemInFolder(item) {
 
     }
+    // openPath(path)
+    // openExternal(url[, options])
+    // trashItem(path)
+    // beep()
+    // writeShortcutLink(shortcutPath[, operation], options) (Windows only)
+    // readShortcutLink(shortcutPath) (Windows only)
 }
 
 const systemPreferences = {
