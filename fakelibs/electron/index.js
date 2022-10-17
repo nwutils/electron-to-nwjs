@@ -54,7 +54,6 @@ const app = {
     name: __nwjs_app_name,
     // userAgentFallback
     // runningUnderARM64Translation (Windows and macOS only)
-    
 
 
     _events: {},
@@ -75,7 +74,7 @@ const app = {
     },
     // exit([exitCode])
     relaunch() {
-
+        // https://github.com/nwjs/nw.js/issues/149
     },
     // isReady()
     // whenReady()
@@ -334,8 +333,8 @@ class NewWindowWebContentsEvent {
     
 }
 
-global._windowById = global._windowById || {}
-var _windowById = global._windowById
+global.__nwjs_windowById = global.__nwjs_windowById || {}
+var _windowById = global.__nwjs_windowById
 
 class BrowserWindow {
     constructor(opts) {
@@ -778,11 +777,11 @@ class BrowserWindow {
     }
 }
 
-global.ipcSharedMemory = global.ipcSharedMemory || {
+global.__nwjs_ipcSharedMemory = global.__nwjs_ipcSharedMemory || {
     send: {},
     invoke: {}
 }
-var ipcSharedMemory = global.ipcSharedMemory
+var ipcSharedMemory = global.__nwjs_ipcSharedMemory
 
 const ipcRenderer = {
     on(channel, callback) {
