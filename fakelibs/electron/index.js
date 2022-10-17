@@ -2,17 +2,57 @@ const os = require('os');
 const path = require('path');
 
 class NativeImage {
+    static createEmpty() {
+        return new NativeImage()
+    }
+    // static createThumbnailFromPath(path, maxSize) (Windows and macOS only)
     static createFromPath(filePath) {
         var img = new NativeImage()
         return img
     }
+    // static createFromBitmap(buffer, options)
+    // static createFromBuffer(buffer[, options])
+    // static createFromDataURL(dataURL)
+    // static createFromNamedImage(imageName[, hslShift]) (macOS only)
 
+    // toPNG([options])
+    // toJPEG(quality)
+    // toBitmap([options])
     toDataURL() {
         return ""
     }
+    // getBitmap([options])
+    // getNativeHandle() (macOS only)
+    // isEmpty()
+    // getSize([scaleFactor])
+    // setTemplateImage(option)
+    // isTemplateImage()
+    // crop(rect)
+    // resize(options)
+    // getAspectRatio([scaleFactor])
+    // getScaleFactors()
+    // addRepresentation(options)
+    // isMacTemplateImage (macOS only)
 }
 
 const app = {
+    // accessibilitySupportEnabled (Windows and macOS only)
+    // applicationMenu
+    // badgeCount (Linux and macOS only)
+    commandLine: {
+        _lines: [],
+        appendSwitch(key, value) {
+            this._lines.push(value === undefined ? `--${key}` : `--${key}=${value}`)
+        }
+    },
+    // dock (macOS only)
+    isPackaged: __nwjs_is_packaged,
+    name: __nwjs_app_name,
+    // userAgentFallback
+    // runningUnderARM64Translation (Windows and macOS only)
+    
+
+
     _events: {},
     dispatchEvent(event) {
         let listener = this._events[event.type];
@@ -20,18 +60,27 @@ const app = {
             listener(event);
         }
     },
+    on(event, listener) {
+        this._events[event] = listener;
+        return this;
+    },
 
 
-    name: __nwjs_app_name,
-    commandLine: {
-        _lines: [],
-        appendSwitch(key, value) {
-            this._lines.push(value === undefined ? `--${key}` : `--${key}=${value}`)
-        }
+    quit() {
+        nw.App.quit()
     },
-    async getFileIcon(filePath) {
-        return NativeImage.createFromPath(filePath)
+    // exit([exitCode])
+    relaunch() {
+
     },
+    // isReady()
+    // whenReady()
+    // focus([options])
+    // hide() (macOS only)
+    // isHidden() (macOS only)
+    // show() (macOS only)
+    // setAppLogsPath([path])
+    // getAppPath()
     getPath(name) {
         switch(name) {
             case "home":        return os.homedir();
@@ -53,31 +102,73 @@ const app = {
         }
         throw new Error("Unknown path name: %s".replace("%s", name));
     },
+    async getFileIcon(filePath) {
+        return NativeImage.createFromPath(filePath)
+    },
+    // setPath(name, path)
     getVersion() {
         return __nwjs_app_version;
     },
-    on(event, listener) {
-        this._events[event] = listener;
-        return this;
+    getName() {
+        return this.name
     },
+    setName(name) {
+        this.name = name
+    },
+    // getLocale()
+    // getLocaleCountryCode()
+    // addRecentDocument(path) (Windows and macOS only)
+    // clearRecentDocuments() (Windows and macOS only)
+    setAsDefaultProtocolClient(protocol, path, args) {
+
+    },
+    // removeAsDefaultProtocolClient(protocol[, path, args]) (Windows and macOS only)
+    // isDefaultProtocolClient(protocol[, path, args])
+    // getApplicationNameForProtocol(url)
+    // getApplicationInfoForProtocol(url) (Windows and macOS only)
+    // setUserTasks(tasks) (Windows only)
+    // getJumpListSettings() (Windows only)
+    // setJumpList(categories) (Windows only)
+    // requestSingleInstanceLock([additionalData])
+    // hasSingleInstanceLock()
+    // releaseSingleInstanceLock()
+    // setUserActivity(type, userInfo[, webpageURL]) (macOS only)
+    // getCurrentActivityType() (macOS only)
+    // invalidateCurrentActivity() (macOS only)
+    // resignCurrentActivity() (macOS only)
+    // updateCurrentActivity(type, userInfo) (macOS only)
+    // setAppUserModelId(id) (Windows only)
+    // setActivationPolicy(policy) (macOS only)
+    // importCertificate(options, callback) (Linux only)
+    // configureHostResolver(options)
     disableHardwareAcceleration() {
 
     },
+    // disableDomainBlockingFor3DAPIs()
+    // getAppMetrics()
+    // getGPUFeatureStatus()
+    // getGPUInfo(infoType)
+    // setBadgeCount([count]) (Linux and macOS only)
+    // getBadgeCount() (Linux and macOS only)
+    // isUnityRunning() (Linux only)
+    // getLoginItemSettings([options]) (Windows and macOS only)
+    // setLoginItemSettings(settings) (Windows and macOS only)
+    // isAccessibilitySupportEnabled() (Windows and macOS only)
+    // setAccessibilitySupportEnabled(enabled) (Windows and macOS only)
+    // showAboutPanel()
+    // setAboutPanelOptions(options)
+    // isEmojiPanelSupported()
+    // showEmojiPanel() (Windows and macOS only)
+    // startAccessingSecurityScopedResource(bookmarkData) (macOS only)
+    // enableSandbox()
     isInApplicationsFolder() {
 
     },
     moveToApplicationsFolder() {
 
-    },
-    quit() {
-        nw.App.quit()
-    },
-    relaunch() {
-
-    },
-    setAsDefaultProtocolClient(protocol, path, args) {
-
     }
+    // isSecureKeyboardEntryEnabled() (macOS only)
+    // setSecureKeyboardEntryEnabled(enabled) (macOS only)
 }
 
 const globalShortcut = {
@@ -713,7 +804,6 @@ const electron = {
     Event,
     globalShortcut,
     IpcMainEvent,
-    isPackaged: __nwjs_is_packaged,
     nativeTheme,
     Menu,
     MenuItemConstructorOptions,
