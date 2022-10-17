@@ -221,7 +221,7 @@ const shell = {
     },
     openExternal(url, options) {
         if (options) {
-            throwUnsupportedException("shell.openExternal can't support the options argument")
+            throwUnsupportedException("shell.openExternal can't support the 'options' argument")
         }
         nw.Shell.openExternal(url)
     },
@@ -241,15 +241,68 @@ class MenuItemConstructorOptions {
 
 }
 
+class MenuItem {
+    constructor(options) {
+
+    }
+}
+
 class Menu {
-    static buildFromTemplate() {
-        return new Menu()
+    constructor() {
+        this.menu = new nw.Menu();
+        this._menuItemById = {}
     }
-    static setApplicationMenu() {
-        
+
+    
+    static setApplicationMenu(menu) {
+        BrowserWindow.getAllWindows().forEach(win => win.window.menu = menu.menu)
+        global.__nwjs_app_menu = menu
     }
+    static getApplicationMenu() {
+        return global.__nwjs_app_menu
+    }
+    // static sendActionToFirstResponder(action) (macOS only)
+    static buildFromTemplate(template) {
+        const menu = new Menu()
+        template.forEach(item => {
+            if (item instanceof MenuItem) {
+                menu.append(item)
+            }
+            else {
+                menu.append(new MenuItem(item))
+            }
+        })
+        return menu
+    }
+
+
     popup(options) {
-        
+        if (options.window) {
+            options.window.focus()
+        }
+        if (options.positioningItem) {
+            throwUnsupportedException("Menu.popup 'options' argument can't support the 'positioningItem' property")
+        }
+        if (options.callback) {
+            throwUnsupportedException("Menu.popup 'options' argument can't support the 'callback' property")
+        }
+        this.menu.popup(options.x, options.y)
+    }
+    // closePopup([browserWindow])
+    append(item) {
+        this.menu.append(item.menuItem)
+        if (item.id) {
+            this._menuItemById[item.id] = item
+        }
+    }
+    getMenuItemById(id) {
+        return this._menuItemById[id]
+    }
+    insert(pos, item) {
+        this.menu.insert(item.menuItem, pos)
+        if (item.id) {
+            this._menuItemById[item.id] = item
+        }
     }
 }
 
@@ -287,13 +340,13 @@ class WebContents {
 
     loadURL(url, options) {
         if (options) {
-            throwUnsupportedException("WebContents.loadURL can't support the options argument")
+            throwUnsupportedException("WebContents.loadURL can't support the 'options' argument")
         }
         this._window.window.location.href = url;
     }
     loadFile(filePath, options) {
         if (options) {
-            throwUnsupportedException("WebContents.loadFile can't support the options argument")
+            throwUnsupportedException("WebContents.loadFile can't support the 'options' argument")
         }
         this._window.window.location.href = filePath;
     }
@@ -660,7 +713,7 @@ class BrowserWindow {
     // blurWebView
     capturePage(rect) {
         if (rect !== undefined) {
-            throwUnsupportedException("BrowserWindow.capturePage can't support the rect argument")
+            throwUnsupportedException("BrowserWindow.capturePage can't support the 'rect' argument")
         }
 
         const that = this;
