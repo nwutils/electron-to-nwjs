@@ -105,12 +105,6 @@ const systemPreferences = {
 
 }
 
-class Event {
-    constructor(type) {
-        this.type = type
-    }
-}
-
 class MenuItemConstructorOptions {
 
 }
@@ -136,15 +130,9 @@ const nativeTheme = {
 }
 
 class WebContents {
+    _eventsRequestCache = {}
     _events = {}
-    _ipcEvents = {}
-    dispatchEvent(event) {
-        let listener = this._events[event.type];
-        if (listener) {
-            listener(event);
-        }
-    }
-
+    
     constructor(opts) {
         if (opts === undefined) opts = {};
         this.id = opts.id
@@ -159,6 +147,10 @@ class WebContents {
     }
     on(channel, callback) {
         this._events[channel] = callback;
+        if (this._eventsRequestCache[channel]) {
+            this._eventsRequestCache[channel].forEach(args => callback.apply(null, args))
+            delete this._eventsRequestCache[channel]
+        }
         return this;
     }
     send(channel, ...args) {
@@ -168,8 +160,10 @@ class WebContents {
         args = args.map((x) => x)
         args.unshift(event)
 
-        const callback = this._ipcEvents[channel]
+        const callback = this._events[channel]
         if (callback === undefined) {
+            this._eventsRequestCache[channel] = this._eventsRequestCache[channel] || []
+            this._eventsRequestCache[channel].push(args)
             return
         }
         callback.apply(null, args)
@@ -192,9 +186,10 @@ class NewWindowWebContentsEvent {
     
 }
 
-class BrowserWindow {
-    static _windowById = {}
+global._windowById = global._windowById || {}
+var _windowById = global._windowById
 
+class BrowserWindow {
     constructor(opts) {
         if (opts === undefined) opts = {};
         else opts = JSON.parse(JSON.stringify(opts));
@@ -263,52 +258,53 @@ class BrowserWindow {
         // excludedFromShownWindowsMenu
         // accessibleTitle
 
-        BrowserWindow._windowById[id] = this
+        _windowById[id] = this
 
         this.on('closed', function() {
-            delete BrowserWindow._windowById[id]
+            delete _windowById[id]
 
-            if (Object.keys(BrowserWindow._windowById).length === 0) {
+            if (Object.keys(_windowById).length === 0) {
                 app.dispatchEvent(new Event("window-all-closed"))
             }
         })
     }
 
     static getAllWindows() {
-        return Object.values(BrowserWindow._windowById)
+        return Object.values(_windowById)
     }
     static fromId(id) {
-        return BrowserWindow._windowById[id]
+        return _windowById[id]
     }
     static fromWebContents(webContents) {
-        return BrowserWindow._windowById[webContents.id]
+        return _windowById[webContents.id]
     }
     static getCurrentWindow() {
+        const windowId = window.__nwjs_window_id
+        if (windowId === undefined) {
+            return undefined
+        }
         try {
-            const win = nw.Window.get()
-            return BrowserWindow.getAllWindows().filter(bw => bw.title === win.title).shift()
+            return BrowserWindow.getAllWindows().filter(bw => bw.id === windowId).shift()
         }
         catch(e) {
             console.error(e)
             return undefined
         }
     }
-    static async _getCurrentWindowAsync() {
+    static _getCurrentWindowAsync() {
         const that = this
         const attachOn = function() {
             return new Promise((resolve, reject) => {
-                if (that.window) {
-                    const fWin = BrowserWindow.getCurrentWindow()
-                    if (fWin) {
-                        return resolve(fWin);
-                    }
+                const fWin = BrowserWindow.getCurrentWindow()
+                if (fWin) {
+                    return resolve(fWin);
                 }
-                setTimeout(100, () => {
+                setTimeout(() => {
                     attachOn().then(resolve, reject)
-                })
+                }, 100)
             })
         }
-        return await attachOn()
+        return attachOn()
     }
 
     async _getWindow() {
@@ -318,13 +314,57 @@ class BrowserWindow {
                 if (that.window) {
                     return resolve(that.window);
                 }
-                setTimeout(100, () => {
+                setTimeout(() => {
                     attachOn().then(resolve, reject)
-                })
+                }, 100)
             })
         }
         return await attachOn()
     }
+
+    _load(url) {
+        const that = this
+        return new Promise((resolve, reject) => {
+            nw.Window.open(url, {
+                id: that.id+"",
+                title: that.title,
+                width: that.width,
+                height: that.height,
+                // toolbar
+                icon: that.icon,
+                position: that.centerOnStart ? 'center' : 'null',
+                min_width: that.minWidth,
+                min_height: that.minHeight,
+                max_width: that.maxWidth,
+                max_height: that.maxHeight,
+                resizable: that.resizable,
+                always_on_top: that.alwaysOnTop,
+                // visible_on_all_workspaces
+                fullscreen: that.fullscreen,
+                // show_in_taskbar
+                frame: that.frame,
+                show: that.showValue,
+                // kiosk
+                transparent: that.transparent
+            }, 
+            (window) => {
+                that.window = window;
+                window.eval(null, `window.__nwjs_window_id = ${that.id};`)
+                
+                // The position attribute not always work; this is a workaround
+                if (that.centerOnStart) {
+                    const screens = nw.Screen.screens
+                    if (screens.length === 1) {
+                        const screenSize = screens[0].bounds
+                        window.moveTo((screenSize.width - that.width)/2, (screenSize.height - that.height)/2)
+                    }
+                }
+
+                resolve();
+            })
+        })
+    }
+
     destroy() {
         this._getWindow().then(win => win.close(true));
     }
@@ -484,47 +524,6 @@ class BrowserWindow {
             });
         });
     }
-    _load(url) {
-        const that = this
-        return new Promise((resolve, reject) => {
-            nw.Window.open(url, {
-                id: that.id+"",
-                title: that.title,
-                width: that.width,
-                height: that.height,
-                // toolbar
-                icon: that.icon,
-                position: that.centerOnStart ? 'center' : 'null',
-                min_width: that.minWidth,
-                min_height: that.minHeight,
-                max_width: that.maxWidth,
-                max_height: that.maxHeight,
-                resizable: that.resizable,
-                always_on_top: that.alwaysOnTop,
-                // visible_on_all_workspaces
-                fullscreen: that.fullscreen,
-                // show_in_taskbar
-                frame: that.frame,
-                show: that.showValue,
-                // kiosk
-                transparent: that.transparent
-            }, 
-            (window) => {
-                that.window = window;
-                
-                // The position attribute not always work; this is a workaround
-                if (that.centerOnStart) {
-                    const screens = nw.Screen.screens
-                    if (screens.length === 1) {
-                        const screenSize = screens[0].bounds
-                        window.moveTo((screenSize.width - that.width)/2, (screenSize.height - that.height)/2)
-                    }
-                }
-
-                resolve();
-            })
-        })
-    }
     async loadURL(url, options) {
         return await this._load(url)
     }
@@ -622,7 +621,10 @@ class BrowserWindow {
             // 'always-on-top-changed'
         }
 
-        this._getWindow().then(win => win.on(nwjsEvent, callback));
+        const eventObj = new Event(event)
+        this._getWindow().then(win => win.on(nwjsEvent, function(a1, a2, a3, a4, a5) {
+            return callback(eventObj, a1, a2, a3, a4, a5)
+        }));
     }
 }
 
@@ -634,7 +636,7 @@ var ipcSharedMemory = global.ipcSharedMemory
 
 const ipcRenderer = {
     on(channel, callback) {
-        BrowserWindow._getCurrentWindowAsync().then(win => win.webContents._ipcEvents[channel] = callback)
+        BrowserWindow._getCurrentWindowAsync().then(win => win.webContents.on(channel, callback))
         return this
     },
     send(channel, ...args) {
