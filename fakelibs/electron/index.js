@@ -221,9 +221,11 @@ const shell = {
             throw new Error("electron-to-nwjs exception: openExternal can't support the options argument")
         }
         nw.Shell.openExternal(url)
-    }
+    },
     // trashItem(path)
-    // beep()
+    beep() {
+        process.stdout.write('\x07')
+    }
     // writeShortcutLink(shortcutPath[, operation], options) (Windows only)
     // readShortcutLink(shortcutPath) (Windows only)
 }
