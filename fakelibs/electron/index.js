@@ -250,7 +250,7 @@ class MenuItem {
 class Menu {
     constructor() {
         this.menu = new nw.Menu();
-        this._menuItemById = {}
+        this.items = []
     }
 
     
@@ -276,6 +276,22 @@ class Menu {
     }
 
 
+    _events = {}
+    dispatchEvent(event) {
+        let listener = this._events[event.type];
+        if (listener) {
+            listener(event);
+        }
+    }
+    on(event, listener) {
+        if (event === 'menu-will-close') {
+            throwUnsupportedException("Menu.on 'event' argument can't support the 'menu-will-close' value")
+        }
+        this._events[event] = listener;
+        return this;
+    }
+
+
     popup(options) {
         if (options.window) {
             options.window.focus()
@@ -287,21 +303,22 @@ class Menu {
             throwUnsupportedException("Menu.popup 'options' argument can't support the 'callback' property")
         }
         this.menu.popup(options.x, options.y)
+        this.dispatchEvent(new Event('menu-will-show'))
     }
     // closePopup([browserWindow])
     append(item) {
         this.menu.append(item.menuItem)
         if (item.id) {
-            this._menuItemById[item.id] = item
+            this.items.push(item)
         }
     }
     getMenuItemById(id) {
-        return this._menuItemById[id]
+        return this.items.filter(i => i.id === id).shift()
     }
     insert(pos, item) {
         this.menu.insert(item.menuItem, pos)
         if (item.id) {
-            this._menuItemById[item.id] = item
+            this.items.splice(pos, 0, item);
         }
     }
 }
