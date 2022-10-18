@@ -1,5 +1,4 @@
 const electron = require('electron')
-electron.app.dispatchEvent(new Event("ready"));
 
 var option = {
     key : "Alt+M",
@@ -12,3 +11,5 @@ var option = {
 };
 var shortcut = new nw.Shortcut(option);
 nw.App.registerGlobalHotKey(shortcut);
+
+electron.app.dispatchEvent(new Event("ready"));

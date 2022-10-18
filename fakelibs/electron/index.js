@@ -359,7 +359,7 @@ class Menu {
     
     static setApplicationMenu(menu) {
         BrowserWindow.getAllWindows().forEach(win => win._getWindow()
-                .then(window => window.menu = win.autoHideMenuBar ? null : menu.mainMenu))
+                .then(window => window.menu = win._showMenubar ? menu.mainMenu : null))
         global.__nwjs_app_menu = menu
     }
     static getApplicationMenu() {
@@ -486,7 +486,7 @@ class WebContents {
         this._window.window.closeDevTools()
     }
     isDevToolsOpened() {
-        return this._window.window.isDevToolsOpen()
+        return this._isDevToolsOpen
     }
     // isDevToolsFocused()
     toggleDevTools() {
@@ -697,7 +697,10 @@ class BrowserWindow {
             }, 
             (win) => {
                 that.window = win;
-                win.menu = this.autoHideMenuBar ? undefined : global.__nwjs_app_menu.mainMenu
+                that._showMenubar = that.autoHideMenuBar !== true
+                if (that._showMenubar) {
+                    win.menu = global.__nwjs_app_menu.mainMenu
+                }
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
                 
                 // The position attribute not always work; this is a workaround
@@ -715,6 +718,12 @@ class BrowserWindow {
                 win.on('blur', function() {
                     that._isFocused = false
                 })
+                win.on('devtools-opened', function() {
+                    that.webContents._isDevToolsOpen = true
+                })
+                win.on('devtools-closed', function() {
+                    that.webContents._isDevToolsOpen = false
+                })
                 that._isFocused = that.showValue
                 
                 resolve();
@@ -722,7 +731,8 @@ class BrowserWindow {
         })
     }
     _toggleMenubar() {
-        this.window.menu = this.window.menu ? undefined : global.__nwjs_app_menu.mainMenu
+        this.window.menu = this._showMenubar ? null : global.__nwjs_app_menu.mainMenu
+        this._showMenubar = !this._showMenubar
     }
 
 
