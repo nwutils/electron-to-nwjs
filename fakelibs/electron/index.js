@@ -243,19 +243,85 @@ class MenuItemConstructorOptions {
 
 class MenuItem {
     constructor(options) {
+        this.window = BrowserWindow.getFocusedWindow()
+        this.label = options.label
+        this.click = options.click
+        this.tooltip = options.toolTip
+        this.enabled = options.enabled
+        this.checked = options.checked
+        
+        let type = options.type
+        if (type === "radio") {
+            throwUnsupportedException("MenuItem.constructor 'options' argument can't support the 'radio' value on the 'type' property")
+        }
+        if (!type || type === "submenu") {
+            type = "normal"
+        }
+        this.type = type
 
+        if (options.submenu) {
+            if (Array.isArray(options.submenu)) {
+                this.submenu = Menu.buildFromTemplate(options.submenu)
+            } else {
+                this.submenu = options.submenu
+            }
+        }
+
+        this._updateOptionsBasedOnRole(options.role)
+
+        var that = this
+        const menuItemOpts = {
+            label: this.label,
+            type: this.type,
+            click: function() {
+                let keyboardEvent = {
+                    ctrlKey: false,
+                    metaKey: false,
+                    shiftKey: false,
+                    altKey: false,
+                    triggeredByAccelerator: false
+                }
+                that.click(this, that.window, keyboardEvent)
+            }
+        }
+
+        if (this.tooltip !== undefined) {
+            menuItemOpts.tooltip = this.tooltip
+        }
+        if (this.enabled !== undefined) {
+            menuItemOpts.enabled = this.enabled
+        }
+        if (this.checked !== undefined) {
+            menuItemOpts.checked = this.checked
+        }
+        //menuItemOpts.icon {String} Optional icon for normal item or checkbox
+        //menuItemOpts.key {String} Optional the key of the shortcut
+        //menuItemOpts.modifiers {String} Optional the modifiers of the shortcut
+        if (this.submenu) {
+            menuItemOpts.submenu = this.submenu.contextMenu
+        }
+        this.menuItem = new nw.MenuItem(menuItemOpts);
+    }
+
+    _updateOptionsBasedOnRole(role) {
+        if (role) {
+            this.label = 'Placeholder';
+            this.click = function() { console.log('Placeholder'); };
+        }
     }
 }
 
 class Menu {
     constructor() {
-        this.menu = new nw.Menu();
+        this.contextMenu = new nw.Menu();
+        this.mainMenu = new nw.Menu({type:"menubar"});
         this.items = []
     }
 
     
     static setApplicationMenu(menu) {
-        BrowserWindow.getAllWindows().forEach(win => win.window.menu = menu.menu)
+        //BrowserWindow.getAllWindows().forEach(win => win.window.menu = win.autoHideMenuBar ? null : menu.mainMenu)
+        BrowserWindow.getAllWindows().forEach(win => win._getWindow().then(window => window.menu = menu.mainMenu))
         global.__nwjs_app_menu = menu
     }
     static getApplicationMenu() {
@@ -302,12 +368,13 @@ class Menu {
         if (options.callback) {
             throwUnsupportedException("Menu.popup 'options' argument can't support the 'callback' property")
         }
-        this.menu.popup(options.x, options.y)
+        this.contextMenu.popup(options.x, options.y)
         this.dispatchEvent(new Event('menu-will-show'))
     }
     // closePopup([browserWindow])
     append(item) {
-        this.menu.append(item.menuItem)
+        this.mainMenu.append(item.menuItem)
+        this.contextMenu.append(item.menuItem)
         if (item.id) {
             this.items.push(item)
         }
@@ -316,7 +383,8 @@ class Menu {
         return this.items.filter(i => i.id === id).shift()
     }
     insert(pos, item) {
-        this.menu.insert(item.menuItem, pos)
+        this.mainMenu.insert(item.menuItem, pos)
+        this.contextMenu.insert(item.menuItem, pos)
         if (item.id) {
             this.items.splice(pos, 0, item);
         }
@@ -489,13 +557,18 @@ class BrowserWindow {
     static getAllWindows() {
         return Object.values(_windowById)
     }
-    static fromId(id) {
-        return _windowById[id]
+    static getFocusedWindow() {
+        return this.getAllWindows().filter(win => win.isFocused()).shift()
     }
     static fromWebContents(webContents) {
         return _windowById[webContents._window.id]
     }
-    static getCurrentWindow() {
+    // static fromBrowserView(browserView)
+    static fromId(id) {
+        return _windowById[id]
+    }
+
+    static _getCurrentWindow() {
         const windowId = window.__nwjs_window_id
         if (windowId === undefined) {
             return undefined
@@ -509,10 +582,9 @@ class BrowserWindow {
         }
     }
     static _getCurrentWindowAsync() {
-        const that = this
         const attachOn = function() {
             return new Promise((resolve, reject) => {
-                const fWin = BrowserWindow.getCurrentWindow()
+                const fWin = BrowserWindow._getCurrentWindow()
                 if (fWin) {
                     return resolve(fWin);
                 }
@@ -566,6 +638,7 @@ class BrowserWindow {
             }, 
             (win) => {
                 that.window = win;
+                win.menu = global.__nwjs_app_menu.mainMenu
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
                 
                 // The position attribute not always work; this is a workaround
@@ -576,6 +649,13 @@ class BrowserWindow {
                         win.moveTo((screenSize.width - that.width)/2, (screenSize.height - that.height)/2)
                     }
                 }
+
+                win.on('focus', function() {
+                    that._isFocused = true
+                })
+                win.on('blur', function() {
+                    that._isFocused = true
+                })
 
                 resolve();
             })
@@ -594,7 +674,9 @@ class BrowserWindow {
     blur() {
         this._getWindow().then(win => win.blur());
     }
-    // isFocused
+    isFocused() {
+        return this._isFocused
+    }
     // isDestroyed
     show() {
         const that = this
@@ -860,7 +942,7 @@ const ipcRenderer = {
     },
     send(channel, ...args) {
         const event = new Event(channel)
-        const win = BrowserWindow.getCurrentWindow()
+        const win = BrowserWindow._getCurrentWindow()
         if (win) {
             event.sender = win.webContents
         }
@@ -876,7 +958,7 @@ const ipcRenderer = {
     },
     sendSync(channel, ...args) {
         const event = new Event(channel)
-        const win = BrowserWindow.getCurrentWindow()
+        const win = BrowserWindow._getCurrentWindow()
         if (win) {
             event.sender = win.webContents
         }
@@ -893,7 +975,7 @@ const ipcRenderer = {
     },
     async invoke(channel, ...args) {
         const event = new Event(channel)
-        const win = BrowserWindow.getCurrentWindow()
+        const win = BrowserWindow._getCurrentWindow()
         if (win) {
             event.sender = win.webContents
         }
