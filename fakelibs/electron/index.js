@@ -349,6 +349,9 @@ class MenuItem {
     }
 }
 
+global.__nwjs_menu_mouse_position = global.__nwjs_menu_mouse_position || {}
+const menu_mouse_position = global.__nwjs_menu_mouse_position
+
 class Menu {
     constructor() {
         this.contextMenu = new nw.Menu();
@@ -398,13 +401,24 @@ class Menu {
 
     popup(options) {
         if (options.window) {
-            options.window.focus()
+            const focusedWin = BrowserWindow.getFocusedWindow()
+            if (focusedWin.id !== options.window.id) {
+                options.window.focus()
+            }
         }
         if (options.positioningItem) {
             throwUnsupportedException("Menu.popup 'options' argument can't support the 'positioningItem' property")
         }
         if (options.callback) {
             throwUnsupportedException("Menu.popup 'options' argument can't support the 'callback' property")
+        }
+        if (options.x === undefined || options.y === undefined) {
+            options.x = menu_mouse_position.x
+            options.y = menu_mouse_position.y
+        }
+        else {
+            options.x += menu_mouse_position.viewportX
+            options.y += menu_mouse_position.viewportY
         }
         this.contextMenu.popup(options.x, options.y)
         this.dispatchEvent(new Event('menu-will-show'))
@@ -427,6 +441,15 @@ class Menu {
             this.items.splice(pos, 0, item);
         }
     }
+}
+
+if (!__nwjs_is_main) {
+    document.addEventListener('mousemove', (event) => {
+        menu_mouse_position.x = event.screenX
+        menu_mouse_position.y = event.screenY
+        menu_mouse_position.viewportX = event.screenX - event.x
+        menu_mouse_position.viewportY = event.screenY - event.y
+    });
 }
 
 const nativeTheme = {
@@ -511,6 +534,10 @@ class WebContents {
         }
         callback.apply(null, args)
     }
+}
+
+class ContextMenuParams {
+    
 }
 
 const dialog = {
@@ -1084,6 +1111,7 @@ class IpcMainEvent {
 const electron = {
     app,
     BrowserWindow,
+    ContextMenuParams,
     dialog,
     Event,
     globalShortcut,
