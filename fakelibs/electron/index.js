@@ -212,6 +212,15 @@ const globalShortcut = {
     }
 }
 
+const session = {
+    defaultSession: {
+        spellCheckerEnabled: false,
+        webRequest: {
+            onHeadersReceived: (opts, callback) => {}
+        }
+    }
+}
+
 const shell = {
     showItemInFolder(item) {
         nw.Shell.showItemInFolder(item)
@@ -281,7 +290,9 @@ class MenuItem {
                     altKey: false,
                     triggeredByAccelerator: false
                 }
-                that.click(this, that.window, keyboardEvent)
+                if (that.click) {
+                    that.click(that, that.window, keyboardEvent)
+                }
             }
         }
 
@@ -304,9 +315,35 @@ class MenuItem {
     }
 
     _updateOptionsBasedOnRole(role) {
-        if (role) {
-            this.label = 'Placeholder';
-            this.click = function() { console.log('Placeholder'); };
+        if (!role) {
+            return
+        }
+
+        const specs = MenuItemRoles[role.toLowerCase()]
+        if (!specs) {
+            throw new Error(`Unknown role: ${role}`)
+        }
+        if (specs.label) {
+            this.label = specs.label
+        }
+        if (specs.appMethod) {
+            this.click = specs.appMethod
+        }
+        if (specs.webContentsMethod) {
+            this.click = function() {
+                specs.webContentsMethod(this.window.webContents)
+            }
+        }
+        if (specs.windowMethod) {
+            this.click = function() {
+                specs.windowMethod(this.window)
+            }
+        }
+        // specs.registerAccelerator
+        // specs.accelerator
+        // specs.nonNativeMacOSRole
+        if (specs.submenu) {
+            this.submenu = Menu.buildFromTemplate(specs.submenu)
         }
     }
 }
@@ -407,9 +444,12 @@ class WebContents {
     constructor(win) {
         this._window = win
         
-        this.session = {}
-        this.session.webRequest = {}
-        this.session.webRequest.onHeadersReceived = (opts, callback) => {}
+        this.session = session.defaultSession
+    }
+
+
+    static getFocusedWebContents() {
+        return BrowserWindow.getFocusedWindow().webContents
     }
 
 
@@ -1019,6 +1059,7 @@ const electron = {
     MenuItemConstructorOptions,
     NativeImage,
     NewWindowWebContentsEvent,
+    session,
     shell,
     systemPreferences
 }
@@ -1027,4 +1068,5 @@ if (__nwjs_is_main) {
 } else {
     electron.ipcRenderer = ipcRenderer
 }
+var MenuItemRoles = require('./menu-item-roles')(electron)
 module.exports = electron
