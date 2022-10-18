@@ -2,9 +2,8 @@
 This project aims to build an Electron app as a NW.js app.
 
 ## Requirements
-Depending of your project, everything may work out of the box, as long as you follow the requirements below:
-- You need `rsync` (Linux only), `npm` and `nodejs` installed in your system;
-- You must not replace the `require`s that reference electron-related libs with their contents (in case you use webpack, you can use `externals` to create an exception list including those).
+Depending of your project, everything may work out of the box, as long as you follow the requirement below:
+- You need `rsync` (Linux only), `npm` and `nodejs` installed in your system.
 
 If something goes wrong, check the Common issue down below.
 
@@ -25,16 +24,19 @@ We have support to the `nwjs:postdist` script in that case.
 ## How does it work?
 The Electron main file is converted into the NW.js main file using webpack, by replacing the Electron modules with compatibility layers that make them use the NW.js commands instead. So you don't need to change anything in your Electron project, unless you need to add a prebuild/postbuild script, or if you face any of the issues mentioned below.
 
+## I want to toggle the menu bar, but the Electron Alt shortcut is not working
+NW.js didn't support adding an `Alt` shortcut, so had to change the shortcut to `Alt + D`.
+
 ## Common issues
 
 ### I'm using the require function in a HTML file, and it isn't finding the DOM elements
-You must load it using the `<script>` tag. Using `require` will load the file in a different NW.js context.
+You must load it using the `<script src="">` tag. Using `require` will load the file in a different NW.js context.
 
 ### I'm receiving a CORS error in an iframe
 Add the attribute `nwfaketop` to that iframe.
 
 ### Due to a specific need, I need to find out when I'm dealing with Electron and when I'm dealing with NW.js
-This is your new best friend:
+This is your new best friend. It works in both main and renderer.
 ```
 const isNWJS = typeof nw !== 'undefined';
 ```

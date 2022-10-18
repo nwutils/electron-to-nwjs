@@ -358,8 +358,8 @@ class Menu {
 
     
     static setApplicationMenu(menu) {
-        //BrowserWindow.getAllWindows().forEach(win => win.window.menu = win.autoHideMenuBar ? null : menu.mainMenu)
-        BrowserWindow.getAllWindows().forEach(win => win._getWindow().then(window => window.menu = menu.mainMenu))
+        BrowserWindow.getAllWindows().forEach(win => win._getWindow()
+                .then(window => window.menu = win.autoHideMenuBar ? null : menu.mainMenu))
         global.__nwjs_app_menu = menu
     }
     static getApplicationMenu() {
@@ -486,11 +486,11 @@ class WebContents {
         this._window.window.closeDevTools()
     }
     isDevToolsOpened() {
-        return this._devtoolsOpened
+        return this._window.window.isDevToolsOpen()
     }
     // isDevToolsFocused()
     toggleDevTools() {
-        if (this._devtoolsOpened) {
+        if (this.isDevToolsOpened()) {
             this.closeDevTools()
         } else {
             this.openDevTools()
@@ -669,6 +669,7 @@ class BrowserWindow {
         return await attachOn()
     }
 
+
     _load(url) {
         const that = this
         return new Promise((resolve, reject) => {
@@ -696,7 +697,7 @@ class BrowserWindow {
             }, 
             (win) => {
                 that.window = win;
-                win.menu = global.__nwjs_app_menu.mainMenu
+                win.menu = this.autoHideMenuBar ? undefined : global.__nwjs_app_menu.mainMenu
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
                 
                 // The position attribute not always work; this is a workaround
@@ -714,18 +715,16 @@ class BrowserWindow {
                 win.on('blur', function() {
                     that._isFocused = false
                 })
-                win.on('devtools-opened', function() {
-                    that.webContents._devtoolsOpened = true
-                })
-                win.on('devtools-closed', function() {
-                    that.webContents._devtoolsOpened = false
-                })
                 that._isFocused = that.showValue
                 
                 resolve();
             })
         })
     }
+    _toggleMenubar() {
+        this.window.menu = this.window.menu ? undefined : global.__nwjs_app_menu.mainMenu
+    }
+
 
     destroy() {
         this._getWindow().then(win => win.close(true));
