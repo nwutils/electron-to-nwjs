@@ -252,7 +252,6 @@ class MenuItemConstructorOptions {
 
 class MenuItem {
     constructor(options) {
-        this.window = BrowserWindow.getFocusedWindow()
         this.label = options.label
         this.click = options.click
         this.tooltip = options.toolTip
@@ -291,7 +290,7 @@ class MenuItem {
                     triggeredByAccelerator: false
                 }
                 if (that.click) {
-                    that.click(that, that.window, keyboardEvent)
+                    that.click(that, BrowserWindow.getFocusedWindow(), keyboardEvent)
                 }
             }
         }
@@ -331,12 +330,14 @@ class MenuItem {
         }
         if (specs.webContentsMethod) {
             this.click = function() {
-                specs.webContentsMethod(this.window.webContents)
+                const win = BrowserWindow.getFocusedWindow()
+                specs.webContentsMethod(win.webContents)
             }
         }
         if (specs.windowMethod) {
             this.click = function() {
-                specs.windowMethod(this.window)
+                const win = BrowserWindow.getFocusedWindow()
+                specs.windowMethod(win)
             }
         }
         // specs.registerAccelerator
@@ -475,8 +476,25 @@ class WebContents {
         }
         this._window.window.location.href = filePath;
     }
+    openDevTools(options) {
+        if (options) {
+            throwUnsupportedException("WebContents.openDevTools can't support the 'options' argument")
+        }
+        this._window.window.showDevTools()
+    }
     closeDevTools() {
-
+        this._window.window.closeDevTools()
+    }
+    isDevToolsOpened() {
+        return this._devtoolsOpened
+    }
+    // isDevToolsFocused()
+    toggleDevTools() {
+        if (this._devtoolsOpened) {
+            this.closeDevTools()
+        } else {
+            this.openDevTools()
+        }
     }
     send(channel, ...args) {
         const event = new Event(channel)
@@ -694,9 +712,16 @@ class BrowserWindow {
                     that._isFocused = true
                 })
                 win.on('blur', function() {
-                    that._isFocused = true
+                    that._isFocused = false
                 })
-
+                win.on('devtools-opened', function() {
+                    that.webContents._devtoolsOpened = true
+                })
+                win.on('devtools-closed', function() {
+                    that.webContents._devtoolsOpened = false
+                })
+                that._isFocused = that.showValue
+                
                 resolve();
             })
         })
