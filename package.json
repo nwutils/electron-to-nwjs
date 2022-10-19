@@ -4,9 +4,9 @@
   "description": "",
   "main": "test.js",
   "scripts": {
-    "start": "node ./index.js start ./www",
+    "start": "./build_index.sh && node ./index.js start ./www",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dist": "node ./index.js build"
+    "dist": "./build_index.sh && node ./index.js build"
   },
   "engines": {
     "node": "=5.11.1"

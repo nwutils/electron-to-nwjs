@@ -50,9 +50,9 @@ module.exports = (env, argv) => {
     if (env.main === true) {
         let jsFile = jsFiles[0];
         jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [
-            path.resolve(__dirname, './fakelibs', 'pre-main.js'),
+            path.resolve(fakeLibsFolder, 'pre-main.js'),
             path.resolve(projectPath, jsFile),
-            path.resolve(__dirname, './fakelibs', 'post-main.js')
+            path.resolve(fakeLibsFolder, 'post-main.js')
         ]
     }
     else {
