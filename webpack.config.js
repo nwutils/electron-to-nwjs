@@ -9,7 +9,9 @@ const child_process = require('child_process')
 const glob = require('simple-glob')
 
 module.exports = (env, argv) => {
-    const projectPath = path.resolve(__dirname, '.', 'www')
+    const projectPath = env.projectPath
+    const outputPath = env.outputPath
+
     const projectPackagePath = path.resolve(projectPath, 'package.json')
     const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
@@ -49,7 +51,7 @@ module.exports = (env, argv) => {
         let jsFile = jsFiles[0];
         jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [
             path.resolve(__dirname, './fakelibs', 'pre-main.js'),
-            path.resolve(__dirname, './www', jsFile),
+            path.resolve(projectPath, jsFile),
             path.resolve(__dirname, './fakelibs', 'post-main.js')
         ]
     }
@@ -57,7 +59,7 @@ module.exports = (env, argv) => {
         // TODO: That may be needed later
         //files.unshift('babel-polyfill');
         jsFiles.forEach(jsFile => {
-            jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [path.resolve(__dirname, './www', jsFile)]
+            jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [path.resolve(projectPath, jsFile)]
         })
     }
 
@@ -66,7 +68,7 @@ module.exports = (env, argv) => {
         entry: jsFileByOutputFile,
         mode: "production",
         output: {
-            path: path.resolve(__dirname, "./_www"),
+            path: outputPath,
             filename: '[name].js'
         },
         externals: externals,

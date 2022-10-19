@@ -2,10 +2,7 @@
 This project aims to build an Electron app as a NW.js app.
 
 ## Requirements
-Depending of your project, everything may work out of the box, as long as you follow the requirement below:
-- You need `rsync` (Linux only), `npm` and `nodejs` installed in your system.
-
-If something goes wrong, check the Common issue down below.
+Depending of your project, everything should work out of the box, as long as you have `npm` installed. If something goes wrong, check the Common issue down below.
 
 ## How do I use your project?
 - Clone this repository;
