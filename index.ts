@@ -66,6 +66,7 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:b
             outputPath: tmpDir
         }))
         
+        // Removing type="module" from <script> elements
         const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: tmpDir, encoding: 'utf8'})
         const listHtmls = listHtmlsStr.split("\n").filter(line => line.trim().length > 0 && !line.includes("/node_modules/"))
         listHtmls.forEach(htmlPath => {
