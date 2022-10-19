@@ -1,12 +1,9 @@
 #!/bin/bash
 
-# Building CSS
 cd www/
-npm install
 npm run nwjs:prebuild --if-present
 cd ../
 
-# Building web contents
 rm -rf _www_2 || true
 mkdir -p _www_2/
 ./node_modules/.bin/webpack -c webpack.config.js --env prod || exit 0
