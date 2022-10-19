@@ -17,7 +17,7 @@
   },
   "license": "MIT",
   "repository": "https://github.com/vitor251093/electron-to-nwjs",
-  "devDependencies": {
+  "dependencies": {
     "@babel/core": "^7.12.10",
     "@babel/plugin-transform-regenerator": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
@@ -28,9 +28,7 @@
     "csv-parse": "^4.15.0",
     "nw-builder": "^3.5.7",
     "webpack": "^5.3.2",
-    "webpack-cli": "^4.1.0"
-  },
-  "dependencies": {
+    "webpack-cli": "^4.1.0",
     "commander": "^9.4.1",
     "fs-extra": "^10.1.0",
     "string-replace-loader": "^3.1.0",
