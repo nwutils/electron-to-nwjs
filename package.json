@@ -1,8 +1,8 @@
 {
-  "name": "nwjswinxp",
+  "name": "electron-to-nwjs",
   "version": "1.0.0",
   "description": "",
-  "main": "test.js",
+  "main": "index.js",
   "scripts": {
     "start": "./build_index.sh && node ./index.js start ./www",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,7 +11,10 @@
   "engines": {
     "node": "=5.11.1"
   },
-  "author": "",
+  "author": {
+    "name": "VitorMM",
+    "email": "vitormm@portingkit.com"
+  },
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.12.10",

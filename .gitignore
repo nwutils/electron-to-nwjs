@@ -3,8 +3,6 @@
 build/
 cache/
 dist/
-_www/
-www/
 
 node_modules/
 package-lock.json
