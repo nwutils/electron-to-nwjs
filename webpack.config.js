@@ -71,7 +71,11 @@ module.exports = (env, argv) => {
         },
         externals: externals,
         resolve: {
-            alias: aliases
+            alias: aliases,
+            modules: [
+                path.resolve(__dirname, 'node_modules'),
+                'node_modules'
+            ]
         },
         experiments: {
             topLevelAwait: true

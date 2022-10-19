@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -63,6 +65,7 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
             projectPath: opts.projectDir,
             outputPath: tmpDir
         }));
+        // Removing type="module" from <script> elements
         const listHtmlsStr = child_process_1.default.execSync('find . -type f -name "*.html"', { cwd: tmpDir, encoding: 'utf8' });
         const listHtmls = listHtmlsStr.split("\n").filter(line => line.trim().length > 0 && !line.includes("/node_modules/"));
         listHtmls.forEach(htmlPath => {
