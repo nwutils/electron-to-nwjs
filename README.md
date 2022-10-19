@@ -6,7 +6,7 @@ Depending of your project, everything should work out of the box, as long as you
 
 ## How do I use your project?
 - Open a terminal in your project root folder;
-- Run `npm install electron-to-nwjs`;
+- Run `npm install electron-to-nwjs --save-dev`;
 - Run `npx electron-to-nwjs start .` or `npx electron-to-nwjs build` in this project root folder.
 
 If your project follows the requirements mentioned in the Requirements section, you should be fine.
