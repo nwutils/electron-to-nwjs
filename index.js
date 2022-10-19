@@ -88,8 +88,8 @@ const buildNwjsBuilderConfig = function (projectPath) {
     let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
     const projectPackageJson = JSON.parse(projectPackageStr);
     const nwjs = projectPackageJson.nwjs || {};
-    const nwjsBuildVersion = (nwjs.build || {}).version || nwjs.version || "0.68.1";
-    const nwjsRunVersion = nwjs.version || "0.68.1";
+    const nwjsBuildVersion = (nwjs.build || {}).version || nwjs.version || "0.69.1";
+    const nwjsRunVersion = nwjs.version || "0.69.1";
     // Mixed-context can't be used, otherwise the ipc methods won't work
     let flags = [
         "--enable-logging=stderr",
@@ -162,14 +162,14 @@ program
 program
     .command('build')
     .description('build an Electron project with NW.js')
-    .option('--projectDir, --project  <dir>', 'The path to project directory. Defaults to current working directory.', '.')
-    .option('--mac, -m, -o, --macos', 'Build for macOS')
-    .option('--linux, -l', 'Build for Linux')
-    .option('--win, -w, --windows', 'Build for Windows')
+    .option('--projectDir, --project <dir>', 'The path to project directory. Defaults to current working directory.', '.')
+    .option('-m, -o, --mac, --macos', 'Build for macOS')
+    .option('-l, --linux', 'Build for Linux')
+    .option('-w, --win, --windows', 'Build for Windows')
     .option('--x86', 'Build for x86')
     .action(function () {
     const opts = this.opts();
-    const projectDir = path_1.default.resolve('.', opts.projectDir);
+    const projectDir = path_1.default.resolve('.', opts.project);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: true }, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir);
         const platforms = [];
