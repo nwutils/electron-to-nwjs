@@ -135,7 +135,7 @@ program
     .command('start <dir>')
     .description('start an Electron project with NW.js')
     .action((dir) => {
-    const projectDir = path_1.default.resolve(__dirname, dir);
+    const projectDir = path_1.default.resolve('.', dir);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: false }, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir);
         var nw = new NwBuilder({
@@ -169,7 +169,7 @@ program
     .option('--x86', 'Build for x86')
     .action(function () {
     const opts = this.opts();
-    const projectDir = path_1.default.resolve(__dirname, opts.projectDir);
+    const projectDir = path_1.default.resolve('.', opts.projectDir);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: true }, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir);
         const platforms = [];
