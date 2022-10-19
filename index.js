@@ -7,13 +7,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = __importDefault(require("child_process"));
 const fs_1 = __importDefault(require("fs"));
-const fs_extra_1 = __importDefault(require("fs-extra"));
 const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
-const commander_1 = require("commander");
-const webpack_1 = __importDefault(require("webpack"));
-const cheerio_1 = __importDefault(require("cheerio"));
-const NwBuilder = require('nw-builder');
+const fse = require('./node_modules/fs-extra');
+const commander = require('./node_modules/commander');
+const webpack = require('./node_modules/webpack');
+const cheerio = require('./node_modules/cheerio');
+const NwBuilder = require('./node_modules/nw-builder');
 const webpackConfigFn = require('./webpack.config');
 const onTmpFolder = async function (callback) {
     let tmpDir;
@@ -38,7 +38,7 @@ const onTmpFolder = async function (callback) {
 };
 const asyncWebpack = (config) => {
     return new Promise((resolve, reject) => {
-        (0, webpack_1.default)(config, (err, stats) => {
+        webpack(config, (err, stats) => {
             if (err || stats.hasErrors()) {
                 console.error(err);
                 console.error(stats.toJson());
@@ -52,7 +52,7 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
     const prebuildOutput = child_process_1.default.execSync("npm run nwjs:prebuild --if-present", { cwd: opts.projectDir, encoding: 'utf-8' });
     console.log(prebuildOutput);
     onTmpFolder(async function (tmpDir) {
-        fs_extra_1.default.copySync(opts.projectDir, tmpDir);
+        fse.copySync(opts.projectDir, tmpDir);
         await asyncWebpack(webpackConfigFn({
             prod: opts.prod,
             main: true,
@@ -71,7 +71,7 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
         listHtmls.forEach(htmlPath => {
             let indexHtmlPath = path_1.default.join(tmpDir, htmlPath);
             let indexHtmlContents = fs_1.default.readFileSync(indexHtmlPath, { encoding: 'utf-8' });
-            const $ = cheerio_1.default.load(indexHtmlContents);
+            const $ = cheerio.load(indexHtmlContents);
             const scripts = $('script[type=module]');
             if (scripts.length > 0) {
                 scripts.removeAttr('type');
@@ -130,7 +130,7 @@ const buildNwjsBuilderConfig = function (projectPath) {
     });
     return nwjsConfig;
 };
-const program = new commander_1.Command();
+const program = new commander.Command();
 program
     .command('start <dir>')
     .description('start an Electron project with NW.js')

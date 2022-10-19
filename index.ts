@@ -1,12 +1,13 @@
 import child_process from 'child_process'
 import fs from 'fs'
-import fse from 'fs-extra'
 import os from 'os'
 import path from 'path'
-import { Command } from 'commander';
-import webpack from 'webpack'
-import cheerio from 'cheerio'
-const NwBuilder = require('nw-builder');
+
+const fse = require('./node_modules/fs-extra')
+const commander = require('./node_modules/commander')
+const webpack = require('./node_modules/webpack')
+const cheerio = require('./node_modules/cheerio')
+const NwBuilder = require('./node_modules/nw-builder')
 const webpackConfigFn = require('./webpack.config')
 
 const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
@@ -31,9 +32,9 @@ const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     }
 }
 
-const asyncWebpack = (config:webpack.Configuration) => {
+const asyncWebpack = (config:any) => {
     return new Promise((resolve, reject) => {
-        webpack(config, (err, stats) => {
+        webpack(config, (err:Error, stats:any) => {
             if (err || stats!.hasErrors()) {
                 console.error(err)
                 console.error(stats!.toJson())
@@ -138,12 +139,12 @@ const buildNwjsBuilderConfig = function(projectPath:string) {
     return nwjsConfig
 }
 
-const program = new Command();
+const program = new commander.Command();
 
 program
   .command('start <dir>')
   .description('start an Electron project with NW.js')
-  .action((dir) => {
+  .action((dir:string) => {
     const projectDir = path.resolve(__dirname, dir)
     runPrebuildAndCreateNwjsProject({projectDir, prod:false}, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir)
