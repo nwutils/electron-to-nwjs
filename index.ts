@@ -175,7 +175,7 @@ program
 program
   .command('build')
   .description('build an Electron project with NW.js')
-  .option('--projectDir, --project', 'The path to project directory. Defaults to current working directory.', '.')
+  .option('--projectDir, --project  <dir>', 'The path to project directory. Defaults to current working directory.', '.')
   .option('--mac, -m, -o, --macos', 'Build for macOS')
   .option('--linux, -l', 'Build for Linux')
   .option('--win, -w, --windows', 'Build for Windows')
