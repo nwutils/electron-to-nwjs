@@ -7,32 +7,19 @@ npm run nwjs:prebuild --if-present
 cd ../
 
 # Building web contents
-rm -rf _www || true
-mkdir -p _www/
+rm -rf _www_2 || true
+mkdir -p _www_2/
 ./node_modules/.bin/webpack -c webpack.config.js || exit 0
 ./node_modules/.bin/webpack -c webpack.config.js --env main || exit 0
 
-rm -rf ./obfuscated_code
-cp -r ./_www ./obfuscated_code
-
-rm -rf _www
+rm -rf _www || true
 cp -r www _www
-find _www -name "*.js" -type f -delete
-find _www -name "*.sh" -type f -delete
-find _www -name "*.scss"  -type f -delete
-find _www -name "*.scssc" -type f -delete
-find _www -name ".DS_Store" -type f -delete
-rm -rf _www/node_modules
-cp -r ./www/node_modules ./_www/node_modules
 if [[ $OSTYPE == 'darwin'* ]]; then
-    ditto obfuscated_code/ _www
+    ditto _www_2/ _www
 else
-    rsync -a obfuscated_code/ _www/
+    rsync -a _www_2/ _www/
 fi
-rm -r obfuscated_code
-
-# Removing empty folders
-find _www -empty -type d -delete
+rm -rf _www_2
 
 # Removing type="module"
 grep -rl "type=\"module\"" ./_www | xargs sed -i 's/type="module"//g'
