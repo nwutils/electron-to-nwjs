@@ -23,7 +23,7 @@ module.exports = (env, argv) => {
         jsFiles.push(projectPackageJson.main)
     }
     else if (nwjs.jsFiles !== undefined) {
-        jsFiles.push(...glob({cwd:projectPath}, nwjs.jsFiles))
+        jsFiles.push(...glob({cwd:projectPath}, nwjs.entry))
     }
     else {
         const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: projectPath, encoding: 'utf8'})
@@ -42,10 +42,8 @@ module.exports = (env, argv) => {
     dependenciesThatShouldBeFaked.filter(dep => !dep.endsWith(".js"))
         .forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
 
-    const externals = {}
-    const webpackIgnoreList = nwjs.ignoreList || []
-    webpackIgnoreList.forEach(dep => externals[dep] = `require('${dep}')`)
-
+    const externals = nwjs.externals
+    
     const jsFileByOutputFile = {}
     if (env.main === true) {
         let jsFile = jsFiles[0];

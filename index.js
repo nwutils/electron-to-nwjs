@@ -49,23 +49,19 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
     const prebuildOutput = child_process_1.default.execSync("npm run nwjs:prebuild --if-present", { cwd: opts.projectDir, encoding: 'utf-8' });
     console.log(prebuildOutput);
     onTmpFolder(async function (tmpDir) {
-        console.log(JSON.stringify(fs_1.default.readdirSync(tmpDir), null, 2));
         fs_extra_1.default.copySync(opts.projectDir, tmpDir);
-        console.log(JSON.stringify(fs_1.default.readdirSync(tmpDir), null, 2));
         await asyncWebpack(webpackConfigFn({
             prod: opts.prod,
             main: true,
             projectPath: opts.projectDir,
             outputPath: tmpDir
         }));
-        console.log(JSON.stringify(fs_1.default.readdirSync(tmpDir), null, 2));
         await asyncWebpack(webpackConfigFn({
             prod: opts.prod,
             main: false,
             projectPath: opts.projectDir,
             outputPath: tmpDir
         }));
-        console.log(JSON.stringify(fs_1.default.readdirSync(tmpDir), null, 2));
         const listHtmlsStr = child_process_1.default.execSync('find . -type f -name "*.html"', { cwd: tmpDir, encoding: 'utf8' });
         const listHtmls = listHtmlsStr.split("\n").filter(line => line.trim().length > 0 && !line.includes("/node_modules/"));
         listHtmls.forEach(htmlPath => {
@@ -102,8 +98,7 @@ const buildNwjsBuilderConfig = function (projectPath) {
     let authorName = (projectPackageJson.author || {}).name || "Unknown";
     let nwjsConfig = {
         buildConfig: {
-            version: nwjsBuildVersion,
-            platforms: (nwjs.build || {}).platforms || ["win32"]
+            version: nwjsBuildVersion
         },
         runConfig: {
             version: nwjsRunVersion
@@ -166,16 +161,24 @@ program
     .option('--mac, -m, -o, --macos', 'Build for macOS')
     .option('--linux, -l', 'Build for Linux')
     .option('--win, -w, --windows', 'Build for Windows')
+    .option('--x86', 'Build for x86')
     .action(function () {
     const opts = this.opts();
     const projectDir = path_1.default.resolve(__dirname, opts.projectDir);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: true }, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir);
+        const platforms = [];
+        if (opts.mac)
+            platforms.push("osx" + (opts.x86 ? "32" : ""));
+        if (opts.linux)
+            platforms.push("linux" + (opts.x86 ? "32" : ""));
+        if (opts.win)
+            platforms.push("win" + (opts.x86 ? "32" : ""));
         var nw = new NwBuilder({
             buildDir: path_1.default.resolve(projectDir, './dist'),
             files: config.files,
             flavor: 'normal',
-            platforms: config.buildConfig.platforms,
+            platforms: platforms,
             version: config.buildConfig.version,
             winIco: config.icon,
             useRcedit: true,

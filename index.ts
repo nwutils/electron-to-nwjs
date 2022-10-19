@@ -107,8 +107,7 @@ const buildNwjsBuilderConfig = function(projectPath:string) {
     let authorName = (projectPackageJson.author || {}).name || "Unknown"
     let nwjsConfig = {
         buildConfig: {
-            version: nwjsBuildVersion,
-            platforms: (nwjs.build || {}).platforms || ["win32"]
+            version: nwjsBuildVersion
         },
         runConfig: {
             version: nwjsRunVersion
@@ -177,17 +176,23 @@ program
   .option('--mac, -m, -o, --macos', 'Build for macOS')
   .option('--linux, -l', 'Build for Linux')
   .option('--win, -w, --windows', 'Build for Windows')
+  .option('--x86', 'Build for x86')
   .action(function() {
     const opts = this.opts()
     const projectDir = path.resolve(__dirname, opts.projectDir)
     runPrebuildAndCreateNwjsProject({projectDir, prod:true}, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir)
         
+        const platforms = []
+        if (opts.mac)   platforms.push("osx"   + (opts.x86 ? "32" : ""))
+        if (opts.linux) platforms.push("linux" + (opts.x86 ? "32" : ""))
+        if (opts.win)   platforms.push("win"   + (opts.x86 ? "32" : ""))
+        
         var nw = new NwBuilder({
             buildDir: path.resolve(projectDir, './dist'),
             files: config.files,
             flavor: 'normal',
-            platforms: config.buildConfig.platforms,
+            platforms: platforms,
             version: config.buildConfig.version,
             winIco: config.icon,
             useRcedit: true,
