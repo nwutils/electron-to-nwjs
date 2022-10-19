@@ -8,9 +8,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dist": "./build_index.sh && node ./index.js build --win --x86"
   },
-  "engines": {
-    "node": "=5.11.1"
-  },
   "author": {
     "name": "VitorMM",
     "email": "vitormm@portingkit.com"
