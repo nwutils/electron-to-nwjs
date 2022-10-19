@@ -15,6 +15,7 @@ const webpack_1 = __importDefault(require("webpack"));
 const cheerio_1 = __importDefault(require("cheerio"));
 const NwBuilder = require('nw-builder');
 const webpackConfigFn = require('./webpack.config');
+const latestNwjsVersion = "0.69.1";
 const onTmpFolder = async function (callback) {
     let tmpDir;
     const appPrefix = 'electron-to-nwjs';
@@ -88,8 +89,6 @@ const buildNwjsBuilderConfig = function (projectPath) {
     let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
     const projectPackageJson = JSON.parse(projectPackageStr);
     const nwjs = projectPackageJson.nwjs || {};
-    const nwjsBuildVersion = (nwjs.build || {}).version || nwjs.version || "0.69.1";
-    const nwjsRunVersion = nwjs.version || "0.69.1";
     // Mixed-context can't be used, otherwise the ipc methods won't work
     let flags = [
         "--enable-logging=stderr",
@@ -102,18 +101,11 @@ const buildNwjsBuilderConfig = function (projectPath) {
     let build = (projectPackageJson.build || {});
     let authorName = (projectPackageJson.author || {}).name || "Unknown";
     let nwjsConfig = {
-        buildConfig: {
-            version: nwjsBuildVersion
-        },
-        runConfig: {
-            version: nwjsRunVersion
-        },
         appName: (build.win || {}).productName || build.productName || projectPackageJson.name || "Unknown",
         company: authorName,
         copyright: (build.win || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
         files: (build.win || {}).files || build.files || ["**/**"],
-        icon: (build.win || {}).icon || build.icon,
-        scripts: projectPackageJson.scripts
+        icon: (build.win || {}).icon || build.icon
     };
     if (nwjsConfig.icon) {
         nwjsConfig.icon = path_1.default.join(projectPath, nwjsConfig.icon);
@@ -141,7 +133,7 @@ program
         var nw = new NwBuilder({
             appName: config.appName,
             files: config.files,
-            version: config.runConfig.version
+            version: latestNwjsVersion
         });
         nw.on('log', console.log);
         nw.on("stdout", (out) => {
@@ -166,25 +158,27 @@ program
     .option('-m, -o, --mac, --macos', 'Build for macOS')
     .option('-l, --linux', 'Build for Linux')
     .option('-w, --win, --windows', 'Build for Windows')
+    .option('-v, --nwjs-version <version>', 'NW.js version', latestNwjsVersion)
     .option('--x86', 'Build for x86')
     .action(function () {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', opts.project);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: true }, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir);
+        const nwjsVersion = opts.nwjsVersion;
         const platforms = [];
         if (opts.mac)
             platforms.push("osx" + (opts.x86 ? "32" : ""));
         if (opts.linux)
             platforms.push("linux" + (opts.x86 ? "32" : ""));
-        if (opts.win)
+        if (opts.windows)
             platforms.push("win" + (opts.x86 ? "32" : ""));
         var nw = new NwBuilder({
             buildDir: path_1.default.resolve(projectDir, './dist'),
             files: config.files,
             flavor: 'normal',
             platforms: platforms,
-            version: config.buildConfig.version,
+            version: nwjsVersion,
             winIco: config.icon,
             useRcedit: true,
             winVersionString: {
