@@ -54,6 +54,9 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
     console.log(prebuildOutput);
     onTmpFolder(async function (tmpDir) {
         fs_extra_1.default.copySync(opts.projectDir, tmpDir);
+        // So the electron node_module won't be compressed in the end, no matter what
+        // That solves a building issue in Mac OS X 10.13 and lower
+        fs_extra_1.default.rmdirSync(path_1.default.resolve(tmpDir, 'node_modules', 'electron'), { recursive: true });
         await asyncWebpack(webpackConfigFn({
             prod: opts.prod,
             main: true,
@@ -113,7 +116,6 @@ const buildNwjsBuilderConfig = function (projectPath) {
     if (!nwjsConfig.files.includes("**/**")) {
         nwjsConfig.files.unshift("**/**");
     }
-    nwjsConfig.files.push("package.json");
     nwjsConfig.files = nwjsConfig.files.map((file) => {
         const ignorable = file.startsWith("!");
         if (ignorable)
