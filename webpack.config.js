@@ -22,7 +22,7 @@ module.exports = (env, argv) => {
     if (env.main === true) {
         jsFiles.push(projectPackageJson.main)
     }
-    else if (nwjs.jsFiles !== undefined) {
+    else if (nwjs.webpack?.entry !== undefined) {
         jsFiles.push(...glob({cwd:projectPath}, nwjs.webpack.entry))
     }
     else {
@@ -42,7 +42,7 @@ module.exports = (env, argv) => {
     dependenciesThatShouldBeFaked.filter(dep => !dep.endsWith(".js"))
         .forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
 
-    const externals = nwjs.webpack.externals || []
+    const externals = nwjs.webpack?.externals || []
     
     const jsFileByOutputFile = {}
     if (env.main === true) {

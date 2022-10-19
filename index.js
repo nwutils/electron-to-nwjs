@@ -39,7 +39,8 @@ const asyncWebpack = (config) => {
         (0, webpack_1.default)(config, (err, stats) => {
             if (err || stats.hasErrors()) {
                 console.error(err);
-                return reject();
+                console.error(stats.toJson());
+                return reject(err);
             }
             resolve(undefined);
         });
@@ -76,7 +77,8 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
             }
         });
         callback(tmpDir);
-    });
+    })
+        .catch(e => console.error(e));
 };
 const buildNwjsBuilderConfig = function (projectPath) {
     const projectPackagePath = path_1.default.resolve(projectPath, 'package.json');
