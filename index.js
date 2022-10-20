@@ -16,6 +16,16 @@ const cheerio_1 = __importDefault(require("cheerio"));
 const NwBuilder = require('nw-builder');
 const webpackConfigFn = require('./webpack.config');
 const latestNwjsVersion = "0.69.1";
+const getCurrentOs = function () {
+    let platform = os_1.default.platform();
+    if (platform === 'darwin') {
+        return "mac";
+    }
+    if (platform === 'linux') {
+        return 'linux';
+    }
+    return 'win';
+};
 const onTmpFolder = async function (callback) {
     let tmpDir;
     const appPrefix = 'electron-to-nwjs';
@@ -117,7 +127,7 @@ const listNodeModulesThatShouldntBeKept = function (projectDir) {
     let removableDependencies = allDependencies.filter((v, i) => neededDependencies.indexOf(v) === -1);
     return removableDependencies;
 };
-const buildNwjsBuilderConfig = function (projectPath) {
+const buildNwjsBuilderConfig = function (projectPath, os) {
     const projectPackagePath = path_1.default.resolve(projectPath, 'package.json');
     let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
     const projectPackageJson = JSON.parse(projectPackageStr);
@@ -134,11 +144,11 @@ const buildNwjsBuilderConfig = function (projectPath) {
     let build = (projectPackageJson.build || {});
     let authorName = (projectPackageJson.author || {}).name || "Unknown";
     let nwjsConfig = {
-        appName: (build.win || {}).productName || build.productName || projectPackageJson.name || "Unknown",
+        appName: (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown",
         company: authorName,
-        copyright: (build.win || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
-        files: (build.win || {}).files || build.files || ["**/**"],
-        icon: (build.win || {}).icon || build.icon
+        copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
+        files: (build[os] || {}).files || build.files || ["**/**"],
+        icon: (build[os] || {}).icon || build.icon
     };
     if (nwjsConfig.icon) {
         nwjsConfig.icon = path_1.default.join(projectPath, nwjsConfig.icon);
@@ -152,6 +162,8 @@ const buildNwjsBuilderConfig = function (projectPath) {
         nwjsConfig.files.push(`!node_modules/${dep}/**`);
     });
     nwjsConfig.files = nwjsConfig.files.map((file) => {
+        if (file.endsWith("/*"))
+            file = file + "*/**";
         const ignorable = file.startsWith("!");
         if (ignorable)
             file = file.substring(1);
@@ -166,7 +178,7 @@ program
     .action((dir) => {
     const projectDir = path_1.default.resolve('.', dir);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: false }, (tmpDir) => {
-        const config = buildNwjsBuilderConfig(tmpDir);
+        const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs());
         var nw = new NwBuilder({
             appName: config.appName,
             files: config.files,
@@ -194,44 +206,46 @@ program
     .option('--projectDir, --project <dir>', 'The path to project directory. Defaults to current working directory.', '.')
     .option('-m, -o, --mac, --macos', 'Build for macOS')
     .option('-l, --linux', 'Build for Linux')
-    .option('-w, --win, --windows', 'Build for Windows')
+    .option('-w, --windows, --win', 'Build for Windows')
     .option('-v, --nwjs-version <version>', 'NW.js version', latestNwjsVersion)
     .option('--x86', 'Build for x86')
     .action(function () {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', opts.project);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: true }, (tmpDir) => {
-        const config = buildNwjsBuilderConfig(tmpDir);
-        const nwjsVersion = opts.nwjsVersion;
-        const platforms = [];
-        if (opts.mac)
-            platforms.push("osx" + (opts.x86 ? "32" : ""));
-        if (opts.linux)
-            platforms.push("linux" + (opts.x86 ? "32" : ""));
-        if (opts.windows)
-            platforms.push("win" + (opts.x86 ? "32" : ""));
-        var nw = new NwBuilder({
-            buildDir: path_1.default.resolve(projectDir, './dist'),
-            files: config.files,
-            flavor: 'normal',
-            platforms: platforms,
-            version: nwjsVersion,
-            winIco: config.icon,
-            useRcedit: true,
-            winVersionString: {
-                'CompanyName': config.company,
-                'FileDescription': config.appName,
-                'ProductName': config.appName,
-                'LegalCopyright': config.copyright
+        const platforms = ["mac", "linux", "win"].filter(s => opts[s]);
+        if (platforms.length === 0) {
+            platforms.push(getCurrentOs());
+        }
+        platforms.forEach(platform => {
+            const config = buildNwjsBuilderConfig(tmpDir, platform);
+            let nwjsPlatform = platform;
+            if (nwjsPlatform === "mac") {
+                nwjsPlatform = "osx";
             }
-        });
-        nw.on('log', console.log);
-        nw.build().then(function () {
-            const postDistOutput = child_process_1.default.execSync("npm run nwjs:postdist --if-present", { cwd: projectDir });
-            console.log(postDistOutput);
-        })
-            .catch(function (error) {
-            console.error(error);
+            var nw = new NwBuilder({
+                buildDir: path_1.default.resolve(projectDir, './nwjs_dist'),
+                files: config.files,
+                flavor: 'normal',
+                platforms: [nwjsPlatform + (opts.x86 ? "32" : "")],
+                version: opts.nwjsVersion,
+                winIco: config.icon,
+                useRcedit: true,
+                winVersionString: {
+                    'CompanyName': config.company,
+                    'FileDescription': config.appName,
+                    'ProductName': config.appName,
+                    'LegalCopyright': config.copyright
+                }
+            });
+            nw.on('log', console.log);
+            nw.build().then(function () {
+                const postDistOutput = child_process_1.default.execSync("npm run nwjs:postdist --if-present", { cwd: projectDir });
+                console.log(postDistOutput);
+            })
+                .catch(function (error) {
+                console.error(error);
+            });
         });
     });
 });

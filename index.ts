@@ -11,6 +11,17 @@ const webpackConfigFn = require('./webpack.config')
 
 const latestNwjsVersion = "0.69.1"
 
+const getCurrentOs = function() {
+    let platform = os.platform()
+    if (platform === 'darwin') {
+        return "mac"
+    }
+    if (platform === 'linux') {
+        return 'linux'
+    }
+    return 'win'
+}
+
 const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     let tmpDir;
     const appPrefix = 'electron-to-nwjs';
@@ -128,7 +139,7 @@ const listNodeModulesThatShouldntBeKept = function(projectDir:string) {
     return removableDependencies
 }
 
-const buildNwjsBuilderConfig = function(projectPath:string) {
+const buildNwjsBuilderConfig = function(projectPath:string, os:"mac"|"linux"|"win") {
     const projectPackagePath = path.resolve(projectPath, 'package.json')
     let projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
@@ -149,11 +160,11 @@ const buildNwjsBuilderConfig = function(projectPath:string) {
     let build = (projectPackageJson.build || {})
     let authorName = (projectPackageJson.author || {}).name || "Unknown"
     let nwjsConfig = {
-        appName: (build.win || {}).productName || build.productName || projectPackageJson.name || "Unknown",
+        appName: (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown",
         company: authorName,
-        copyright: (build.win || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
-        files: (build.win || {}).files || build.files || ["**/**"],
-        icon: (build.win || {}).icon || build.icon
+        copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
+        files: (build[os] || {}).files || build.files || ["**/**"],
+        icon: (build[os] || {}).icon || build.icon
     }
 
     if (nwjsConfig.icon) {
@@ -186,7 +197,7 @@ program
   .action((dir) => {
     const projectDir = path.resolve('.', dir)
     runPrebuildAndCreateNwjsProject({projectDir, prod:false}, (tmpDir) => {
-        const config = buildNwjsBuilderConfig(tmpDir)
+        const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs())
 
         var nw = new NwBuilder({
             appName: config.appName,
@@ -218,46 +229,52 @@ program
   .option('--projectDir, --project <dir>', 'The path to project directory. Defaults to current working directory.', '.')
   .option('-m, -o, --mac, --macos', 'Build for macOS')
   .option('-l, --linux', 'Build for Linux')
-  .option('-w, --win, --windows', 'Build for Windows')
+  .option('-w, --windows, --win', 'Build for Windows')
   .option('-v, --nwjs-version <version>', 'NW.js version', latestNwjsVersion)
   .option('--x86', 'Build for x86')
   .action(function() {
     const opts = this.opts()
     const projectDir = path.resolve('.', opts.project)
     runPrebuildAndCreateNwjsProject({projectDir, prod:true}, (tmpDir) => {
-        const config = buildNwjsBuilderConfig(tmpDir)
-        
-        const nwjsVersion = opts.nwjsVersion
-        const platforms = []
-        if (opts.mac)     platforms.push("osx"   + (opts.x86 ? "32" : ""))
-        if (opts.linux)   platforms.push("linux" + (opts.x86 ? "32" : ""))
-        if (opts.windows) platforms.push("win"   + (opts.x86 ? "32" : ""))
-        
-        var nw = new NwBuilder({
-            buildDir: path.resolve(projectDir, './dist'),
-            files: config.files,
-            flavor: 'normal',
-            platforms: platforms,
-            version: nwjsVersion,
-            winIco: config.icon,
-            useRcedit: true,
-            winVersionString: {
-                'CompanyName': config.company,
-                'FileDescription': config.appName,
-                'ProductName': config.appName,
-                'LegalCopyright': config.copyright
+        const platforms = ["mac", "linux", "win"].filter(s => opts[s]) as ("mac"|"linux"|"win")[]
+        if (platforms.length === 0) {
+            platforms.push(getCurrentOs())
+        }
+
+        platforms.forEach(platform => {
+            const config = buildNwjsBuilderConfig(tmpDir, platform)
+
+            let nwjsPlatform:string = platform
+            if (nwjsPlatform === "mac") {
+                nwjsPlatform = "osx"
             }
-        });
-
-        nw.on('log', console.log);
-
-        nw.build().then(function(){
-            const postDistOutput = child_process.execSync("npm run nwjs:postdist --if-present", {cwd:projectDir})
-            console.log(postDistOutput)
+            
+            var nw = new NwBuilder({
+                buildDir: path.resolve(projectDir, './nwjs_dist'),
+                files: config.files,
+                flavor: 'normal',
+                platforms: [nwjsPlatform + (opts.x86 ? "32" : "")],
+                version: opts.nwjsVersion,
+                winIco: config.icon,
+                useRcedit: true,
+                winVersionString: {
+                    'CompanyName': config.company,
+                    'FileDescription': config.appName,
+                    'ProductName': config.appName,
+                    'LegalCopyright': config.copyright
+                }
+            });
+    
+            nw.on('log', console.log);
+    
+            nw.build().then(function(){
+                const postDistOutput = child_process.execSync("npm run nwjs:postdist --if-present", {cwd:projectDir})
+                console.log(postDistOutput)
+            })
+            .catch(function(error:Error) {
+                console.error(error);
+            });
         })
-        .catch(function(error:Error) {
-            console.error(error);
-        });
     })
   });
 
