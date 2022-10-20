@@ -1,5 +1,6 @@
 // Reference:
 // https://www.electronjs.org/de/docs/latest/api/shell
+// https://docs.nwjs.io/en/latest/References/Shell/
 
 const shell = {
     showItemInFolder(item) {

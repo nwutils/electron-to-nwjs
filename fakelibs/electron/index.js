@@ -471,6 +471,10 @@ class NewWindowWebContentsEvent {
     
 }
 
+// Reference:
+// https://www.electronjs.org/de/docs/latest/api/browser-window
+// https://docs.nwjs.io/en/latest/References/Window/
+
 global.__nwjs_windowById = global.__nwjs_windowById || {}
 var _windowById = global.__nwjs_windowById
 
@@ -755,17 +759,37 @@ class BrowserWindow {
     setSize(width, height) {
         this._getWindow().then(win => win.resizeTo(width, height));
     }
-    // getSize
-    // setContentSize
-    // getContentSize
+    getSize() {
+        const win = this.window
+        return [win?.width || this.width, win?.height || this.height]
+    }
+    setContentSize(width, height, animate) {
+        throwUnsupportedException("Can't change content size programatically")
+    }
+    getContentSize() {
+        const win = this.window
+        if (!win) {
+            throwUnsupportedException("Window is not ready yet")
+            return [undefined, undefined]
+        }
+        return [win.window.document.clientWidth, win.window.document.clientHeight]
+    }
     setMinimumSize(width, height) {
+        this.minWidth = width
+        this.minHeight = height
         this._getWindow().then(win => win.setMinimumSize(width, height));
     }
-    // getMinimumSize
+    getMinimumSize() {
+        return [this.minWidth, this.minHeight]
+    }
     setMaximumSize(width, height) {
+        this.maxWidth = width
+        this.maxHeight = height
         this._getWindow().then(win => win.setMaximumSize(width, height));
     }
-    // getMaximumSize
+    getMaximumSize() {
+        return [this.maxWidth, this.maxHeight]
+    }
     setResizable(resizable) {
         const that = this
         this._getWindow().then(win => {
