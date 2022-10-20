@@ -158,7 +158,7 @@ program
     .command('start <dir>')
     .description('start an Electron project with NW.js')
     .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
-    .action((dir) => {
+    .action(function (dir) {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', dir);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: false, ignoreUnimplementedFeatures: opts.ignoreUnimplementedFeatures }, (tmpDir) => {
