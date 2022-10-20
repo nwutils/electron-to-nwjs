@@ -6,6 +6,10 @@ const globalShortcut = require('./global-shortcut')
 const shell = require('./shell')
 
 const throwUnsupportedException = function(reason) {
+    if (__nwjs_ignore_unimplemented_features) {
+        console.warn(`electron-to-nwjs warning: ${reason}`)
+        return
+    }
     throw new Error(`electron-to-nwjs exception: ${reason}`)
 }
 
@@ -172,6 +176,7 @@ class MenuItem {
         let type = options.type
         if (type === "radio") {
             throwUnsupportedException("MenuItem.constructor 'options' argument can't support the 'radio' value on the 'type' property")
+            type = "normal"
         }
         if (!type || type === "submenu") {
             type = "normal"
@@ -830,10 +835,10 @@ class BrowserWindow {
         const that = this;
         return new Promise((resolve, reject) => {
             that._getWindow().then(win => {
-                win.capturePage((base64Image) => {
-                    reject();
+                win.capturePage((bufferImage) => {
+                    resolve(NativeImage.createFromBuffer(bufferImage))
                 },
-                {format:'png', datatype:'raw'});
+                {format:'png', datatype:'buffer'});
             });
         });
     }

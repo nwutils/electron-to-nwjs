@@ -11,7 +11,10 @@ class NativeImage {
         return img
     }
     // static createFromBitmap(buffer, options)
-    // static createFromBuffer(buffer[, options])
+    static createFromBuffer(buffer, options) {
+        var img = new NativeImage()
+        return img
+    }
     // static createFromDataURL(dataURL)
     // static createFromNamedImage(imageName[, hslShift]) (macOS only)
 

@@ -7,16 +7,20 @@ const path = require('path')
 const cheerio = require('cheerio')
 const child_process = require('child_process')
 const glob = require('simple-glob')
+const defaults = require('../defaults')
+
+const latestNwjsVersion = defaults.nwjsLatestVersion
 
 module.exports = (env, argv) => {
     const projectPath = env.projectPath
     const outputPath = env.outputPath
+    const ignoreUnimplementedFeatures = env.ignoreUnimplementedFeatures
 
     const projectPackagePath = path.resolve(projectPath, 'package.json')
     const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
     const nwjs = projectPackageJson.nwjs || {}
-    const nwjsVersion = (env.prod ? nwjs.buildVersion : nwjs.runVersion) || nwjs.version || "0.68.1"
+    const nwjsVersion = (env.prod ? nwjs.buildVersion : nwjs.runVersion) || nwjs.version || latestNwjsVersion
 
     const jsFiles = []
     if (env.main === true) {
@@ -37,7 +41,7 @@ module.exports = (env, argv) => {
     }
 
     const aliases = {}
-    const fakeLibsFolder = path.resolve(__dirname, "fakelibs")
+    const fakeLibsFolder = path.resolve(__dirname, '..', "fakelibs")
     const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
     dependenciesThatShouldBeFaked.filter(dep => !dep.endsWith(".js"))
         .forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
@@ -73,7 +77,7 @@ module.exports = (env, argv) => {
         resolve: {
             alias: aliases,
             modules: [
-                path.resolve(__dirname, 'node_modules'),
+                path.resolve(__dirname, '..', 'node_modules'),
                 'node_modules'
             ]
         },
@@ -133,6 +137,15 @@ module.exports = (env, argv) => {
                     options: {
                         search: '__nwjs_is_packaged',
                         replace: env.prod ? "true" : "false",
+                        flags: 'g'
+                    }
+                },
+                {
+                    test: /\.js$/,
+                    loader: 'string-replace-loader',
+                    options: {
+                        search: '__nwjs_ignore_unimplemented_features',
+                        replace: env.ignoreUnimplementedFeatures ? "true" : "false",
                         flags: 'g'
                     }
                 },

@@ -4,13 +4,13 @@ import os from 'os'
 import path from 'path'
 import fse from 'fs-extra'
 import { Command } from 'commander';
-import webpack from 'webpack'
-import cheerio from 'cheerio'
 import plistUtils from 'plist'
 const NwBuilder = require('nw-builder');
-const webpackConfigFn = require('./webpack.config')
+const defaults = require('./defaults')
+const HtmlTranspiler = require('./scripts/transpile-html')
+const JsTranspiler = require('./scripts/transpile-js')
 
-const latestNwjsVersion = "0.69.1"
+const latestNwjsVersion = defaults.nwjsLatestVersion
 
 const getCurrentOs = function() {
     let platform = os.platform()
@@ -45,21 +45,7 @@ const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     }
 }
 
-const asyncWebpack = (config:webpack.Configuration) => {
-    return new Promise((resolve, reject) => {
-        webpack(config, (err, stats) => {
-            if (err || stats!.hasErrors()) {
-                console.error(err)
-                console.error(stats!.toJson())
-                return reject(err)
-            }
-
-            resolve(undefined)
-        })
-    })
-}
-
-const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:boolean}, callback:(tmpDir:string) => void) {
+const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:boolean, ignoreUnimplementedFeatures:boolean}, callback:(tmpDir:string) => void) {
     const prebuildOutput = child_process.execSync("npm run nwjs:prebuild --if-present", {cwd:opts.projectDir, encoding:'utf-8'})
     console.log(prebuildOutput)
 
@@ -70,35 +56,16 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:b
         // That solves a building issue in Mac OS X 10.13 and lower
         fse.rmdirSync(path.resolve(tmpDir, 'node_modules', 'electron'), {recursive: true})
         
-        await asyncWebpack(webpackConfigFn({
+        await JsTranspiler({
+            srcFolder: opts.projectDir, 
+            dstFolder: tmpDir, 
             prod: opts.prod,
-            main: true,
-            projectPath: opts.projectDir,
-            outputPath: tmpDir
-        }))
-        
-        await asyncWebpack(webpackConfigFn({
-            prod: opts.prod,
-            main: false,
-            projectPath: opts.projectDir,
-            outputPath: tmpDir
-        }))
-        
-        // Removing type="module" from <script> elements
-        const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: tmpDir, encoding: 'utf8'})
-        const listHtmls = listHtmlsStr.split("\n").filter(line => line.trim().length > 0 && !line.includes("/node_modules/"))
-        listHtmls.forEach(htmlPath => {
-            let indexHtmlPath = path.join(tmpDir, htmlPath)
-            let indexHtmlContents = fs.readFileSync(indexHtmlPath, {encoding: 'utf-8'})
-            const $ = cheerio.load(indexHtmlContents);
-            const scripts = $('script[type=module]')
-            if (scripts.length > 0) {
-                scripts.removeAttr('type')
-                indexHtmlContents = $.html();
-                fs.writeFileSync(indexHtmlPath, indexHtmlContents, {encoding:'utf-8'})
-            }
+            ignoreUnimplementedFeatures: opts.ignoreUnimplementedFeatures
         })
-
+        await HtmlTranspiler({
+            folder: tmpDir
+        })
+        
         callback(tmpDir)
     })
     .catch(e => console.error(e))
@@ -207,9 +174,11 @@ const program = new Command();
 program
   .command('start <dir>')
   .description('start an Electron project with NW.js')
+  .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
   .action((dir) => {
+    const opts = this.opts()
     const projectDir = path.resolve('.', dir)
-    runPrebuildAndCreateNwjsProject({projectDir, prod:false}, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({projectDir, prod:false, ignoreUnimplementedFeatures:opts.ignoreUnimplementedFeatures}, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs())
 
         var nw = new NwBuilder({
@@ -246,10 +215,11 @@ program
   .option('-w, --windows, --win', 'Build for Windows')
   .option('-v, --nwjs-version <version>', 'NW.js version', latestNwjsVersion)
   .option('--x86', 'Build for x86')
+  .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
   .action(function() {
     const opts = this.opts()
     const projectDir = path.resolve('.', opts.project)
-    runPrebuildAndCreateNwjsProject({projectDir, prod:true}, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({projectDir, prod:true, ignoreUnimplementedFeatures:opts.ignoreUnimplementedFeatures}, (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => opts[s]) as ("mac"|"linux"|"win")[]
         if (platforms.length === 0) {
             platforms.push(getCurrentOs())
