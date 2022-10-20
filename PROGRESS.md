@@ -4,6 +4,8 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 **Statuses:**
 
+* 🔴🔴🔴🔴 On Hold (May be impossible to implement right now)
+* 🌑🌑🌑🌑 Not Planned
 * 🌑🌑🌑🌑 Not Planned
 * 🌗🌑🌑🌑 Proposed (PR or detailed issue)
 * 🌕🌑🌑🌑 Planned
@@ -136,6 +138,211 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 ## BrowserView
 
 ## BrowserWindow
+
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`constructor`                          | 🌕🌕🌑🌑 | Partially Working
+`static getAllWindows`                 | 🌕🌕🌗🌑 | Working
+`static getFocusedWindow`              | 🌕🌕🌗🌑 | Working
+`static fromWebContents`               | 🌕🌕🌗🌑 | Working
+`static fromBrowserView`               | 🌑🌑🌑🌑 | Not Planned
+`static fromId`                        | 🌕🌕🌗🌑 | Working
+`webContents`                          | 🌕🌕🌗🌑 | Working
+`id`                                   | 🌕🌕🌗🌑 | Working
+`autoHideMenuBar`                      | 🌑🌑🌑🌑 | Not Planned
+`simpleFullScreen`                     | 🌑🌑🌑🌑 | Not Planned
+`fullScreen`                           | 🌑🌑🌑🌑 | Not Planned
+`focusable`                            | 🌑🌑🌑🌑 | Not Planned
+`visibleOnAllWorkspaces`               | 🌑🌑🌑🌑 | Not Planned
+`shadow`                               | 🌑🌑🌑🌑 | Not Planned
+`menuBarVisible`                       | 🌑🌑🌑🌑 | Not Planned
+`kiosk`                                | 🌑🌑🌑🌑 | Not Planned
+`documentEdited`                       | 🌑🌑🌑🌑 | Not Planned
+`representedFilename`                  | 🌑🌑🌑🌑 | Not Planned
+`title`                                | 🌑🌑🌑🌑 | Not Planned
+`minimizable`                          | 🌑🌑🌑🌑 | Not Planned
+`maximizable`                          | 🌑🌑🌑🌑 | Not Planned
+`fullScreenable`                       | 🌑🌑🌑🌑 | Not Planned
+`resizable`                            | 🌑🌑🌑🌑 | Not Planned
+`closable`                             | 🌑🌑🌑🌑 | Not Planned
+`movable`                              | 🌑🌑🌑🌑 | Not Planned
+`excludedFromShownWindowsMenu`         | 🌑🌑🌑🌑 | Not Planned
+`accessibleTitle`                      | 🌑🌑🌑🌑 | Not Planned
+`destroy`                              | 🌕🌕🌗🌑 | Working
+`close`                                | 🌕🌕🌗🌑 | Working
+`focus`                                | 🌕🌕🌗🌑 | Working
+`blur`                                 | 🌕🌕🌗🌑 | Working
+`isFocused`                            | 🌕🌕🌗🌑 | Working
+`isDestroyed`                          | 🌑🌑🌑🌑 | Not Planned
+`show`                                 | 🌕🌕🌗🌑 | Working
+`showInactive`                         | 🌑🌑🌑🌑 | Not Planned
+`hide`                                 | 🌕🌕🌗🌑 | Working
+`isVisible`                            | 🌕🌕🌗🌑 | Working
+`isModal`                              | 🌑🌑🌑🌑 | Not Planned
+`maximize`                             | 🌕🌕🌗🌑 | Working
+`unmaximize`                           | 🌕🌕🌗🌑 | Working
+`isMaximized`                          | 🌑🌑🌑🌑 | Not Planned
+`minimize`                             | 🌕🌕🌗🌑 | Working
+`restore`                              | 🌕🌕🌗🌑 | Working
+`isMinimized`                          | 🌑🌑🌑🌑 | Not Planned
+`setFullScreen`                        | 🌕🌕🌗🌑 | Working
+`isFullScreen`                         | 🌕🌕🌗🌑 | Working
+`setSimpleFullScreen`                  | 🌑🌑🌑🌑 | Not Planned
+`isSimpleFullScreen`                   | 🌑🌑🌑🌑 | Not Planned
+`isNormal`                             | 🌑🌑🌑🌑 | Not Planned
+`setAspectRatio`                       | 🌑🌑🌑🌑 | Not Planned
+`setBackgroundColor`                   | 🌑🌑🌑🌑 | Not Planned
+`previewFile`                          | 🌑🌑🌑🌑 | Not Planned
+`closeFilePreview`                     | 🌑🌑🌑🌑 | Not Planned
+`setBounds`                            | 🌑🌑🌑🌑 | Not Planned
+`getBounds`                            | 🌑🌑🌑🌑 | Not Planned
+`getBackgroundColor`                   | 🌑🌑🌑🌑 | Not Planned
+`setContentBounds`                     | 🌑🌑🌑🌑 | Not Planned
+`getContentBounds`                     | 🌑🌑🌑🌑 | Not Planned
+`getNormalBounds`                      | 🌑🌑🌑🌑 | Not Planned
+`setEnabled`                           | 🔴🔴🔴🔴 | On Hold
+`isEnabled`                            | 🌕🌕🌑🌑 | Partially Working
+`setSize`                              | 🌕🌕🌗🌑 | Working
+`getSize`                              | 🌕🌕🌗🌑 | Working
+`setContentSize`                       | 🔴🔴🔴🔴 | On Hold
+`getContentSize`                       | 🌕🌕🌗🌑 | Working
+`setMinimumSize`                       | 🌕🌕🌗🌑 | Working
+`getMinimumSize`                       | 🌕🌕🌗🌑 | Working
+`setMaximumSize`                       | 🌕🌕🌗🌑 | Working
+`getMaximumSize`                       | 🌕🌕🌗🌑 | Working
+`setResizable`                         | 🌕🌕🌗🌑 | Working
+`isResizable`                          | 🌕🌕🌗🌑 | Working
+`setMovable`                           | 🔴🔴🔴🔴 | On Hold
+`isMovable`                            | 🌕🌕🌑🌑 | Partially Working
+`setMinimizable`                       | 🔴🔴🔴🔴 | On Hold
+`isMinimizable`                        | 🌕🌕🌑🌑 | Partially Working
+`setMaximizable`                       | 🔴🔴🔴🔴 | On Hold
+`isMaximizable`                        | 🌕🌕🌑🌑 | Partially Working
+`setFullScreenable`                    | 🔴🔴🔴🔴 | On Hold
+`isFullScreenable`                     | 🌕🌕🌑🌑 | Partially Working
+`setClosable`                          | 🌑🌑🌑🌑 | Not Planned
+`isClosable`                           | 🌑🌑🌑🌑 | Not Planned
+`setAlwaysOnTop`                       | 🌕🌕🌗🌑 | Working
+`isAlwaysOnTop`                        | 🌕🌕🌗🌑 | Working
+`moveAbove`                            | 🌑🌑🌑🌑 | Not Planned
+`moveTop`                              | 🌑🌑🌑🌑 | Not Planned
+`center`                               | 🌕🌕🌗🌑 | Working
+`setPosition`                          | 🌕🌕🌑🌑 | Partially Working
+`getPosition`                          | 🌕🌕🌗🌑 | Working
+`setTitle`                             | 🌕🌕🌗🌑 | Working
+`getTitle`                             | 🌕🌕🌗🌑 | Working
+`setSheetOffset`                       | 🌑🌑🌑🌑 | Not Planned
+`flashFrame`                           | 🌕🌕🌗🌑 | Working
+`setSkipTaskbar`                       | 🌕🌕🌗🌑 | Working
+`setKiosk`                             | 🌕🌕🌗🌑 | Working
+`isKiosk`                              | 🌕🌕🌗🌑 | Working
+`isTabletMode`                         | 🌑🌑🌑🌑 | Not Planned
+`getMediaSourceId`                     | 🌑🌑🌑🌑 | Not Planned
+`getNativeWindowHandle`                | 🌑🌑🌑🌑 | Not Planned
+`hookWindowMessage`                    | 🌑🌑🌑🌑 | Not Planned
+`isWindowMessageHooked`                | 🌑🌑🌑🌑 | Not Planned
+`unhookWindowMessage`                  | 🌑🌑🌑🌑 | Not Planned
+`unhookAllWindowMessages`              | 🌑🌑🌑🌑 | Not Planned
+`setRepresentedFilename`               | 🌑🌑🌑🌑 | Not Planned
+`getRepresentedFilename`               | 🌑🌑🌑🌑 | Not Planned
+`setDocumentEdited`                    | 🌑🌑🌑🌑 | Not Planned
+`isDocumentEdited`                     | 🌑🌑🌑🌑 | Not Planned
+`focusOnWebView`                       | 🌑🌑🌑🌑 | Not Planned
+`blurWebView`                          | 🌑🌑🌑🌑 | Not Planned
+`capturePage`                          | 🌕🌕🌑🌑 | Partially Working
+`loadURL`                              | 🌕🌕🌑🌑 | Partially Working
+`loadFile`                             | 🌕🌕🌑🌑 | Partially Working
+`reload`                               | 🌕🌕🌗🌑 | Working
+`setMenu`                              | 🌕🌕🌗🌑 | Working
+`removeMenu`                           | 🌕🌕🌗🌑 | Working
+`setProgressBar`                       | 🌑🌑🌑🌑 | Not Planned
+`setOverlayIcon`                       | 🌑🌑🌑🌑 | Not Planned
+`setHasShadow`                         | 🌕🌕🌗🌑 | Working
+`hasShadow`                            | 🌕🌕🌗🌑 | Working
+`setOpacity`                           | 🌑🌑🌑🌑 | Not Planned
+`getOpacity`                           | 🌑🌑🌑🌑 | Not Planned
+`setShape`                             | 🌑🌑🌑🌑 | Not Planned
+`setThumbarButtons`                    | 🌑🌑🌑🌑 | Not Planned
+`setThumbnailClip`                     | 🌑🌑🌑🌑 | Not Planned
+`setThumbnailToolTip`                  | 🌑🌑🌑🌑 | Not Planned
+`setAppDetails`                        | 🌑🌑🌑🌑 | Not Planned
+`showDefinitionForSelection`           | 🌑🌑🌑🌑 | Not Planned
+`setIcon`                              | 🌑🌑🌑🌑 | Not Planned
+`setWindowButtonVisibility`            | 🌑🌑🌑🌑 | Not Planned
+`setAutoHideMenuBar`                   | 🌕🌕🌗🌑 | Working
+`isMenuBarAutoHide`                    | 🌕🌕🌗🌑 | Working
+`setMenuBarVisibility`                 | 🌕🌕🌗🌑 | Working
+`isMenuBarVisible`                     | 🌕🌕🌗🌑 | Working
+`setVisibleOnAllWorkspaces`            | 🌑🌑🌑🌑 | Not Planned
+`isVisibleOnAllWorkspaces`             | 🌑🌑🌑🌑 | Not Planned
+`setIgnoreMouseEvents`                 | 🌑🌑🌑🌑 | Not Planned
+`setContentProtection`                 | 🌑🌑🌑🌑 | Not Planned
+`setFocusable`                         | 🔴🔴🔴🔴 | On Hold
+`isFocusable`                          | 🌕🌕🌑🌑 | Partially Working
+`setParentWindow`                      | 🌑🌑🌑🌑 | Not Planned
+`getParentWindow`                      | 🌑🌑🌑🌑 | Not Planned
+`getChildWindows`                      | 🌑🌑🌑🌑 | Not Planned
+`setAutoHideCursor`                    | 🌑🌑🌑🌑 | Not Planned
+`selectPreviousTab`                    | 🌑🌑🌑🌑 | Not Planned
+`selectNextTab`                        | 🌑🌑🌑🌑 | Not Planned
+`mergeAllWindows`                      | 🌑🌑🌑🌑 | Not Planned
+`moveTabToNewWindow`                   | 🌑🌑🌑🌑 | Not Planned
+`toggleTabBar`                         | 🌑🌑🌑🌑 | Not Planned
+`addTabbedWindow`                      | 🌑🌑🌑🌑 | Not Planned
+`setVibrancy`                          | 🌑🌑🌑🌑 | Not Planned
+`setTrafficLightPosition`              | 🌑🌑🌑🌑 | Not Planned
+`getTrafficLightPosition`              | 🌑🌑🌑🌑 | Not Planned
+`setTouchBar`                          | 🌑🌑🌑🌑 | Not Planned
+`setBrowserView`                       | 🌑🌑🌑🌑 | Not Planned
+`getBrowserView`                       | 🌑🌑🌑🌑 | Not Planned
+`addBrowserView`                       | 🌑🌑🌑🌑 | Not Planned
+`removeBrowserView`                    | 🌑🌑🌑🌑 | Not Planned
+`setTopBrowserView`                    | 🌑🌑🌑🌑 | Not Planned
+`getBrowserViews`                      | 🌑🌑🌑🌑 | Not Planned
+`setTitleBarOverlay`                   | 🌑🌑🌑🌑 | Not Planned
+
+### Events
+
+**Event**                              | **Rating** | **Status**
+:--                                    | :--        | :--
+`page-title-updated`                   | 🌑🌑🌑🌑 | Not Planned
+`close`                                | 🌕🌕🌗🌑 | Working
+`closed`                               | 🌕🌕🌗🌑 | Working
+`session-end`                          | 🌑🌑🌑🌑 | Not Planned
+`unresponsive`                         | 🌑🌑🌑🌑 | Not Planned
+`responsive`                           | 🌑🌑🌑🌑 | Not Planned
+`blur`                                 | 🌕🌕🌗🌑 | Working
+`focus`                                | 🌕🌕🌗🌑 | Working
+`show`                                 | 🌑🌑🌑🌑 | Not Planned
+`hide`                                 | 🌑🌑🌑🌑 | Not Planned
+`ready-to-show`                        | 🌑🌑🌑🌑 | Not Planned
+`maximize`                             | 🌕🌕🌗🌑 | Working
+`unmaximize`                           | 🌑🌑🌑🌑 | Not Planned
+`minimize`                             | 🌕🌕🌗🌑 | Working
+`restore`                              | 🌕🌕🌗🌑 | Working
+`will-resize`                          | 🌑🌑🌑🌑 | Not Planned
+`resize`                               | 🌑🌑🌑🌑 | Not Planned
+`resized`                              | 🌕🌕🌗🌑 | Working
+`will-move`                            | 🌑🌑🌑🌑 | Not Planned
+`move`                                 | 🌑🌑🌑🌑 | Not Planned
+`moved`                                | 🌕🌕🌗🌑 | Working
+`enter-full-screen`                    | 🌕🌕🌗🌑 | Working
+`leave-full-screen`                    | 🌕🌕🌗🌑 | Working
+`enter-html-full-screen`               | 🌑🌑🌑🌑 | Not Planned
+`leave-html-full-screen`               | 🌑🌑🌑🌑 | Not Planned
+`always-on-top-changed`                | 🌑🌑🌑🌑 | Not Planned
+`app-command`                          | 🌑🌑🌑🌑 | Not Planned
+`scroll-touch-begin`                   | 🌑🌑🌑🌑 | Not Planned
+`scroll-touch-end`                     | 🌑🌑🌑🌑 | Not Planned
+`scroll-touch-edge`                    | 🌑🌑🌑🌑 | Not Planned
+`swipe`                                | 🌑🌑🌑🌑 | Not Planned
+`rotate-gesture`                       | 🌑🌑🌑🌑 | Not Planned
+`sheet-begin`                          | 🌑🌑🌑🌑 | Not Planned
+`sheet-end`                            | 🌑🌑🌑🌑 | Not Planned
+`new-window-for-tab`                   | 🌑🌑🌑🌑 | Not Planned
+`system-context-menu`                  | 🌑🌑🌑🌑 | Not Planned
 
 ## clipboard
 

@@ -534,7 +534,7 @@ class BrowserWindow {
         this.id = id;
         this.webContents = new WebContents(this);
         // visibleOnAllWorkspaces
-        // menuBarVisible
+        this._showMenubar = opts.menuBarVisible || opts.autoHideMenuBar !== true
         // documentEdited
         // representedFilename
         // excludedFromShownWindowsMenu
@@ -636,19 +636,11 @@ class BrowserWindow {
             }, 
             (win) => {
                 that.window = win;
-                that._showMenubar = that.autoHideMenuBar !== true
                 that.setMenu(global.__nwjs_app_menu)
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
 
                 if (that.centerOnStart) {
-                    // The position 'center' attribute not always work; this is a workaround
-                    const screens = nw.Screen.screens
-                    if (screens.length === 1) {
-                        const screenSize = screens[0].bounds
-                        that.x = (screenSize.width - that.width)/2
-                        that.y = (screenSize.height - that.height)/2
-                        win.moveTo(that.x, that.y)
-                    }
+                    that.center()
                 }
                 else {
                     // When using the position 'null' attribute, we still need to move the window manually
@@ -848,9 +840,23 @@ class BrowserWindow {
     // moveAbove
     // moveTop
     center() {
-        this._getWindow().then(win => win.setPosition('center'));
+        let that = this
+        this._getWindow().then(win => {
+            //win.setPosition('center')
+            // The position 'center' attribute not always work; this is a workaround
+            const screens = nw.Screen.screens
+            if (screens.length === 1) {
+                const screenSize = screens[0].bounds
+                that.x = (screenSize.width - that.width)/2
+                that.y = (screenSize.height - that.height)/2
+                win.moveTo(that.x, that.y)
+            }
+        });
     }
     setPosition(x, y, animate) {
+        if (animate) {
+            throwUnsupportedException("BrowserWindow.setPosition can't support the 'animate' argument")
+        }
         this.x = x
         this.y = y
         this._getWindow().then(win => win.moveTo(x, y));
@@ -870,7 +876,7 @@ class BrowserWindow {
         this._getWindow().then(win => win.requestAttention(true));
     }
     setSkipTaskbar(skip) {
-        this._getWindow().then(win => win.setShowInTaskbar(skip));
+        this._getWindow().then(win => win.setShowInTaskbar(!skip));
     }
     setKiosk(kiosk) {
         this.kiosk = kiosk
@@ -915,9 +921,15 @@ class BrowserWindow {
         });
     }
     async loadURL(url, options) {
+        if (options !== undefined) {
+            throwUnsupportedException("BrowserWindow.loadURL can't support the 'options' argument")
+        }
         return await this._load(url)
     }
     async loadFile(filePath, options) {
+        if (options !== undefined) {
+            throwUnsupportedException("BrowserWindow.loadFile can't support the 'options' argument")
+        }
         return await this._load(filePath)
     }
     reload() {
