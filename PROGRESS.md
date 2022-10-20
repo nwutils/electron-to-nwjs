@@ -6,7 +6,6 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 * 🔴🔴🔴🔴 On Hold (May be impossible to implement right now)
 * 🌑🌑🌑🌑 Not Planned
-* 🌑🌑🌑🌑 Not Planned
 * 🌗🌑🌑🌑 Proposed (PR or detailed issue)
 * 🌕🌑🌑🌑 Planned
 * 🌕🌗🌑🌑 Started
