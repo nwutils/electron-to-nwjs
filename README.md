@@ -42,3 +42,4 @@ We have support to the `nwjs:postdist` script in that case. Add it to your proje
 - https://github.com/nwjs-community/nw-builder
 - https://nwjs.io/downloads/
 - https://docs.nwjs.io/en/latest/References/Window/
+- https://www.npmjs.com/package/@happikitsune/nw-builder

@@ -145,6 +145,7 @@ const buildNwjsBuilderConfig = function (projectPath, os) {
     let authorName = (projectPackageJson.author || {}).name || "Unknown";
     let nwjsConfig = {
         appName: (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown",
+        appVersion: projectPackageJson.version,
         company: authorName,
         copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
         files: (build[os] || {}).files || build.files || ["**/**"],
@@ -181,6 +182,7 @@ program
         const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs());
         var nw = new NwBuilder({
             appName: config.appName,
+            appVersion: config.appVersion,
             files: config.files,
             version: latestNwjsVersion
         });
@@ -224,19 +226,24 @@ program
                 nwjsPlatform = "osx";
             }
             var nw = new NwBuilder({
-                buildDir: path_1.default.resolve(projectDir, './nwjs_dist'),
                 files: config.files,
+                version: opts.nwjsVersion,
                 flavor: 'normal',
                 platforms: [nwjsPlatform + (opts.x86 ? "32" : "")],
-                version: opts.nwjsVersion,
-                winIco: config.icon,
-                useRcedit: true,
+                appName: config.appName,
+                appVersion: config.appVersion,
+                buildDir: path_1.default.resolve(projectDir, './nwjs_dist'),
+                // macCredits (path to your credits.html)
+                // macIcns (path to your ICNS icon file)
+                // macPlist (pass an object to overwrite or add properties to the generated plist file)
                 winVersionString: {
                     'CompanyName': config.company,
                     'FileDescription': config.appName,
                     'ProductName': config.appName,
                     'LegalCopyright': config.copyright
-                }
+                },
+                winIco: config.icon,
+                useRcedit: true
             });
             nw.on('log', console.log);
             nw.build().then(function () {
