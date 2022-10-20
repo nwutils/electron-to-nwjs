@@ -92,6 +92,42 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:b
     .catch(e => console.error(e))
 }
 
+const loadPackageJsonFromFolder = function(folder:string) {
+    const projectPackagePath = path.resolve(folder, 'package.json')
+    let projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
+    return JSON.parse(projectPackageStr)
+}
+
+const listNodeModulesThatShouldntBeKept = function(projectDir:string) {
+    let nodeModulesFolder = path.resolve(projectDir, 'node_modules')
+    let packageJson = loadPackageJsonFromFolder(projectDir)
+    let rootDependencies = Object.keys(packageJson.dependencies)
+    let neededDependencies:string[] = []
+
+    const getAllDependenciesFromModule = function(module:string) {
+        let moduleFolder = path.resolve(nodeModulesFolder, module)
+        let moduleJson = loadPackageJsonFromFolder(moduleFolder)
+        let moduleDependencies = Object.keys(moduleJson.dependencies)
+        let allDependencies = moduleDependencies.concat([])
+        moduleDependencies.forEach(dep => {
+            allDependencies.push(...getAllDependenciesFromModule(dep))
+        })
+        return allDependencies
+    }
+
+    rootDependencies.forEach(dep => {
+        neededDependencies.push(dep)
+        let moduleFolder = path.resolve(nodeModulesFolder, dep)
+        loadPackageJsonFromFolder(moduleFolder)
+    })
+
+    neededDependencies = neededDependencies.filter((v, i, a) => a.indexOf(v) === i)
+
+    let allDependencies = fs.readdirSync(nodeModulesFolder)
+    let removableDependencies = allDependencies.filter((v, i) => neededDependencies.indexOf(v) === -1)
+    return removableDependencies
+}
+
 const buildNwjsBuilderConfig = function(projectPath:string) {
     const projectPackagePath = path.resolve(projectPath, 'package.json')
     let projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
@@ -126,6 +162,13 @@ const buildNwjsBuilderConfig = function(projectPath:string) {
     if (!nwjsConfig.files.includes("**/**")) {
         nwjsConfig.files.unshift("**/**")
     }
+
+    nwjsConfig.files.push("!.git")
+    let removableDependencies = listNodeModulesThatShouldntBeKept(projectPath)
+    removableDependencies.forEach(dep => {
+        nwjsConfig.files.push(`!node_modules/${dep}/**`)
+    })
+
     nwjsConfig.files = nwjsConfig.files.map((file:string) => {
         const ignorable = file.startsWith("!")
         if (ignorable) file = file.substring(1)
