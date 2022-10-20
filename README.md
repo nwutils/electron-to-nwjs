@@ -17,7 +17,7 @@ The Electron main file is converted into the NW.js main file using webpack, by r
 ## Common issues
 
 ### I want to toggle the menu bar, but the Electron Alt shortcut is not working
-NW.js didn't support adding an `Alt` shortcut, so had to change the shortcut to `Alt + D`.
+NW.js didn't support adding an `Alt` shortcut, so had to change the shortcut to `Alt + M`.
 
 ### I'm using the require function in a HTML file, and it isn't finding the DOM elements
 You must load it using the `<script src="">` tag. Using `require` will load the file in a different NW.js context.
