@@ -5,13 +5,7 @@ const NativeImage = require('./native-image')
 const globalShortcut = require('./global-shortcut')
 const shell = require('./shell')
 
-const throwUnsupportedException = function(reason) {
-    if (__nwjs_ignore_unimplemented_features) {
-        console.warn(`electron-to-nwjs warning: ${reason}`)
-        return
-    }
-    throw new Error(`electron-to-nwjs exception: ${reason}`)
-}
+const throwUnsupportedException = require('./unsupported-exception')
 
 const app = {
     // accessibilitySupportEnabled (Windows and macOS only)
