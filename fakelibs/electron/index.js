@@ -504,7 +504,7 @@ class BrowserWindow {
         this.fullscreenable = opts.fullscreenable === undefined ? true : opts.fullscreenable;
         this.simpleFullscreen = opts.simpleFullscreen || false;
         this.skipTaskbar = opts.skipTaskbar || false;
-        // kiosk
+        this.kiosk = opts.kiosk || false;
         this.title = opts.title || "NW.js";
         this.icon = opts.icon;
         this.showValue = opts.show === undefined ? true : opts.show;
@@ -541,7 +541,6 @@ class BrowserWindow {
         this.webContents = new WebContents(this);
         // visibleOnAllWorkspaces
         // menuBarVisible
-        // kiosk
         // documentEdited
         // representedFilename
         // excludedFromShownWindowsMenu
@@ -638,7 +637,7 @@ class BrowserWindow {
                 // show_in_taskbar
                 frame: that.frame,
                 show: that.showValue,
-                // kiosk
+                kiosk: that.kiosk,
                 transparent: that.transparent
             }, 
             (win) => {
@@ -646,14 +645,20 @@ class BrowserWindow {
                 that._showMenubar = that.autoHideMenuBar !== true
                 that.setMenu(global.__nwjs_app_menu)
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
-                
-                // The position attribute not always work; this is a workaround
+
                 if (that.centerOnStart) {
+                    // The position 'center' attribute not always work; this is a workaround
                     const screens = nw.Screen.screens
                     if (screens.length === 1) {
                         const screenSize = screens[0].bounds
-                        win.moveTo((screenSize.width - that.width)/2, (screenSize.height - that.height)/2)
+                        that.x = (screenSize.width - that.width)/2
+                        that.y = (screenSize.height - that.height)/2
+                        win.moveTo(that.x, that.y)
                     }
+                }
+                else {
+                    // When using the position 'null' attribute, we still need to move the window manually
+                    win.moveTo(that.x, that.y)
                 }
 
                 win.on('focus', function() {
@@ -754,8 +759,14 @@ class BrowserWindow {
     // setContentBounds
     // getContentBounds
     // getNormalBounds
-    // setEnabled
-    // isEnabled
+    setEnabled(enabled) {
+        if (!enabled) {
+            throwUnsupportedException("Can't make windows not enabled")
+        }
+    }
+    isEnabled() {
+        return true
+    }
     setSize(width, height) {
         this._getWindow().then(win => win.resizeTo(width, height));
     }
@@ -800,14 +811,38 @@ class BrowserWindow {
     isResizable() {
         return this.resizable;
     }
-    // setMovable
-    // isMovable
-    // setMinimizable
-    // isMinimizable
-    // setMaximizable
-    // isMaximizable
-    // setFullScreenable
-    // isFullScreenable
+    setMovable(movable) {
+        if (!movable) {
+            throwUnsupportedException("Can't make windows not movable")
+        }
+    }
+    isMovable() {
+        return true
+    }
+    setMinimizable(minimizable) {
+        if (!minimizable) {
+            throwUnsupportedException("Can't make windows not minimizable")
+        }
+    }
+    isMinimizable() {
+        return true
+    }
+    setMaximizable(maximizable) {
+        if (!maximizable) {
+            throwUnsupportedException("Can't make windows not maximizable")
+        }
+    }
+    isMaximizable() {
+        return true
+    }
+    setFullScreenable(fullScreenable) {
+        if (!fullScreenable) {
+            throwUnsupportedException("Can't make windows not fullScreenable")
+        }
+    }
+    isFullScreenable() {
+        return true
+    }
     // setClosable
     // isClosable
     setAlwaysOnTop(flag) {
@@ -821,8 +856,15 @@ class BrowserWindow {
     center() {
         this._getWindow().then(win => win.setPosition('center'));
     }
-    // setPosition
-    // getPosition
+    setPosition(x, y, animate) {
+        this.x = x
+        this.y = y
+        this._getWindow().then(win => win.moveTo(x, y));
+    }
+    getPosition() {
+        const win = this.window
+        return [win?.x || this.x, win?.y || this.y]
+    }
     setTitle(title) {
         this._getWindow().then(win => win.title = title);
     }
@@ -836,8 +878,20 @@ class BrowserWindow {
     setSkipTaskbar(skip) {
         this._getWindow().then(win => win.setShowInTaskbar(skip));
     }
-    // setKiosk
-    // isKiosk
+    setKiosk(kiosk) {
+        this.kiosk = kiosk
+        this._getWindow().then(win => {
+            if (kiosk) {
+                win.enterKioskMode()
+            }
+            else {
+                win.leaveKioskMode()
+            }
+        });
+    }
+    isKiosk() {
+        return this.kiosk
+    }
     // isTabletMode
     // getMediaSourceId
     // getNativeWindowHandle
@@ -924,8 +978,14 @@ class BrowserWindow {
     // isVisibleOnAllWorkspaces
     // setIgnoreMouseEvents
     // setContentProtection
-    // setFocusable
-    // isFocusable
+    setFocusable(focusable) {
+        if (!focusable) {
+            throwUnsupportedException("Can't make windows not focusable")
+        }
+    }
+    isFocusable() {
+        return true
+    }
     // setParentWindow(parent)
     // getParentWindow()
     // getChildWindows()
