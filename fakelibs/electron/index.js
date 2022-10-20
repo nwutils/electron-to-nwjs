@@ -1,42 +1,12 @@
 const os = require('os');
 const path = require('path');
 
+const NativeImage = require('./native-image')
+const globalShortcut = require('./global-shortcut')
+const shell = require('./shell')
+
 const throwUnsupportedException = function(reason) {
     throw new Error(`electron-to-nwjs exception: ${reason}`)
-}
-
-class NativeImage {
-    static createEmpty() {
-        return new NativeImage()
-    }
-    // static createThumbnailFromPath(path, maxSize) (Windows and macOS only)
-    static createFromPath(filePath) {
-        var img = new NativeImage()
-        return img
-    }
-    // static createFromBitmap(buffer, options)
-    // static createFromBuffer(buffer[, options])
-    // static createFromDataURL(dataURL)
-    // static createFromNamedImage(imageName[, hslShift]) (macOS only)
-
-    // toPNG([options])
-    // toJPEG(quality)
-    // toBitmap([options])
-    toDataURL() {
-        return ""
-    }
-    // getBitmap([options])
-    // getNativeHandle() (macOS only)
-    // isEmpty()
-    // getSize([scaleFactor])
-    // setTemplateImage(option)
-    // isTemplateImage()
-    // crop(rect)
-    // resize(options)
-    // getAspectRatio([scaleFactor])
-    // getScaleFactors()
-    // addRepresentation(options)
-    // isMacTemplateImage (macOS only)
 }
 
 const app = {
@@ -174,44 +144,6 @@ const app = {
     // setSecureKeyboardEntryEnabled(enabled) (macOS only)
 }
 
-global.__nwjs_registered_global_shortcuts = global.__nwjs_registered_global_shortcuts || []
-var _registered_global_shortcuts = global.__nwjs_registered_global_shortcuts
-
-const globalShortcut = {
-    register(combination, callback) {
-        var option = {
-            key: combination,
-            active: callback,
-            failed: function(msg) {
-                console.error(msg);
-            }
-        };
-        
-        var shortcut = new nw.Shortcut(option);
-        nw.App.registerGlobalHotKey(shortcut);
-        _registered_global_shortcuts[combination] = shortcut
-    },
-    registerAll(combinations, callback) {
-        var that = this
-        combinations.forEach(combination => {
-            that.register(combination, callback)
-        })
-    },
-    isRegistered(combination) {
-        return _registered_global_shortcuts[combination] !== undefined
-    },
-    unregister(combination) {
-        nw.App.unregisterGlobalHotKey(_registered_global_shortcuts[combination])
-        delete _registered_global_shortcuts[combination]
-    },
-    unregisterAll() {
-        var that = this
-        Object.keys(this._registrationHistory).forEach(combination => {
-            that.unregister(combination)
-        })
-    }
-}
-
 const session = {
     defaultSession: {
         spellCheckerEnabled: false,
@@ -219,27 +151,6 @@ const session = {
             onHeadersReceived: (opts, callback) => {}
         }
     }
-}
-
-const shell = {
-    showItemInFolder(item) {
-        nw.Shell.showItemInFolder(item)
-    },
-    openPath(path) {
-        nw.Shell.openFile(path)
-    },
-    openExternal(url, options) {
-        if (options) {
-            throwUnsupportedException("shell.openExternal can't support the 'options' argument")
-        }
-        nw.Shell.openExternal(url)
-    },
-    // trashItem(path)
-    beep() {
-        process.stdout.write('\x07')
-    }
-    // writeShortcutLink(shortcutPath[, operation], options) (Windows only)
-    // readShortcutLink(shortcutPath) (Windows only)
 }
 
 const systemPreferences = {
