@@ -12,7 +12,13 @@ Depending of your project, everything should work out of the box, as long as you
 If your project follows the requirements mentioned in the Requirements section, you should be fine.
 
 ## How does it work?
-The Electron main file is converted into the NW.js main file using webpack, by replacing the Electron modules with compatibility layers that make them use the NW.js commands instead. So you don't need to change anything in your Electron project, unlessyou face any of the issues mentioned below.
+The Electron main file is converted into the NW.js main file using webpack, by replacing the Electron modules with compatibility layers that make them use the NW.js commands instead. So you don't need to change anything in your Electron project, unless you face any of the issues mentioned below.
+
+### electron-to-nwjs start
+That command is equivalent to the `electron` CLI. Any flag implemented in the electron CLI is implemented, or will be eventually implemented in the future. So `npx electron-to-nwjs start .` is the equivalent to `npx electron .`.
+
+### electron-to-nwjs build
+That command is equivalent to the `electron-builder` CLI. Any flag implemented in the electron-builder CLI is implemented, or will be eventually implemented in the future. So `npx electron-to-nwjs build` is the equivalent to `npx electron-builder build`.
 
 ## Common issues
 
