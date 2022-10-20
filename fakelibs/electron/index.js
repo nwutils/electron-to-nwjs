@@ -671,6 +671,9 @@ class BrowserWindow {
         })
     }
     _toggleMenubar() {
+        if (!this.autoHideMenuBar) {
+            return
+        }
         this.window.menu = this._showMenubar ? null : this.menu.mainMenu
         this._showMenubar = !this._showMenubar
     }
@@ -880,10 +883,19 @@ class BrowserWindow {
     // showDefinitionForSelection
     // setIcon
     // setWindowButtonVisibility
-    // setAutoHideMenuBar
-    // isMenuBarAutoHide
-    // setMenuBarVisibility
-    // isMenuBarVisible
+    setAutoHideMenuBar(hide) {
+        this.autoHideMenuBar = hide
+        this._showMenubar = hide
+    }
+    isMenuBarAutoHide() {
+        return this.autoHideMenuBar
+    }
+    setMenuBarVisibility(visible) {
+        this._showMenubar = visible
+    }
+    isMenuBarVisible() {
+        return this._showMenubar
+    }
     // setVisibleOnAllWorkspaces
     // isVisibleOnAllWorkspaces
     // setIgnoreMouseEvents
