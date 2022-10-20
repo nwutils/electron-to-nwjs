@@ -13,6 +13,7 @@ const fs_extra_1 = __importDefault(require("fs-extra"));
 const commander_1 = require("commander");
 const webpack_1 = __importDefault(require("webpack"));
 const cheerio_1 = __importDefault(require("cheerio"));
+const plist_1 = __importDefault(require("plist"));
 const NwBuilder = require('nw-builder');
 const webpackConfigFn = require('./webpack.config');
 const latestNwjsVersion = "0.69.1";
@@ -149,7 +150,7 @@ const buildNwjsBuilderConfig = function (projectPath, os) {
         company: authorName,
         copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
         files: (build[os] || {}).files || build.files || ["**/**"],
-        icon: (build[os] || {}).icon || build.icon
+        icon: (build[os] || {}).icon
     };
     if (nwjsConfig.icon) {
         nwjsConfig.icon = path_1.default.join(projectPath, nwjsConfig.icon);
@@ -170,6 +171,15 @@ const buildNwjsBuilderConfig = function (projectPath, os) {
             file = file.substring(1);
         return (ignorable ? "!" : "") + path_1.default.join(projectPath, file);
     });
+    if (os === "mac") {
+        const entitlementsFilename = build[os].entitlements;
+        if (entitlementsFilename) {
+            const entitlementsPath = path_1.default.join(projectPath, entitlementsFilename);
+            const entitlementsStr = fs_1.default.readFileSync(entitlementsPath, { encoding: 'utf-8' });
+            const entitlements = plist_1.default.parse(entitlementsStr);
+            nwjsConfig.macPlist = entitlements;
+        }
+    }
     return nwjsConfig;
 };
 const program = new commander_1.Command();
@@ -234,8 +244,8 @@ program
                 appVersion: config.appVersion,
                 buildDir: path_1.default.resolve(projectDir, './nwjs_dist'),
                 // macCredits (path to your credits.html)
-                // macIcns (path to your ICNS icon file)
-                // macPlist (pass an object to overwrite or add properties to the generated plist file)
+                macIcns: config.icon,
+                macPlist: config.macPlist,
                 winVersionString: {
                     'CompanyName': config.company,
                     'FileDescription': config.appName,

@@ -6,6 +6,7 @@ import fse from 'fs-extra'
 import { Command } from 'commander';
 import webpack from 'webpack'
 import cheerio from 'cheerio'
+import plistUtils from 'plist'
 const NwBuilder = require('nw-builder');
 const webpackConfigFn = require('./webpack.config')
 
@@ -159,13 +160,13 @@ const buildNwjsBuilderConfig = function(projectPath:string, os:"mac"|"linux"|"wi
 
     let build = (projectPackageJson.build || {})
     let authorName = (projectPackageJson.author || {}).name || "Unknown"
-    let nwjsConfig = {
+    let nwjsConfig:{[id:string]:any} = {
         appName: (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown",
         appVersion: projectPackageJson.version,
         company: authorName,
         copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
         files: (build[os] || {}).files || build.files || ["**/**"],
-        icon: (build[os] || {}).icon || build.icon
+        icon: (build[os] || {}).icon
     }
 
     if (nwjsConfig.icon) {
@@ -187,6 +188,17 @@ const buildNwjsBuilderConfig = function(projectPath:string, os:"mac"|"linux"|"wi
         if (ignorable) file = file.substring(1)
         return (ignorable?"!":"") + path.join(projectPath, file)
     })
+
+    if (os === "mac") {
+        const entitlementsFilename = build[os].entitlements
+        if (entitlementsFilename) {
+            const entitlementsPath = path.join(projectPath, entitlementsFilename)
+            const entitlementsStr = fs.readFileSync(entitlementsPath, {encoding:'utf-8'})
+            const entitlements = plistUtils.parse(entitlementsStr) as {[id:string]:any}
+            nwjsConfig.macPlist = entitlements
+        }
+    }
+
     return nwjsConfig
 }
 
@@ -260,8 +272,8 @@ program
                 appVersion: config.appVersion,
                 buildDir: path.resolve(projectDir, './nwjs_dist'),
                 // macCredits (path to your credits.html)
-                // macIcns (path to your ICNS icon file)
-                // macPlist (pass an object to overwrite or add properties to the generated plist file)
+                macIcns: config.icon,
+                macPlist: config.macPlist,
                 winVersionString: {
                     'CompanyName': config.company,
                     'FileDescription': config.appName,
