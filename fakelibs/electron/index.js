@@ -277,8 +277,7 @@ class Menu {
 
     
     static setApplicationMenu(menu) {
-        BrowserWindow.getAllWindows().forEach(win => win._getWindow()
-                .then(window => window.menu = win._showMenubar ? menu.mainMenu : null))
+        BrowserWindow.getAllWindows().forEach(win => win.setMenu(menu))
         global.__nwjs_app_menu = menu
     }
     static getApplicationMenu() {
@@ -641,9 +640,7 @@ class BrowserWindow {
             (win) => {
                 that.window = win;
                 that._showMenubar = that.autoHideMenuBar !== true
-                if (that._showMenubar) {
-                    win.menu = global.__nwjs_app_menu.mainMenu
-                }
+                that.setMenu(global.__nwjs_app_menu)
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
                 
                 // The position attribute not always work; this is a workaround
@@ -674,7 +671,7 @@ class BrowserWindow {
         })
     }
     _toggleMenubar() {
-        this.window.menu = this._showMenubar ? null : global.__nwjs_app_menu.mainMenu
+        this.window.menu = this._showMenubar ? null : this.menu.mainMenu
         this._showMenubar = !this._showMenubar
     }
 
@@ -851,8 +848,16 @@ class BrowserWindow {
     reload() {
         this._getWindow().then(win => win.reload());
     }
-    // setMenu
-    // removeMenu
+    setMenu(menu) {
+        const showMenubar = this._showMenubar
+        this.menu = menu
+        this._getWindow().then(win => {
+            win.menu = showMenubar ? (menu === null ? null : menu.mainMenu) : null
+        });
+    }
+    removeMenu() {
+        this.setMenu(null)
+    }
     // setProgressBar
     // setOverlayIcon
     setHasShadow(hasShadow) {
