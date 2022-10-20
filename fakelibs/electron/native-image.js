@@ -3,11 +3,26 @@
 
 // Bitmap buffer = raw bitmap pixel data
 
+const fs = require('fs')
+const upngJs = require('upng-js')
+
 const throwUnsupportedException = require('./unsupported-exception')
+
+const isPngBuffer = function(buffer) {
+    // TODO
+    return true
+}
+const isJpgBuffer = function(buffer) {
+    // TODO
+    return false
+}
 
 class NativeImage {
     constructor() {
         this._buffer = Buffer.alloc(0)
+        img._width = 0
+        img._height = 0
+        img._scaleFactor = 1.0
     }
 
     static createEmpty() {
@@ -15,29 +30,46 @@ class NativeImage {
     }
     // static createThumbnailFromPath(path, maxSize) (Windows and macOS only)
     static createFromPath(filePath) {
-        var img = new NativeImage()
-        // https://www.npmjs.com/package/upng-js
-        return img
+        let buffer = fs.readFileSync(filePath, {encoding: "buffer"})
+        return NativeImage.createFromBuffer(buffer)
     }
     static createFromBitmap(buffer, {width, height, scaleFactor}) {
         var img = new NativeImage()
         img._buffer = buffer
+        img._width  = width
+        img._height = height
+        img._scaleFactor = scaleFactor || 1.0
         return img
     }
     static createFromBuffer(buffer, options) {
+        let bitmap = null
+        if (isPngBuffer(buffer)) {
+            bitmap = upngJs.decode(buffer)
+        }
+        if (isJpgBuffer(buffer)) {
+            // TODO
+        }
+        if (!bitmap) {
+            throw new Error("Invalid buffer")
+        }
+        
         var img = new NativeImage()
-        // img._buffer = buffer
+        img._buffer = bitmap.data
+        img._width  = options.width  || bitmap.width
+        img._height = options.height || bitmap.height
+        img._scaleFactor = options.scaleFactor || 1.0
         return img
     }
     // static createFromDataURL(dataURL)
     // static createFromNamedImage(imageName[, hslShift]) (macOS only)
 
+
+
     toPNG(options) {
         if (options) {
             throwUnsupportedException("NativeImage.toPNG can't support the 'options' argument")
         }
-        // https://www.npmjs.com/package/upng-js
-        return Buffer.alloc(0)
+        return upngJs.encode(this._buffer, this._width, this._height, 0)
     }
     toJPEG(quality) {
         return Buffer.alloc(0)
@@ -62,7 +94,7 @@ class NativeImage {
     }
     // getNativeHandle() (macOS only)
     isEmpty() {
-        return this._buffer.length === 0
+        return this._width === 0 || this._height === 0
     }
     // getSize([scaleFactor])
     // setTemplateImage(option)
