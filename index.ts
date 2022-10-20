@@ -170,6 +170,7 @@ const buildNwjsBuilderConfig = function(projectPath:string) {
     })
 
     nwjsConfig.files = nwjsConfig.files.map((file:string) => {
+        if (file.endsWith("/*")) file = file + "*/**"
         const ignorable = file.startsWith("!")
         if (ignorable) file = file.substring(1)
         return (ignorable?"!":"") + path.join(projectPath, file)
