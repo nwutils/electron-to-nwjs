@@ -748,3 +748,8 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 ## webFrame
 
 ## webFrameMain
+
+## Others
+
+:--                                    | :--        | :--
+`__dirname`                            | 🌕🌕🌗🌑 | Working
