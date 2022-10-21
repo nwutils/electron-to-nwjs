@@ -1,6 +1,12 @@
-// Reference:
-// https://www.electronjs.org/docs/latest/api/global-shortcut
-// https://docs.nwjs.io/en/latest/References/Shortcut/
+/*
+  Electron Docs
+  https://www.electronjs.org/docs/latest/api/global-shortcut
+
+  NW.js Docs
+  https://docs.nwjs.io/en/latest/References/Shortcut/
+
+  Detect keyboard events when the application does not have keyboard focus. Only available in the main process.
+*/
 
 global.__nwjs_registered_global_shortcuts = global.__nwjs_registered_global_shortcuts || []
 var _registered_global_shortcuts = global.__nwjs_registered_global_shortcuts

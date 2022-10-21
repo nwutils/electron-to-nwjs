@@ -1,6 +1,11 @@
-// Reference:
-// https://www.electronjs.org/docs/latest/api/ipc-main
-// https://www.electronjs.org/docs/latest/api/ipc-renderer
+/*
+  Electron Docs
+  https://www.electronjs.org/docs/latest/api/ipc-main
+  https://www.electronjs.org/docs/latest/api/ipc-renderer
+
+  ipcMain: Communicate asynchronously from the main process to renderer processes. Only available in the main process.
+  ipcRenderer: Communicate asynchronously from a renderer process to the main process. Only available in a renderer process.
+*/
 
 const BrowserWindow = require('./BrowserWindow')
 

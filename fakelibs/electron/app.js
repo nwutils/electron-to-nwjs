@@ -1,6 +1,12 @@
-// Reference:
-// https://www.electronjs.org/docs/latest/api/app
-// https://docs.nwjs.io/en/latest/References/App/
+/*
+  Electron Docs
+  https://www.electronjs.org/docs/latest/api/app
+
+  NW.js Docs
+  https://docs.nwjs.io/en/latest/References/App/
+
+  Control your application's event lifecycle. Only available in the main process.
+*/
 
 const os = require('os');
 const path = require('path');

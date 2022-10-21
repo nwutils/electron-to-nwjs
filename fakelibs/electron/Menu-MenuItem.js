@@ -11,15 +11,6 @@ const throwUnsupportedException = require('./utils/unsupported-exception')
 global.__nwjs_menu_mouse_position = global.__nwjs_menu_mouse_position || {}
 const menu_mouse_position = global.__nwjs_menu_mouse_position
 
-if (!__nwjs_is_main) {
-    document.addEventListener('mousemove', (event) => {
-        menu_mouse_position.x = event.screenX
-        menu_mouse_position.y = event.screenY
-        menu_mouse_position.viewportX = event.screenX - event.x
-        menu_mouse_position.viewportY = event.screenY - event.y
-    });
-}
-
 class MenuItemConstructorOptions {
 
 }

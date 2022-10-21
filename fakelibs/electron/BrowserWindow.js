@@ -1,6 +1,12 @@
-// Reference:
-// https://www.electronjs.org/docs/latest/api/browser-window
-// https://docs.nwjs.io/en/latest/References/Window/
+/*
+  Electron Docs
+  https://www.electronjs.org/docs/latest/api/browser-window
+
+  NW.js Docs
+  https://docs.nwjs.io/en/latest/References/Window/
+
+  Create and control browser windows. Only available in the main process.
+*/
 
 const app = require('./app')
 const WebContents = require('./WebContents')
