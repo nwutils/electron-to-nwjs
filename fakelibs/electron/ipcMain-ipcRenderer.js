@@ -1,3 +1,7 @@
+// Reference:
+// https://www.electronjs.org/docs/latest/api/ipc-main
+// https://www.electronjs.org/docs/latest/api/ipc-renderer
+
 const BrowserWindow = require('./BrowserWindow')
 
 global.__nwjs_ipcSharedMemory = global.__nwjs_ipcSharedMemory || {

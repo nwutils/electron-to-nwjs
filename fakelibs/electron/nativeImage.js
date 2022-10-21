@@ -1,6 +1,7 @@
 // Reference:
 // https://www.electronjs.org/de/docs/latest/api/native-image
 
+// Info:
 // Bitmap buffer = raw bitmap pixel data
 
 const fs = require('fs')

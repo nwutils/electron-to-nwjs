@@ -1,5 +1,5 @@
 // Reference:
-// https://www.electronjs.org/de/docs/latest/api/browser-window
+// https://www.electronjs.org/docs/latest/api/browser-window
 // https://docs.nwjs.io/en/latest/References/Window/
 
 const app = require('./app')

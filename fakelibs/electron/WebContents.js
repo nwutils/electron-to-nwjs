@@ -1,3 +1,7 @@
+// Reference:
+// https://www.electronjs.org/docs/latest/api/web-contents
+// https://docs.nwjs.io/en/latest/References/Window/
+
 const session = require('./session')
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
 const throwUnsupportedException = require('./utils/unsupported-exception')

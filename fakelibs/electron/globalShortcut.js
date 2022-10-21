@@ -1,5 +1,5 @@
 // Reference:
-// https://www.electronjs.org/de/docs/latest/api/global-shortcut
+// https://www.electronjs.org/docs/latest/api/global-shortcut
 // https://docs.nwjs.io/en/latest/References/Shortcut/
 
 global.__nwjs_registered_global_shortcuts = global.__nwjs_registered_global_shortcuts || []

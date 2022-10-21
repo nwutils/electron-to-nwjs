@@ -1,5 +1,5 @@
 // Reference:
-// https://www.electronjs.org/de/docs/latest/api/app
+// https://www.electronjs.org/docs/latest/api/app
 // https://docs.nwjs.io/en/latest/References/App/
 
 const os = require('os');
