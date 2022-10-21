@@ -500,6 +500,22 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 ## nativeTheme
 
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`shouldUseDarkColors`                  | 🌕🌗🌑🌑 | Started
+`themeSource`                          | 🌕🌗🌑🌑 | Started
+`shouldUseHighContrastColors`          | 🌕🌗🌑🌑 | Started
+`shouldUseInvertedColorScheme`         | 🌕🌗🌑🌑 | Started
+`inForcedColorsMode`                   | 🌕🌗🌑🌑 | Started
+
+### Events
+
+**Event**                              | **Rating** | **Status**
+:--                                    | :--        | :--
+`updated`                              | 🌑🌑🌑🌑 | Not Planned
+
 ## net
 
 ## netLog
@@ -523,6 +539,18 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 ## ShareMenu
 
 ## shell
+
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`showItemInFolder`                     | 🌕🌕🌗🌑 | Working
+`openPath`                             | 🌕🌕🌗🌑 | Working
+`openExternal`                         | 🌕🌕🌑🌑 | Partially Working
+`trashItem`                            | 🌑🌑🌑🌑 | Not Planned
+`beep`                                 | 🌕🌕🌗🌑 | Working
+`writeShortcutLink`                    | 🌑🌑🌑🌑 | Not Planned
+`readShortcutLink`                     | 🌑🌑🌑🌑 | Not Planned
 
 ## systemPreferences
 
