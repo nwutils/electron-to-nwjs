@@ -6,7 +6,7 @@
 const fs = require('fs')
 const upngJs = require('upng-js')
 
-const throwUnsupportedException = require('./unsupported-exception')
+const throwUnsupportedException = require('./utils/unsupported-exception')
 
 const isPngBuffer = function(buffer) {
     // TODO

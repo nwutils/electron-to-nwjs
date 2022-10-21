@@ -1,0 +1,2 @@
+The classes inside that folder do not belong to the Electron module,
+but they do exist here so we can avoid cyclic references and make our code clean.
