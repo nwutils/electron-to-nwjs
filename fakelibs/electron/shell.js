@@ -1,6 +1,12 @@
-// Reference:
-// https://www.electronjs.org/de/docs/latest/api/shell
-// https://docs.nwjs.io/en/latest/References/Shell/
+/*
+  Electron Docs
+  https://www.electronjs.org/de/docs/latest/api/shell
+
+  NW.js Docs
+  https://docs.nwjs.io/en/latest/References/Shell/
+
+  Manage files and URLs using their default applications.
+*/
 
 const shell = {
     showItemInFolder(item) {

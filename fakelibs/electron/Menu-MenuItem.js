@@ -1,8 +1,15 @@
-// References:
-// https://www.electronjs.org/docs/latest/api/menu
-// https://www.electronjs.org/docs/latest/api/menu-item
-// https://docs.nwjs.io/en/latest/References/Menu/
-// https://docs.nwjs.io/en/latest/References/MenuItem/
+/*
+  Electron Docs
+  https://www.electronjs.org/docs/latest/api/menu
+  https://www.electronjs.org/docs/latest/api/menu-item
+
+  NW.js Docs
+  https://docs.nwjs.io/en/latest/References/Menu/
+  https://docs.nwjs.io/en/latest/References/MenuItem/
+
+  Menu: Create native application menus and context menus. Only available in the main process.
+  MenuItem: Add items to native application menus and context menus. Only available in the main process.
+*/
 
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
 const MenuItemRoles = require('./utils/menu-item-roles')

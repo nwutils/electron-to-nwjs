@@ -1,8 +1,12 @@
-// Reference:
-// https://www.electronjs.org/de/docs/latest/api/native-image
+/*
+  Electron Docs
+  https://www.electronjs.org/de/docs/latest/api/native-image
 
-// Info:
-// Bitmap buffer = raw bitmap pixel data
+  Create tray, dock, and application icons using PNG or JPG files.
+
+  Note: It loads an existing image by converting it to a bitmap buffer, which is
+        raw bitmap pixel data, which can then be converted into PNG or JPEG.
+*/
 
 const fs = require('fs')
 const upngJs = require('upng-js')
