@@ -504,17 +504,17 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 **API**                                | **Rating** | **Status**
 :--                                    | :--        | :--
-`shouldUseDarkColors`                  | 🌕🌗🌑🌑 | Started
-`themeSource`                          | 🌕🌗🌑🌑 | Started
-`shouldUseHighContrastColors`          | 🌕🌗🌑🌑 | Started
-`shouldUseInvertedColorScheme`         | 🌕🌗🌑🌑 | Started
-`inForcedColorsMode`                   | 🌕🌗🌑🌑 | Started
+`shouldUseDarkColors`                  | 🌕🌕🌗🌑 | Working
+`themeSource`                          | 🌕🌕🌗🌑 | Working
+`shouldUseHighContrastColors`          | 🌕🌕🌗🌑 | Working
+`shouldUseInvertedColorScheme`         | 🌕🌕🌗🌑 | Working
+`inForcedColorsMode`                   | 🌕🌕🌗🌑 | Working
 
 ### Events
 
 **Event**                              | **Rating** | **Status**
 :--                                    | :--        | :--
-`updated`                              | 🌑🌑🌑🌑 | Not Planned
+`updated`                              | 🌕🌕🌗🌑 | Working
 
 ## net
 
