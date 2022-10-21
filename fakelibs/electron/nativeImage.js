@@ -1,6 +1,6 @@
 /*
   Electron Docs
-  https://www.electronjs.org/de/docs/latest/api/native-image
+  https://www.electronjs.org/docs/latest/api/native-image
 
   Create tray, dock, and application icons using PNG or JPG files.
 
