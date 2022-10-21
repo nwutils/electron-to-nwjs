@@ -5,15 +5,17 @@
   NW.js Docs
   https://github.com/nwjs/nw.js/wiki/File-dialogs
   https://github.com/nwjs/nw.js/issues/3430
-  https://ghostoy-nw.readthedocs.io/en/readthedocs/References/File%20Dialogs/
+  https://docs.nwjs.io/en/latest/References/Changes%20to%20DOM/
 
   Display native system dialogs for opening and saving files, alerting, etc.
   Only available in the main process.
 
-  NW.js uses the browser methods to start dialogs, with <input type='file' />.
-  Considering that, Electron's dialog will need to create those inputs dinamically
-  to show open and save dialogs. The browser functions confirm() and alert() are
-  also available.
+  NW.js uses the browser methods to start dialogs, with <input type='file' />,
+  but it has some properties and events exclusive to NW.js, which make input file
+  a decent replacement for Electron's showOpenDialog and showSaveDialog, even
+  if it doesn't support all Electron's options.
+
+  The browser functions confirm() and alert() are also available.
 */
 
 const path = require('path');
@@ -21,6 +23,9 @@ const throwUnsupportedException = require('./utils/unsupported-exception')
 
 const runAndRemoveInputFile = function(input) {
   return new Promise((resolve, reject) => {
+    input.addEventListener('oncancel', function() {
+      reject()
+    });
     input.addEventListener('change', function(evt) {
       let files = evt.target.files
       let filePaths = []
