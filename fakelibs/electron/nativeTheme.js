@@ -23,7 +23,9 @@ class nativeTheme {
     get shouldUseDarkColors() {
         if (this._themeSource === "dark") return true
         if (this._themeSource === "system") {
-            // Check if the system is currently using Dark mode
+            if (window && window.matchMedia) {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches
+            }
             return false
         }
         return false // light
