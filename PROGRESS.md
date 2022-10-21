@@ -274,8 +274,8 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `isMenuBarAutoHide`                    | 🌕🌕🌗🌑 | Working
 `setMenuBarVisibility`                 | 🌕🌕🌗🌑 | Working
 `isMenuBarVisible`                     | 🌕🌕🌗🌑 | Working
-`setVisibleOnAllWorkspaces`            | 🌑🌑🌑🌑 | Not Planned
-`isVisibleOnAllWorkspaces`             | 🌑🌑🌑🌑 | Not Planned
+`setVisibleOnAllWorkspaces`            | 🌕🌕🌗🌑 | Working
+`isVisibleOnAllWorkspaces`             | 🌕🌕🌗🌑 | Working
 `setIgnoreMouseEvents`                 | 🌑🌑🌑🌑 | Not Planned
 `setContentProtection`                 | 🌑🌑🌑🌑 | Not Planned
 `setFocusable`                         | 🔴🔴🔴🔴 | On Hold
@@ -355,13 +355,63 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 ## dialog
 
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`showOpenDialogSync`                   | 🔴🔴🔴🔴 | On Hold
+`showOpenDialog`                       | 🌕🌕🌑🌑 | Partially Working
+`showSaveDialogSync`                   | 🔴🔴🔴🔴 | On Hold
+`showSaveDialog`                       | 🌕🌕🌑🌑 | Partially Working
+`showMessageBoxSync`                   | 🌕🌕🌑🌑 | Partially Working
+`showMessageBox`                       | 🌑🌑🌑🌑 | Not Planned
+`showErrorBox`                         | 🌑🌑🌑🌑 | Not Planned
+`showCertificateTrustDialog`           | 🌑🌑🌑🌑 | Not Planned
+
 ## globalShortcut
+
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`register`                             | 🌕🌕🌗🌑 | Working
+`registerAll`                          | 🌕🌕🌗🌑 | Working
+`isRegistered`                         | 🌕🌕🌗🌑 | Working
+`unregister`                           | 🌕🌕🌗🌑 | Working
+`unregisterAll`                        | 🌕🌕🌗🌑 | Working
 
 ## inAppPurchase
 
 ## ipcMain
 
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`on`                                   | 🌕🌕🌗🌑 | Working
+`once`                                 | 🌑🌑🌑🌑 | Not Planned
+`removeListener`                       | 🌑🌑🌑🌑 | Not Planned
+`removeAllListeners`                   | 🌑🌑🌑🌑 | Not Planned
+`handle`                               | 🌕🌕🌗🌑 | Working
+`handleOnce`                           | 🌑🌑🌑🌑 | Not Planned
+`removeHandler`                        | 🌑🌑🌑🌑 | Not Planned
+
 ## ipcRenderer
+
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`on`                                   | 🌕🌕🌗🌑 | Working
+`once`                                 | 🌑🌑🌑🌑 | Not Planned
+`removeListener`                       | 🌑🌑🌑🌑 | Not Planned
+`removeAllListeners`                   | 🌑🌑🌑🌑 | Not Planned
+`send`                                 | 🌕🌕🌗🌑 | Working
+`invoke`                               | 🌑🌑🌑🌑 | Not Planned
+`sendSync`                             | 🌕🌕🌗🌑 | Working
+`postMessage`                          | 🌑🌑🌑🌑 | Not Planned
+`sendTo`                               | 🌑🌑🌑🌑 | Not Planned
+`sendToHost`                           | 🌑🌑🌑🌑 | Not Planned
 
 ## Menu
 
@@ -390,11 +440,63 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 ## MenuItem
 
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`constructor`                          | 🌕🌕🌑🌑 | Partially Working
+`id`                                   | 🌑🌑🌑🌑 | Not Planned
+`label`                                | 🌑🌑🌑🌑 | Not Planned
+`click`                                | 🌑🌑🌑🌑 | Not Planned
+`submenu`                              | 🌑🌑🌑🌑 | Not Planned
+`type`                                 | 🌑🌑🌑🌑 | Not Planned
+`role`                                 | 🌑🌑🌑🌑 | Not Planned
+`accelerator`                          | 🌑🌑🌑🌑 | Not Planned
+`userAccelerator`                      | 🌑🌑🌑🌑 | Not Planned
+`icon`                                 | 🌑🌑🌑🌑 | Not Planned
+`sublabel`                             | 🌑🌑🌑🌑 | Not Planned
+`toolTip`                              | 🌑🌑🌑🌑 | Not Planned
+`enabled`                              | 🌑🌑🌑🌑 | Not Planned
+`visible`                              | 🌑🌑🌑🌑 | Not Planned
+`checked`                              | 🌑🌑🌑🌑 | Not Planned
+`registerAccelerator`                  | 🌑🌑🌑🌑 | Not Planned
+`sharingItem`                          | 🌑🌑🌑🌑 | Not Planned
+`commandId`                            | 🌑🌑🌑🌑 | Not Planned
+`menu`                                 | 🌑🌑🌑🌑 | Not Planned
+
 ## MessageChannelMain
 
 ## MessagePortMain
 
 ## nativeImage
+
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`static createEmpty`                   | 🌕🌕🌗🌑 | Working
+`static createThumbnailFromPath`       | 🌑🌑🌑🌑 | Not Planned
+`static createFromPath`                | 🌕🌕🌑🌑 | Partially Working
+`static createFromBitmap`              | 🌕🌕🌗🌑 | Working
+`static createFromBuffer`              | 🌕🌕🌑🌑 | Partially Working
+`static createFromDataURL`             | 🌑🌑🌑🌑 | Not Planned
+`static createFromNamedImage`          | 🌑🌑🌑🌑 | Not Planned
+`toPNG`                                | 🌕🌕🌑🌑 | Partially Working
+`toJPEG`                               | 🌑🌑🌑🌑 | Not Planned
+`toBitmap`                             | 🌕🌕🌑🌑 | Partially Working
+`toDataURL`                            | 🌕🌕🌗🌑 | Working
+`getBitmap`                            | 🌕🌕🌑🌑 | Partially Working
+`getNativeHandle`                      | 🌑🌑🌑🌑 | Not Planned
+`isEmpty`                              | 🌕🌕🌗🌑 | Working
+`getSize`                              | 🌑🌑🌑🌑 | Not Planned
+`setTemplateImage`                     | 🌑🌑🌑🌑 | Not Planned
+`isTemplateImage`                      | 🌑🌑🌑🌑 | Not Planned
+`crop`                                 | 🌑🌑🌑🌑 | Not Planned
+`resize`                               | 🌑🌑🌑🌑 | Not Planned
+`getAspectRatio`                       | 🌑🌑🌑🌑 | Not Planned
+`getScaleFactors`                      | 🌑🌑🌑🌑 | Not Planned
+`addRepresentation`                    | 🌑🌑🌑🌑 | Not Planned
+`isMacTemplateImage`                   | 🌑🌑🌑🌑 | Not Planned
 
 ## nativeTheme
 
