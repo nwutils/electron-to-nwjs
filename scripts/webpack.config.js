@@ -91,7 +91,9 @@ module.exports = (env, argv) => {
                     loader: 'string-replace-loader',
                     options: {
                         search: '__dirname',
-                        replace: env.prod ? "(require('path').dirname(process.execPath))" : "(process.cwd())",
+                        replace: env.prod ?
+                            "(require('path').dirname(process.execPath))" :
+                            "(require('path').join(process.cwd(), require('path').dirname('[name].js')))",
                         flags: 'g'
                     }
                 },
