@@ -7,8 +7,23 @@
   https://docs.nwjs.io/en/latest/References/Menu/
   https://docs.nwjs.io/en/latest/References/MenuItem/
 
-  Menu: Create native application menus and context menus. Only available in the main process.
-  MenuItem: Add items to native application menus and context menus. Only available in the main process.
+  Menu:
+  Create native application menus and context menus.
+  Only available in the main process.
+
+  MenuItem:
+  Add items to native application menus and context menus.
+  Only available in the main process.
+
+  Electron's Menu and MenuItem are equivalent to NW.js's Menu and MenuItem.
+  The biggest complicator is the fact that NW.js create different instances
+  of Menu depending if you want to use it for context menu or for the main
+  menu, while Electron does not. In order to circunvent that, we create two
+  instances of NW.js Menus when creating an Electron Menu, so we can use the
+  correct one according to the circunstance.
+
+  Another option would be to only create the NW.js Menu object when it's
+  needed, but that will require some refactoring.
 */
 
 const BrowserWindowManager = require('./utils/BrowserWindowManager')

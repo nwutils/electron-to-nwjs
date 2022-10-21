@@ -5,7 +5,11 @@
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/App/
 
-  Control your application's event lifecycle. Only available in the main process.
+  Control your application's event lifecycle.
+  Only available in the main process.
+
+  Many of the features implemented in Electron's app do not exist in NW.js's App,
+  and may need to be created from scratch, or use different NW.js classes.
 */
 
 const os = require('os');

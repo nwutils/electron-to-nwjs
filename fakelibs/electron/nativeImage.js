@@ -4,6 +4,9 @@
 
   Create tray, dock, and application icons using PNG or JPG files.
 
+  NW.js has no class equivalent to that one, so we gonna need to recreate that
+  functionality manually using Node.
+
   Note: It loads an existing image by converting it to a bitmap buffer, which is
         raw bitmap pixel data, which can then be converted into PNG or JPEG.
 */

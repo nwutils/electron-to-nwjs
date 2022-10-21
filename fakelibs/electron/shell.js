@@ -6,6 +6,10 @@
   https://docs.nwjs.io/en/latest/References/Shell/
 
   Manage files and URLs using their default applications.
+
+  Electron's shell and NW.js's Shell have the same utility, but Electron's got
+  more methods which are not available in NW.js, and will need to be replicated
+  using Node.
 */
 
 const shell = {

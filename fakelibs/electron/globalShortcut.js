@@ -4,8 +4,13 @@
 
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/Shortcut/
+  https://docs.nwjs.io/en/latest/References/App/
 
-  Detect keyboard events when the application does not have keyboard focus. Only available in the main process.
+  Detect keyboard events when the application does not have keyboard focus.
+  Only available in the main process.
+
+  NW.js's Shortcut requires NW.js's App to register its shortcuts, so the
+  combination of the two can replicate all Electron's globalShortcut functionalities.
 */
 
 global.__nwjs_registered_global_shortcuts = global.__nwjs_registered_global_shortcuts || []

@@ -5,7 +5,11 @@
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/Window/
 
-  Render and control web pages. Only available in the main process.
+  Render and control web pages.
+  Only available in the main process.
+
+  NW.js's Window actually represents Electron's BrowserWindow and WebContents,
+  so both BrowserWindow and WebContents need to make use of it.
 */
 
 const session = require('./session')

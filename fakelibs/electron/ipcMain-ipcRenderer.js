@@ -3,8 +3,19 @@
   https://www.electronjs.org/docs/latest/api/ipc-main
   https://www.electronjs.org/docs/latest/api/ipc-renderer
 
-  ipcMain: Communicate asynchronously from the main process to renderer processes. Only available in the main process.
-  ipcRenderer: Communicate asynchronously from a renderer process to the main process. Only available in a renderer process.
+  ipcMain:
+  Communicate asynchronously from the main process to renderer processes.
+  Only available in the main process.
+  
+  ipcRenderer:
+  Communicate asynchronously from a renderer process to the main process.
+  Only available in a renderer process.
+
+  Electron's ipcMain and ipcRenderer are used to establish communication between the
+  main process and the renderer process in Electron. Although, we are using NW.js's
+  "Separate Context Mode", which means that there is only one process for all Node
+  related activities, which means we can mimic ipc's behaviour by just using a global
+  object.
 */
 
 const BrowserWindow = require('./BrowserWindow')

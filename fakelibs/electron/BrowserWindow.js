@@ -5,7 +5,11 @@
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/Window/
 
-  Create and control browser windows. Only available in the main process.
+  Create and control browser windows.
+  Only available in the main process.
+
+  NW.js's Window actually represents Electron's BrowserWindow and WebContents,
+  so both BrowserWindow and WebContents need to make use of it.
 */
 
 const app = require('./app')
@@ -75,7 +79,7 @@ class BrowserWindow {
         const id = Math.floor(Math.random() * 1000000000);
         this.id = id;
         this.webContents = new WebContents(this);
-        // visibleOnAllWorkspaces
+        this.visibleOnAllWorkspaces = opts.visibleOnAllWorkspaces || false
         this._showMenubar = opts.menuBarVisible || opts.autoHideMenuBar !== true
         // documentEdited
         // representedFilename
@@ -168,7 +172,7 @@ class BrowserWindow {
                 max_height: that.maxHeight,
                 resizable: that.resizable,
                 always_on_top: that.alwaysOnTop,
-                // visible_on_all_workspaces
+                visible_on_all_workspaces: that.visibleOnAllWorkspaces,
                 fullscreen: that.fullscreen,
                 // show_in_taskbar
                 frame: that.frame,
@@ -524,8 +528,13 @@ class BrowserWindow {
     isMenuBarVisible() {
         return this._showMenubar
     }
-    // setVisibleOnAllWorkspaces
-    // isVisibleOnAllWorkspaces
+    setVisibleOnAllWorkspaces(visible) {
+        this.visibleOnAllWorkspaces = visible
+        this._getWindow().then(win => win.setVisibleOnAllWorkspaces(visible));
+    }
+    isVisibleOnAllWorkspaces() {
+        return this.visibleOnAllWorkspaces
+    }
     // setIgnoreMouseEvents
     // setContentProtection
     setFocusable(focusable) {
