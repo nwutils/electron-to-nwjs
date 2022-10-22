@@ -192,12 +192,12 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `isSimpleFullScreen`                   | 🌑🌑🌑🌑 | Not Planned
 `isNormal`                             | 🌑🌑🌑🌑 | Not Planned
 `setAspectRatio`                       | 🌑🌑🌑🌑 | Not Planned
-`setBackgroundColor`                   | 🌑🌑🌑🌑 | Not Planned
+`setBackgroundColor`                   | 🌕🌕🌗🌑 | Working
 `previewFile`                          | 🌑🌑🌑🌑 | Not Planned
 `closeFilePreview`                     | 🌑🌑🌑🌑 | Not Planned
 `setBounds`                            | 🌑🌑🌑🌑 | Not Planned
 `getBounds`                            | 🌑🌑🌑🌑 | Not Planned
-`getBackgroundColor`                   | 🌑🌑🌑🌑 | Not Planned
+`getBackgroundColor`                   | 🌕🌕🌗🌑 | Working
 `setContentBounds`                     | 🌑🌑🌑🌑 | Not Planned
 `getContentBounds`                     | 🌑🌑🌑🌑 | Not Planned
 `getNormalBounds`                      | 🌑🌑🌑🌑 | Not Planned
@@ -260,8 +260,8 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `setOverlayIcon`                       | 🌑🌑🌑🌑 | Not Planned
 `setHasShadow`                         | 🌕🌕🌗🌑 | Working
 `hasShadow`                            | 🌕🌕🌗🌑 | Working
-`setOpacity`                           | 🌑🌑🌑🌑 | Not Planned
-`getOpacity`                           | 🌑🌑🌑🌑 | Not Planned
+`setOpacity`                           | 🌕🌕🌗🌑 | Working
+`getOpacity`                           | 🌕🌕🌗🌑 | Working
 `setShape`                             | 🌑🌑🌑🌑 | Not Planned
 `setThumbarButtons`                    | 🌑🌑🌑🌑 | Not Planned
 `setThumbnailClip`                     | 🌑🌑🌑🌑 | Not Planned

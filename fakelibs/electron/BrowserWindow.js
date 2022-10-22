@@ -406,12 +406,13 @@ class BrowserWindow {
             document.body.style["background-color"] = backgroundColor;
         });
     }
-    getBackgroundColor() {
-        return this._backgroundColor
-    }
     // previewFile
     // closeFilePreview
     // setBounds
+    // getBounds
+    getBackgroundColor() {
+        return this._backgroundColor
+    }
     // setContentBounds
     // getContentBounds
     // getNormalBounds
