@@ -164,8 +164,10 @@ class BrowserWindow {
             }, 
             (win) => {
                 that.window = win;
-                that.setMenu(global.__nwjs_app_menu)
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
+
+                that.setMenu(global.__nwjs_app_menu)
+                that.setOpacity(that._opacity)
 
                 if (that._center) {
                     that.center()
@@ -631,7 +633,8 @@ class BrowserWindow {
     setOpacity(opacity) {
         this._opacity = opacity
         this._getWindow().then(win => {
-            // TODO: Change "opacity" (0.0 - 1.0) from the body DOM object
+            const document = win.window.document
+            document.body.style["opacity"] = `${opacity}`;
         });
     }
     getOpacity() {
