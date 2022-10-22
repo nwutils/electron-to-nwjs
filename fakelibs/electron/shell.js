@@ -1,6 +1,6 @@
 /*
   Electron Docs
-  https://www.electronjs.org/de/docs/latest/api/shell
+  https://www.electronjs.org/docs/latest/api/shell
 
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/Shell/

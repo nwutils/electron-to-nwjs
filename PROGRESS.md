@@ -40,7 +40,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `isHidden`                             | 🌑🌑🌑🌑 | Not Planned
 `show`                                 | 🌑🌑🌑🌑 | Not Planned
 `setAppLogsPath`                       | 🌑🌑🌑🌑 | Not Planned
-`getAppPath`                           | 🌑🌑🌑🌑 | Not Planned
+`getAppPath`                           | 🌕🌕🌗🌑 | Working
 `getPath`                              | 🌕🌕🌑🌑 | Partially Working
 `getFileIcon`                          | 🌑🌑🌑🌑 | Not Planned
 `setPath`                              | 🌑🌑🌑🌑 | Not Planned
@@ -521,6 +521,27 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 ## netLog
 
 ## Notification
+
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`constructor`                          | 🌕🌕🌑🌑 | Partially Working
+`on`                                   | 🌕🌕🌑🌑 | Partially Working
+`show`                                 | 🌕🌕🌗🌑 | Working
+`close`                                | 🌕🌕🌗🌑 | Working
+`title`                                | 🌕🌕🌗🌑 | Working
+`subtitle`                             | 🔴🔴🔴🔴 | On Hold
+`body`                                 | 🌕🌕🌗🌑 | Working
+`replyPlaceholder`                     | 🔴🔴🔴🔴 | On Hold
+`sound`                                | 🔴🔴🔴🔴 | On Hold
+`closeButtonText`                      | 🔴🔴🔴🔴 | On Hold
+`silent`                               | 🌕🌕🌗🌑 | Working
+`hasReply`                             | 🔴🔴🔴🔴 | On Hold
+`urgency`                              | 🔴🔴🔴🔴 | On Hold
+`timeoutType`                          | 🌕🌕🌗🌑 | Working
+`actions`                              | 🔴🔴🔴🔴 | On Hold
+`toastXml`                             | 🔴🔴🔴🔴 | On Hold
 
 ## powerMonitor
 

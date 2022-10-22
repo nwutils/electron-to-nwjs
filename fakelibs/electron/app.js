@@ -60,7 +60,9 @@ const app = {
     // isHidden() (macOS only)
     // show() (macOS only)
     // setAppLogsPath([path])
-    // getAppPath()
+    getAppPath() {
+        return nw.App.startPath;
+    },
     getPath(name) {
         switch(name) {
             case "home":        return os.homedir();

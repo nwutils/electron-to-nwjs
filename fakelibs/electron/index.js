@@ -6,6 +6,7 @@ const globalShortcut = require('./globalShortcut')
 const nativeTheme = require('./nativeTheme')
 const nativeImage = require('./nativeImage')
 const NewWindowWebContentsEvent = require('./NewWindowWebContentsEvent')
+const Notification = require('./Notification')
 const session = require('./session')
 const shell = require('./shell')
 const systemPreferences = require('./systemPreferences')
@@ -60,7 +61,7 @@ if (__nwjs_is_main) {
         // net
         // netLog
         NewWindowWebContentsEvent,
-        // Notification
+        Notification,
         // powerMonitor
         // powerSaveBlocker
         // process,
