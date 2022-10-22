@@ -23,68 +23,78 @@ class BrowserWindow {
         if (opts === undefined) opts = {};
         else opts = JSON.parse(JSON.stringify(opts));
 
-        this.width = opts.width || 800;
-        this.height = opts.height || 600;
-        this.x = opts.x;
-        this.y = opts.y;
-        // useContentSize
-        this.centerOnStart = opts.center || false;
-        this.minWidth = opts.minWidth || 0;
-        this.minHeight = opts.minHeight || 0;
-        this.maxWidth = opts.maxWidth;
-        this.maxHeight = opts.maxHeight;
-        this.resizable = opts.resizable === undefined ? true : opts.resizable;
-        this.movable = opts.movable === undefined ? true : opts.movable;
-        this.minimizable = opts.minimizable === undefined ? true : opts.minimizable;
-        this.maximizable = opts.maximizable === undefined ? true : opts.maximizable;
-        this.closable = opts.closable === undefined ? true : opts.closable;
-        this.focusable = opts.focusable === undefined ? true : opts.focusable;
-        this.alwaysOnTop = opts.alwaysOnTop || false;
-        this.fullscreen = opts.fullscreen || false;
-        this.fullscreenable = opts.fullscreenable === undefined ? true : opts.fullscreenable;
-        this.simpleFullscreen = opts.simpleFullscreen || false;
-        this.skipTaskbar = opts.skipTaskbar || false;
-        this.kiosk = opts.kiosk || false;
-        this.title = opts.title || "NW.js";
-        this.icon = opts.icon;
-        this.showValue = opts.show === undefined ? true : opts.show;
-        // paintWhenInitiallyHidden
-        this.frame = opts.frame === undefined ? true : opts.frame;
-        this.parent = opts.parent === undefined ? null : opts.parent;
-        this.modal = opts.modal || false;
-        // acceptFirstMouse
-        // disableAutoHideCursor
-        this.autoHideMenuBar = opts.autoHideMenuBar || false;
-        // enableLargerThanScreen
-        this.backgroundColor = opts.backgroundColor || "#FFF"; // Hex, RGB, RGBA, HSL, HSLA or named CSS color format
-        this.hasShadowValue = opts.hasShadow === undefined ? true : opts.hasShadow;
-        this.opacity = opts.opacity || 1.0;
-        this.darkTheme = opts.darkTheme || false;
-        this.transparent = opts.transparent || false;
+        const id = Math.floor(Math.random() * 1000000000);
+        
+        this.webContents = new WebContents(this);
+        this._id = id;
+        this._autoHideMenuBar = opts.autoHideMenuBar || false;
+        this._simpleFullscreen = opts.simpleFullscreen || false;
+        this._fullscreen = opts.fullscreen || false;
+        this._focusable = opts.focusable === undefined ? true : opts.focusable;
+        this._visibleOnAllWorkspaces = opts.visibleOnAllWorkspaces || false;
+        this._shadow = opts.hasShadow === undefined ? true : opts.hasShadow;
+        this._menuBarVisible = opts.menuBarVisible || opts.autoHideMenuBar !== true;
+        this._kiosk = opts.kiosk || false;
+        this._documentEdited = opts.documentEdited || false;
+        this._representedFilename = opts.representedFilename;
+        this._title = opts.title || "NW.js";
+        this._minimizable = opts.minimizable === undefined ? true : opts.minimizable;
+        this._maximizable = opts.maximizable === undefined ? true : opts.maximizable;
+        this._fullscreenable = opts.fullscreenable === undefined ? true : opts.fullscreenable;
+        this._resizable = opts.resizable === undefined ? true : opts.resizable;
+        this._closable = opts.closable === undefined ? true : opts.closable;
+        this._movable = opts.movable === undefined ? true : opts.movable;
+        this._excludedFromShownWindowsMenu = opts.excludedFromShownWindowsMenu || false;
+        this._accessibleTitle = opts.accessibleTitle;
+
+        this._width = opts.width || 800;
+        this._height = opts.height || 600;
+        this._x = opts.x;
+        this._y = opts.y;
+        this._useContentSize = opts.useContentSize || false;
+        this._center = opts.center || false;
+        this._minWidth = opts.minWidth || 0;
+        this._minHeight = opts.minHeight || 0;
+        this._maxWidth = opts.maxWidth;
+        this._maxHeight = opts.maxHeight;
+        this._alwaysOnTop = opts.alwaysOnTop || false;
+        this._skipTaskbar = opts.skipTaskbar || false;
+        this._icon = opts.icon;
+        this._visible = opts.show === undefined ? true : opts.show;
+        this._paintWhenInitiallyHidden = opts.paintWhenInitiallyHidden === undefined ? true : opts.paintWhenInitiallyHidden
+        this._frame = opts.frame === undefined ? true : opts.frame;
+        this._parent = opts.parent === undefined ? null : opts.parent;
+        this._modal = opts.modal || false;
+        this._acceptFirstMouse = opts.acceptFirstMouse || false;
+        this._disableAutoHideCursor = opts.disableAutoHideCursor || false;
+        this._enableLargerThanScreen = opts.enableLargerThanScreen || false;
+        this._backgroundColor = opts.backgroundColor || "#FFF"; // Hex, RGB, RGBA, HSL, HSLA or named CSS color format
+        this._opacity = opts.opacity || 1.0;
+        this._darkTheme = opts.darkTheme || false;
+        this._transparent = opts.transparent || false;
         // type
+        /* 
+            desktop = places the window at the desktop background window level (Linux and macOS only)
+            dock = (Linux only)
+            toolbar = (Windows only)
+            splash = (Linux only)
+            notification = (Linux only)
+            textured = metal appearance (macOS only)
+            panel = floating window (macOS only)
+        */
         // visualEffectState
         // titleBarStyle
         // trafficLightPosition
-        this.roundedCorners = opts.roundedCorners === undefined ? true : opts.roundedCorners;
+        this._roundedCorners = opts.roundedCorners === undefined ? true : opts.roundedCorners;
         // fullscreenWindowTitle
         // thickFrame
         // vibrancy
         // zoomToPageWidth
         // tabbingIdentifier
         opts.webPreferences = opts.webPreferences || {};
-        this.devTools = opts.webPreferences.devTools || false;
+        this._devTools = opts.webPreferences.devTools === undefined ? true : opts.webPreferences.devTools;
         // titleBarOverlay
 
-
-        const id = Math.floor(Math.random() * 1000000000);
-        this.id = id;
-        this.webContents = new WebContents(this);
-        this.visibleOnAllWorkspaces = opts.visibleOnAllWorkspaces || false
-        this._showMenubar = opts.menuBarVisible || opts.autoHideMenuBar !== true
-        // documentEdited
-        // representedFilename
-        // excludedFromShownWindowsMenu
-        // accessibleTitle
 
         BrowserWindowManager.addWindow(this)
 
@@ -111,34 +121,6 @@ class BrowserWindow {
         return BrowserWindowManager.getWindowById(id)
     }
 
-    static _getCurrentWindow() {
-        const windowId = window.__nwjs_window_id
-        if (windowId === undefined) {
-            return undefined
-        }
-        try {
-            return BrowserWindowManager.getAllWindows().filter(bw => bw.id === windowId).shift()
-        }
-        catch(e) {
-            console.error(e)
-            return undefined
-        }
-    }
-    static _getCurrentWindowAsync() {
-        const attachOn = function() {
-            return new Promise((resolve, reject) => {
-                const fWin = BrowserWindow._getCurrentWindow()
-                if (fWin) {
-                    return resolve(fWin);
-                }
-                setTimeout(() => {
-                    attachOn().then(resolve, reject)
-                }, 100)
-            })
-        }
-        return attachOn()
-    }
-
     async _getWindow() {
         const that = this
         const attachOn = function() {
@@ -160,37 +142,37 @@ class BrowserWindow {
         return new Promise((resolve, reject) => {
             nw.Window.open(url, {
                 id: that.id+"",
-                title: that.title,
-                width: that.width,
-                height: that.height,
+                title: that._title,
+                width: that._width,
+                height: that._height,
                 // toolbar
-                icon: that.icon,
-                position: that.centerOnStart ? 'center' : 'null',
-                min_width: that.minWidth,
-                min_height: that.minHeight,
-                max_width: that.maxWidth,
-                max_height: that.maxHeight,
-                resizable: that.resizable,
-                always_on_top: that.alwaysOnTop,
-                visible_on_all_workspaces: that.visibleOnAllWorkspaces,
-                fullscreen: that.fullscreen,
-                // show_in_taskbar
-                frame: that.frame,
-                show: that.showValue,
-                kiosk: that.kiosk,
-                transparent: that.transparent
+                icon: that._icon,
+                position: that._center ? 'center' : 'null',
+                min_width: that._minWidth,
+                min_height: that._minHeight,
+                max_width: that._maxWidth,
+                max_height: that._maxHeight,
+                resizable: that._resizable,
+                always_on_top: that._alwaysOnTop,
+                visible_on_all_workspaces: that._visibleOnAllWorkspaces,
+                fullscreen: that._fullscreen,
+                show_in_taskbar: that._skipTaskbar,
+                frame: that._frame,
+                show: that._visible,
+                kiosk: that._kiosk,
+                transparent: that._transparent
             }, 
             (win) => {
                 that.window = win;
                 that.setMenu(global.__nwjs_app_menu)
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
 
-                if (that.centerOnStart) {
+                if (that._center) {
                     that.center()
                 }
                 else {
                     // When using the position 'null' attribute, we still need to move the window manually
-                    win.moveTo(that.x, that.y)
+                    win.moveTo(that._x, that._y)
                 }
 
                 win.on('focus', function() {
@@ -200,23 +182,151 @@ class BrowserWindow {
                     that._isFocused = false
                 })
                 win.on('devtools-opened', function() {
+                    if (!that._devTools) {
+                        win.closeDevTools()
+                        return
+                    }
                     that.webContents._isDevToolsOpen = true
                 })
                 win.on('devtools-closed', function() {
                     that.webContents._isDevToolsOpen = false
                 })
-                that._isFocused = that.showValue
+                that._isFocused = that._visible
                 
                 resolve();
             })
         })
     }
     _toggleMenubar() {
-        if (!this.autoHideMenuBar) {
+        if (!this._autoHideMenuBar) {
             return
         }
-        this.window.menu = this._showMenubar ? null : this.menu.mainMenu
-        this._showMenubar = !this._showMenubar
+        this.window.menu = this._menuBarVisible ? null : this.menu.mainMenu
+        this._menuBarVisible = !this._menuBarVisible
+    }
+
+
+
+    get id() {
+        return this._id
+    }
+    get autoHideMenuBar() {
+        return this.isMenuBarAutoHide()
+    }
+    set autoHideMenuBar(val) {
+        this.setAutoHideMenuBar(val)
+    }
+    get simpleFullScreen() {
+        return this.isSimpleFullScreen()
+    }
+    set simpleFullscreen(val) {
+        this.setSimpleFullScreen(val)
+    }
+    get fullscreen() {
+        return this.isFullScreen()
+    }
+    set fullscreen(val) {
+        this.setFullScreen(val)
+    }
+    get focusable() {
+        return this.isFocusable()
+    }
+    set focusable(val) {
+        this.setFocusable(val)
+    }
+    get visibleOnAllWorkspaces() {
+        return this.isVisibleOnAllWorkspaces()
+    }
+    set visibleOnAllWorkspaces(val) {
+        this.setVisibleOnAllWorkspaces(val)
+    }
+    get shadow() {
+        return this.hasShadow()
+    }
+    set shadow(val) {
+        this.setHasShadow(val)
+    }
+    get menuBarVisible() {
+        return this.isMenuBarVisible()
+    }
+    set menuBarVisible(val) {
+        this.setMenuBarVisibility(val)
+    }
+    get kiosk() {
+        return this.isKiosk()
+    }
+    set kiosk(val) {
+        this.setKiosk(val)
+    }
+    get documentEdited() {
+        return this.isDocumentEdited()
+    }
+    set documentEdited(val) {
+        this.setDocumentEdited(val)
+    }
+    get representedFilename() {
+        return this.getRepresentedFilename()
+    }
+    set representedFilename(val) {
+        this.setRepresentedFilename(val)
+    }
+    get title() {
+        return this.getTitle()
+    }
+    set title(val) {
+        this.setTitle(val)
+    }
+    get minimizable() {
+        return this.isMinimizable()
+    }
+    set minimizable(val) {
+        this.setMinimizable(val)
+    }
+    get maximizable() {
+        return this.isMaximizable()
+    }
+    set maximizable(val) {
+        this.setMaximizable(val)
+    }
+    get fullscreenable() {
+        return this.isFullScreenable()
+    }
+    set fullscreenable(val) {
+        this.setFullScreenable(val)
+    }
+    get resizable() {
+        return this.isResizable()
+    }
+    set resizable(val) {
+        this.setResizable(val)
+    }
+    get closable() {
+        return this.isClosable()
+    }
+    set closable(val) {
+        return this.setClosable(val)
+    }
+    get movable() {
+        return this.isMovable()
+    }
+    set movable(val) {
+        this.setMovable(val)
+    }
+    get excludedFromShownWindowsMenu() {
+        return false
+    }
+    set excludedFromShownWindowsMenu(val) {
+        if (val) {
+            throwUnsupportedException("BrowserWindow.excludedFromShownWindowsMenu can't accept the value 'true'")
+        }
+    }
+    get accessibleTitle() {
+        return undefined
+    }
+    set accessibleTitle(val) {
+        if (val) {
+            throwUnsupportedException("BrowserWindow.accessibleTitle can't accept a value different from undefined")
+        }
     }
 
 
@@ -237,22 +347,16 @@ class BrowserWindow {
     }
     // isDestroyed
     show() {
-        const that = this
-        this._getWindow().then(win => {
-            win.show();
-            that.showValue = true;
-        });
+        this._visible = true;
+        this._getWindow().then(win => win.show());
     }
     // showInactive
     hide() {
-        const that = this
-        this._getWindow().then(win => {
-            win.hide();
-            that.showValue = false;
-        });
+        this._visible = false;
+        this._getWindow().then(win => win.hide());
     }
     isVisible() {
-        return this.showValue;
+        return this._visible;
     }
     // isModal
     maximize() {
@@ -279,8 +383,14 @@ class BrowserWindow {
     isFullScreen() {
         return this.window.isFullScreen;
     }
-    // setSimpleFullScreen
-    // isSimpleFullScreen
+    setSimpleFullScreen(simpleFullscreen) {
+        if (simpleFullscreen) {
+            throwUnsupportedException("BrowserWindow.setSimpleFullScreen can't accept the value 'true'")
+        }
+    }
+    isSimpleFullScreen() {
+        return false
+    }
     // isNormal
     // setAspectRatio
     // setBackgroundColor: Hex, RGB, RGBA, HSL, HSLA or named CSS color format
@@ -293,59 +403,57 @@ class BrowserWindow {
     // getNormalBounds
     setEnabled(enabled) {
         if (!enabled) {
-            throwUnsupportedException("Can't make windows not enabled")
+            throwUnsupportedException("BrowserWindow.setEnabled can't accept the value 'false'")
         }
     }
     isEnabled() {
         return true
     }
     setSize(width, height) {
+        this._width = width
+        this._height = height
         this._getWindow().then(win => win.resizeTo(width, height));
     }
     getSize() {
         const win = this.window
-        return [win?.width || this.width, win?.height || this.height]
+        return [win?.width || this._width, win?.height || this._height]
     }
     setContentSize(width, height, animate) {
-        throwUnsupportedException("Can't change content size programatically")
+        throwUnsupportedException("BrowserWindow.setContentSize isn't implemented")
     }
     getContentSize() {
         const win = this.window
         if (!win) {
-            throwUnsupportedException("Window is not ready yet")
             return [undefined, undefined]
         }
         return [win.window.document.clientWidth, win.window.document.clientHeight]
     }
     setMinimumSize(width, height) {
-        this.minWidth = width
-        this.minHeight = height
+        this._minWidth = width
+        this._minHeight = height
         this._getWindow().then(win => win.setMinimumSize(width, height));
     }
     getMinimumSize() {
-        return [this.minWidth, this.minHeight]
+        return [this._minWidth, this._minHeight]
     }
     setMaximumSize(width, height) {
-        this.maxWidth = width
-        this.maxHeight = height
+        this._maxWidth = width
+        this._maxHeight = height
         this._getWindow().then(win => win.setMaximumSize(width, height));
     }
     getMaximumSize() {
-        return [this.maxWidth, this.maxHeight]
+        return [this._maxWidth, this._maxHeight]
     }
     setResizable(resizable) {
-        const that = this
-        this._getWindow().then(win => {
-            win.setResizable(resizable);
-            that.resizable = resizable;
-        });
+        this._resizable = resizable;
+        this._getWindow().then(win => win.setResizable(resizable));
     }
     isResizable() {
-        return this.resizable;
+        return this._resizable;
     }
     setMovable(movable) {
         if (!movable) {
-            throwUnsupportedException("Can't make windows not movable")
+            throwUnsupportedException("BrowserWindow.setMovable can't accept the value 'false'")
         }
     }
     isMovable() {
@@ -353,7 +461,7 @@ class BrowserWindow {
     }
     setMinimizable(minimizable) {
         if (!minimizable) {
-            throwUnsupportedException("Can't make windows not minimizable")
+            throwUnsupportedException("BrowserWindow.setMinimizable can't accept the value 'false'")
         }
     }
     isMinimizable() {
@@ -361,7 +469,7 @@ class BrowserWindow {
     }
     setMaximizable(maximizable) {
         if (!maximizable) {
-            throwUnsupportedException("Can't make windows not maximizable")
+            throwUnsupportedException("BrowserWindow.setMaximizable can't accept the value 'false'")
         }
     }
     isMaximizable() {
@@ -369,14 +477,20 @@ class BrowserWindow {
     }
     setFullScreenable(fullScreenable) {
         if (!fullScreenable) {
-            throwUnsupportedException("Can't make windows not fullScreenable")
+            throwUnsupportedException("BrowserWindow.setFullScreenable can't accept the value 'false'")
         }
     }
     isFullScreenable() {
         return true
     }
-    // setClosable
-    // isClosable
+    setClosable(closable) {
+        if (!closable) {
+            throwUnsupportedException("BrowserWindow.setClosable can't accept the value 'false'")
+        }
+    }
+    isClosable() {
+        return true
+    }
     setAlwaysOnTop(flag) {
         this._getWindow().then(win => win.setAlwaysOnTop(flag));
     }
@@ -392,9 +506,9 @@ class BrowserWindow {
             const screens = nw.Screen.screens
             if (screens.length === 1) {
                 const screenSize = screens[0].bounds
-                that.x = (screenSize.width - that.width)/2
-                that.y = (screenSize.height - that.height)/2
-                win.moveTo(that.x, that.y)
+                that._x = (screenSize.width - that._width)/2
+                that._y = (screenSize.height - that._height)/2
+                win.moveTo(that._x, that._y)
                 return
             }
 
@@ -405,13 +519,13 @@ class BrowserWindow {
         if (animate) {
             throwUnsupportedException("BrowserWindow.setPosition can't support the 'animate' argument")
         }
-        this.x = x
-        this.y = y
+        this._x = x
+        this._y = y
         this._getWindow().then(win => win.moveTo(x, y));
     }
     getPosition() {
         const win = this.window
-        return [win?.x || this.x, win?.y || this.y]
+        return [win?.x || this._x, win?.y || this._y]
     }
     setTitle(title) {
         this._getWindow().then(win => win.title = title);
@@ -427,7 +541,7 @@ class BrowserWindow {
         this._getWindow().then(win => win.setShowInTaskbar(!skip));
     }
     setKiosk(kiosk) {
-        this.kiosk = kiosk
+        this._kiosk = kiosk
         this._getWindow().then(win => {
             if (kiosk) {
                 win.enterKioskMode()
@@ -438,7 +552,7 @@ class BrowserWindow {
         });
     }
     isKiosk() {
-        return this.kiosk
+        return this._kiosk
     }
     // isTabletMode
     // getMediaSourceId
@@ -447,10 +561,22 @@ class BrowserWindow {
     // isWindowMessageHooked
     // unhookWindowMessage
     // unhookAllWindowMessages
-    // setRepresentedFilename
-    // getRepresentedFilename
-    // setDocumentEdited
-    // isDocumentEdited
+    setRepresentedFilename(representedFilename) {
+        if (representedFilename) {
+            throwUnsupportedException("BrowserWindow.setRepresentedFilename isn't implemented")
+        }
+    }
+    getRepresentedFilename() {
+        return undefined
+    }
+    setDocumentEdited(documentEdited) {
+        if (!documentEdited) {
+            throwUnsupportedException("BrowserWindow.setDocumentEdited can't accept the value 'false'")
+        }
+    }
+    isDocumentEdited() {
+        return false
+    }
     // focusOnWebView
     // blurWebView
     capturePage(rect) {
@@ -484,7 +610,7 @@ class BrowserWindow {
         this._getWindow().then(win => win.reload());
     }
     setMenu(menu) {
-        const showMenubar = this._showMenubar
+        const showMenubar = this._menuBarVisible
         this.menu = menu
         this._getWindow().then(win => {
             win.menu = showMenubar ? (menu === null ? null : menu.mainMenu) : null
@@ -496,17 +622,21 @@ class BrowserWindow {
     // setProgressBar
     // setOverlayIcon
     setHasShadow(hasShadow) {
-        const that = this
-        this._getWindow().then(win => {
-            that.hasShadowValue = hasShadow;
-            win.setShadow(hasShadow);
-        });
+        this._shadow = hasShadow;
+        this._getWindow().then(win => win.setShadow(hasShadow));
     }
     hasShadow() {
-        return this.hasShadowValue;
+        return this._shadow;
     }
-    // setOpacity
-    // getOpacity
+    setOpacity(opacity) {
+        this._opacity = opacity
+        this._getWindow().then(win => {
+            // TODO: Change "opacity" (0.0 - 1.0) from the body DOM object
+        });
+    }
+    getOpacity() {
+        return this._opacity
+    }
     // setShape
     // setThumbarButtons
     // setThumbnailClip
@@ -516,30 +646,30 @@ class BrowserWindow {
     // setIcon
     // setWindowButtonVisibility
     setAutoHideMenuBar(hide) {
-        this.autoHideMenuBar = hide
-        this._showMenubar = hide
+        this._autoHideMenuBar = hide
+        this._menuBarVisible = hide
     }
     isMenuBarAutoHide() {
-        return this.autoHideMenuBar
+        return this._autoHideMenuBar
     }
     setMenuBarVisibility(visible) {
-        this._showMenubar = visible
+        this._menuBarVisible = visible
     }
     isMenuBarVisible() {
-        return this._showMenubar
+        return this._menuBarVisible
     }
     setVisibleOnAllWorkspaces(visible) {
-        this.visibleOnAllWorkspaces = visible
+        this._visibleOnAllWorkspaces = visible
         this._getWindow().then(win => win.setVisibleOnAllWorkspaces(visible));
     }
     isVisibleOnAllWorkspaces() {
-        return this.visibleOnAllWorkspaces
+        return this._visibleOnAllWorkspaces
     }
     // setIgnoreMouseEvents
     // setContentProtection
     setFocusable(focusable) {
         if (!focusable) {
-            throwUnsupportedException("Can't make windows not focusable")
+            throwUnsupportedException("BrowserWindow.setFocusable can't accept the value 'false'")
         }
     }
     isFocusable() {

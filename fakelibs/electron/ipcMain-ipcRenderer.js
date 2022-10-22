@@ -18,7 +18,7 @@
   object.
 */
 
-const BrowserWindow = require('./BrowserWindow')
+const BrowserWindowManager = require('./utils/BrowserWindowManager')
 
 global.__nwjs_ipcSharedMemory = global.__nwjs_ipcSharedMemory || {
     send: {},
@@ -28,12 +28,12 @@ var ipcSharedMemory = global.__nwjs_ipcSharedMemory
 
 const ipcRenderer = {
     on(channel, callback) {
-        BrowserWindow._getCurrentWindowAsync().then(win => win.webContents.on(channel, callback))
+        BrowserWindowManager.getCurrentWindow().then(win => win.webContents.on(channel, callback))
         return this
     },
     send(channel, ...args) {
         const event = new Event(channel)
-        const win = BrowserWindow._getCurrentWindow()
+        const win = BrowserWindowManager.getCurrentWindowSync()
         if (win) {
             event.sender = win.webContents
         }
@@ -49,7 +49,7 @@ const ipcRenderer = {
     },
     sendSync(channel, ...args) {
         const event = new Event(channel)
-        const win = BrowserWindow._getCurrentWindow()
+        const win = BrowserWindowManager.getCurrentWindowSync()
         if (win) {
             event.sender = win.webContents
         }
@@ -66,7 +66,7 @@ const ipcRenderer = {
     },
     async invoke(channel, ...args) {
         const event = new Event(channel)
-        const win = BrowserWindow._getCurrentWindow()
+        const win = BrowserWindowManager.getCurrentWindowSync()
         if (win) {
             event.sender = win.webContents
         }

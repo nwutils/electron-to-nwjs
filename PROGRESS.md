@@ -150,25 +150,25 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `static fromId`                        | 🌕🌕🌗🌑 | Working
 `webContents`                          | 🌕🌕🌗🌑 | Working
 `id`                                   | 🌕🌕🌗🌑 | Working
-`autoHideMenuBar`                      | 🌑🌑🌑🌑 | Not Planned
-`simpleFullScreen`                     | 🌑🌑🌑🌑 | Not Planned
-`fullScreen`                           | 🌑🌑🌑🌑 | Not Planned
-`focusable`                            | 🌑🌑🌑🌑 | Not Planned
-`visibleOnAllWorkspaces`               | 🌑🌑🌑🌑 | Not Planned
-`shadow`                               | 🌑🌑🌑🌑 | Not Planned
-`menuBarVisible`                       | 🌑🌑🌑🌑 | Not Planned
-`kiosk`                                | 🌑🌑🌑🌑 | Not Planned
-`documentEdited`                       | 🌑🌑🌑🌑 | Not Planned
-`representedFilename`                  | 🌑🌑🌑🌑 | Not Planned
-`title`                                | 🌑🌑🌑🌑 | Not Planned
-`minimizable`                          | 🌑🌑🌑🌑 | Not Planned
-`maximizable`                          | 🌑🌑🌑🌑 | Not Planned
-`fullScreenable`                       | 🌑🌑🌑🌑 | Not Planned
-`resizable`                            | 🌑🌑🌑🌑 | Not Planned
-`closable`                             | 🌑🌑🌑🌑 | Not Planned
-`movable`                              | 🌑🌑🌑🌑 | Not Planned
-`excludedFromShownWindowsMenu`         | 🌑🌑🌑🌑 | Not Planned
-`accessibleTitle`                      | 🌑🌑🌑🌑 | Not Planned
+`autoHideMenuBar`                      | 🌕🌕🌗🌑 | Working
+`simpleFullScreen`                     | 🌕🌕🌑🌑 | Partially Working
+`fullScreen`                           | 🌕🌕🌗🌑 | Working
+`focusable`                            | 🌕🌕🌑🌑 | Partially Working
+`visibleOnAllWorkspaces`               | 🌕🌕🌗🌑 | Working
+`shadow`                               | 🌕🌕🌗🌑 | Working
+`menuBarVisible`                       | 🌕🌕🌗🌑 | Working
+`kiosk`                                | 🌕🌕🌗🌑 | Working
+`documentEdited`                       | 🌕🌕🌑🌑 | Partially Working
+`representedFilename`                  | 🌕🌕🌑🌑 | Partially Working
+`title`                                | 🌕🌕🌗🌑 | Working
+`minimizable`                          | 🌕🌕🌑🌑 | Partially Working
+`maximizable`                          | 🌕🌕🌑🌑 | Partially Working
+`fullScreenable`                       | 🌕🌕🌑🌑 | Partially Working
+`resizable`                            | 🌕🌕🌗🌑 | Working
+`closable`                             | 🌕🌕🌑🌑 | Partially Working
+`movable`                              | 🌕🌕🌑🌑 | Partially Working
+`excludedFromShownWindowsMenu`         | 🌕🌕🌑🌑 | Partially Working
+`accessibleTitle`                      | 🌕🌕🌑🌑 | Partially Working
 `destroy`                              | 🌕🌕🌗🌑 | Working
 `close`                                | 🌕🌕🌗🌑 | Working
 `focus`                                | 🌕🌕🌗🌑 | Working
@@ -244,10 +244,10 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `isWindowMessageHooked`                | 🌑🌑🌑🌑 | Not Planned
 `unhookWindowMessage`                  | 🌑🌑🌑🌑 | Not Planned
 `unhookAllWindowMessages`              | 🌑🌑🌑🌑 | Not Planned
-`setRepresentedFilename`               | 🌑🌑🌑🌑 | Not Planned
-`getRepresentedFilename`               | 🌑🌑🌑🌑 | Not Planned
-`setDocumentEdited`                    | 🌑🌑🌑🌑 | Not Planned
-`isDocumentEdited`                     | 🌑🌑🌑🌑 | Not Planned
+`setRepresentedFilename`               | 🔴🔴🔴🔴 | On Hold
+`getRepresentedFilename`               | 🌕🌕🌑🌑 | Partially Working
+`setDocumentEdited`                    | 🔴🔴🔴🔴 | On Hold
+`isDocumentEdited`                     | 🌕🌕🌑🌑 | Partially Working
 `focusOnWebView`                       | 🌑🌑🌑🌑 | Not Planned
 `blurWebView`                          | 🌑🌑🌑🌑 | Not Planned
 `capturePage`                          | 🌕🌕🌑🌑 | Partially Working
