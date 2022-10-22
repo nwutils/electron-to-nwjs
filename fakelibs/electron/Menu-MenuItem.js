@@ -39,27 +39,19 @@ class MenuItemConstructorOptions {
 
 class MenuItem {
     constructor(options) {
-        this.label = options.label
-        this.click = options.click
-        this.tooltip = options.toolTip
-        this.enabled = options.enabled
-        this.checked = options.checked
+        this._label = options.label
+        this._click = options.click
+        this._tooltip = options.toolTip
+        this._enabled = options.enabled
+        this._checked = options.checked
         
-        let type = options.type
-        if (type === "radio") {
-            throwUnsupportedException("MenuItem.constructor 'options' argument can't support the 'radio' value on the 'type' property")
-            type = "normal"
-        }
-        if (!type || type === "submenu") {
-            type = "normal"
-        }
-        this.type = type
+        this.type = options.type
 
         if (options.submenu) {
             if (Array.isArray(options.submenu)) {
-                this.submenu = Menu.buildFromTemplate(options.submenu)
+                this._submenu = Menu.buildFromTemplate(options.submenu)
             } else {
-                this.submenu = options.submenu
+                this._submenu = options.submenu
             }
         }
 
@@ -67,8 +59,8 @@ class MenuItem {
 
         var that = this
         const menuItemOpts = {
-            label: this.label,
-            type: this.type,
+            label: this._label,
+            type: this._type === "submenu" ? "normal" : this._type,
             click: function() {
                 let keyboardEvent = {
                     ctrlKey: false,
@@ -77,31 +69,32 @@ class MenuItem {
                     altKey: false,
                     triggeredByAccelerator: false
                 }
-                if (that.click) {
-                    that.click(that, BrowserWindowManager.getFocusedWindow(), keyboardEvent)
+                if (that._click) {
+                    that._click(that, BrowserWindowManager.getFocusedWindow(), keyboardEvent)
                 }
             }
         }
 
-        if (this.tooltip !== undefined) {
-            menuItemOpts.tooltip = this.tooltip
+        if (this._tooltip !== undefined) {
+            menuItemOpts.tooltip = this._tooltip
         }
-        if (this.enabled !== undefined) {
-            menuItemOpts.enabled = this.enabled
+        if (this._enabled !== undefined) {
+            menuItemOpts.enabled = this._enabled
         }
-        if (this.checked !== undefined) {
-            menuItemOpts.checked = this.checked
+        if (this._checked !== undefined) {
+            menuItemOpts.checked = this._checked
         }
         //menuItemOpts.icon {String} Optional icon for normal item or checkbox
         //menuItemOpts.key {String} Optional the key of the shortcut
         //menuItemOpts.modifiers {String} Optional the modifiers of the shortcut
-        if (this.submenu) {
-            menuItemOpts.submenu = this.submenu.contextMenu
+        if (this._submenu) {
+            menuItemOpts.submenu = this._submenu.contextMenu
         }
         this.menuItem = new nw.MenuItem(menuItemOpts);
     }
 
     _updateOptionsBasedOnRole(role) {
+        this._role = role
         if (!role) {
             return
         }
@@ -111,19 +104,19 @@ class MenuItem {
             throw new Error(`Unknown role: ${role}`)
         }
         if (specs.label) {
-            this.label = specs.label
+            this._label = specs.label
         }
         if (specs.appMethod) {
-            this.click = specs.appMethod
+            this._click = specs.appMethod
         }
         if (specs.webContentsMethod) {
-            this.click = function() {
+            this._click = function() {
                 const win = BrowserWindowManager.getFocusedWindow()
                 specs.webContentsMethod(win.webContents)
             }
         }
         if (specs.windowMethod) {
-            this.click = function() {
+            this._click = function() {
                 const win = BrowserWindowManager.getFocusedWindow()
                 specs.windowMethod(win)
             }
@@ -132,8 +125,73 @@ class MenuItem {
         // specs.accelerator
         // specs.nonNativeMacOSRole
         if (specs.submenu) {
-            this.submenu = Menu.buildFromTemplate(specs.submenu)
+            this._submenu = Menu.buildFromTemplate(specs.submenu)
         }
+    }
+
+    get label() {
+        return this.menuItem.label
+    }
+    set label(val) {
+        this._label = val
+        this.menuItem.label = val
+    }
+    get click() {
+        return this._click
+    }
+    set click(val) {
+        this._click = val
+    }
+    get submenu() {
+        return this._submenu
+    }
+    set submenu(val) {
+        this._submenu = val
+        this.menuItem.submenu = val.contextMenu
+    }
+    get type() {
+        return this._type
+    }
+    set type(val) {
+        let type = val
+        if (type === "radio") {
+            throwUnsupportedException("MenuItem.constructor 'options' argument can't support the 'radio' value on the 'type' property")
+            type = "checkbox"
+        }
+        if (!type) {
+            type = "normal"
+        }
+        this._type = type
+        this.menuItem.type = this._type === "submenu" ? "normal" : this._type
+    }
+    get role() {
+        return this._role
+    }
+    set role(val) {
+        this._updateOptionsBasedOnRole(val)
+        this.label = this._label
+        this.submenu = this._submenu
+    }
+    get toolTip() {
+        return this._tooltip
+    }
+    set toolTip(val) {
+        this._tooltip = val
+        this.menuItem.tooltip = val
+    }
+    get enabled() {
+        return this._enabled
+    }
+    set enabled(val) {
+        this._enabled = val
+        this.menuItem.enabled = val
+    }
+    get checked() {
+        return this._checked
+    }
+    set checked(val) {
+        this._checked = val
+        this.menuItem.checked = val
     }
 }
 

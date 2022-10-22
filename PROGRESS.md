@@ -446,19 +446,19 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 :--                                    | :--        | :--
 `constructor`                          | 🌕🌕🌑🌑 | Partially Working
 `id`                                   | 🌑🌑🌑🌑 | Not Planned
-`label`                                | 🌑🌑🌑🌑 | Not Planned
-`click`                                | 🌑🌑🌑🌑 | Not Planned
-`submenu`                              | 🌑🌑🌑🌑 | Not Planned
-`type`                                 | 🌑🌑🌑🌑 | Not Planned
+`label`                                | 🌕🌕🌗🌑 | Working
+`click`                                | 🌕🌕🌗🌑 | Working
+`submenu`                              | 🌕🌕🌗🌑 | Working
+`type`                                 | 🌕🌕🌗🌑 | Working
 `role`                                 | 🌑🌑🌑🌑 | Not Planned
 `accelerator`                          | 🌑🌑🌑🌑 | Not Planned
 `userAccelerator`                      | 🌑🌑🌑🌑 | Not Planned
 `icon`                                 | 🌑🌑🌑🌑 | Not Planned
 `sublabel`                             | 🌑🌑🌑🌑 | Not Planned
-`toolTip`                              | 🌑🌑🌑🌑 | Not Planned
-`enabled`                              | 🌑🌑🌑🌑 | Not Planned
+`toolTip`                              | 🌕🌕🌗🌑 | Working
+`enabled`                              | 🌕🌕🌗🌑 | Working
 `visible`                              | 🌑🌑🌑🌑 | Not Planned
-`checked`                              | 🌑🌑🌑🌑 | Not Planned
+`checked`                              | 🌕🌕🌗🌑 | Working
 `registerAccelerator`                  | 🌑🌑🌑🌑 | Not Planned
 `sharingItem`                          | 🌑🌑🌑🌑 | Not Planned
 `commandId`                            | 🌑🌑🌑🌑 | Not Planned
