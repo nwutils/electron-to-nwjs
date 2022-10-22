@@ -25,7 +25,7 @@ class BrowserWindow {
 
         const id = Math.floor(Math.random() * 1000000000);
         
-        this.webContents = new WebContents(this);
+        this._webContents = new WebContents(this);
         this._id = id;
         this._autoHideMenuBar = opts.autoHideMenuBar || false;
         this._simpleFullscreen = opts.simpleFullscreen || false;
@@ -68,7 +68,7 @@ class BrowserWindow {
         this._acceptFirstMouse = opts.acceptFirstMouse || false;
         this._disableAutoHideCursor = opts.disableAutoHideCursor || false;
         this._enableLargerThanScreen = opts.enableLargerThanScreen || false;
-        this._backgroundColor = opts.backgroundColor || "#FFF"; // Hex, RGB, RGBA, HSL, HSLA or named CSS color format
+        this._backgroundColor = opts.backgroundColor || "#FFF";
         this._opacity = opts.opacity || 1.0;
         this._darkTheme = opts.darkTheme || false;
         this._transparent = opts.transparent || false;
@@ -168,6 +168,7 @@ class BrowserWindow {
 
                 that.setMenu(global.__nwjs_app_menu)
                 that.setOpacity(that._opacity)
+                that.setBackgroundColor(that._backgroundColor)
 
                 if (that._center) {
                     that.center()
@@ -209,6 +210,9 @@ class BrowserWindow {
 
 
 
+    get webContents() {
+        return this._webContents
+    }
     get id() {
         return this._id
     }
@@ -395,11 +399,19 @@ class BrowserWindow {
     }
     // isNormal
     // setAspectRatio
-    // setBackgroundColor: Hex, RGB, RGBA, HSL, HSLA or named CSS color format
+    setBackgroundColor(backgroundColor) {
+        this._backgroundColor = backgroundColor
+        this._getWindow().then(win => {
+            const document = win.window.document
+            document.body.style["background-color"] = backgroundColor;
+        });
+    }
+    getBackgroundColor() {
+        return this._backgroundColor
+    }
     // previewFile
     // closeFilePreview
     // setBounds
-    // getBackgroundColor
     // setContentBounds
     // getContentBounds
     // getNormalBounds
