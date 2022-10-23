@@ -162,7 +162,9 @@ class MenuItem {
             type = "normal"
         }
         this._type = type
-        this.menuItem.type = this._type === "submenu" ? "normal" : this._type
+        if (this.menuItem) {
+            this.menuItem.type = this._type === "submenu" ? "normal" : this._type
+        }
     }
     get role() {
         return this._role

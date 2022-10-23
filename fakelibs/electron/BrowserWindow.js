@@ -33,7 +33,7 @@ class BrowserWindow {
         this._focusable = opts.focusable === undefined ? true : opts.focusable;
         this._visibleOnAllWorkspaces = opts.visibleOnAllWorkspaces || false;
         this._shadow = opts.hasShadow === undefined ? true : opts.hasShadow;
-        this._menuBarVisible = opts.menuBarVisible || opts.autoHideMenuBar !== true;
+        this._menuBarVisible = opts.menuBarVisible || (opts.autoHideMenuBar !== true);
         this._kiosk = opts.kiosk || false;
         this._documentEdited = opts.documentEdited || false;
         this._representedFilename = opts.representedFilename;
@@ -225,7 +225,7 @@ class BrowserWindow {
     get simpleFullScreen() {
         return this.isSimpleFullScreen()
     }
-    set simpleFullscreen(val) {
+    set simpleFullScreen(val) {
         this.setSimpleFullScreen(val)
     }
     get fullscreen() {
@@ -625,10 +625,10 @@ class BrowserWindow {
         this._getWindow().then(win => win.reload());
     }
     setMenu(menu) {
-        const showMenubar = this._menuBarVisible
         this.menu = menu
+        let that = this
         this._getWindow().then(win => {
-            win.menu = showMenubar ? (menu === null ? null : menu.mainMenu) : null
+            win.menu = that._menuBarVisible ? (that.menu === null ? null : that.menu.mainMenu) : null
         });
     }
     removeMenu() {
