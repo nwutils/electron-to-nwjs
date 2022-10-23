@@ -174,6 +174,7 @@ const program = new Command();
 program
   .command('start <dir>')
   .description('start an Electron project with NW.js')
+  .option('-v, --nwjs-version <version>', 'NW.js version', latestNwjsVersion)
   .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
   .action(function(dir) {
     const opts = this.opts()
@@ -185,7 +186,7 @@ program
             appName: config.appName,
             appVersion: config.appVersion,
             files: config.files,
-            version: latestNwjsVersion
+            version: opts.nwjsVersion
         });
 
         nw.on('log', console.log);
