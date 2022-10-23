@@ -16,7 +16,7 @@ const NwBuilder = require('nw-builder');
 const defaults = require('./defaults');
 const HtmlTranspiler = require('./scripts/transpile-html');
 const JsTranspiler = require('./scripts/transpile-js');
-const latestNwjsVersion = defaults.nwjsLatestVersion;
+const latestNwjsVersion = defaults.nwjsVersion;
 const getCurrentOs = function () {
     let platform = os_1.default.platform();
     if (platform === 'darwin') {

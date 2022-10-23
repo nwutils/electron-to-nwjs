@@ -1,3 +1,3 @@
 module.exports = {
-    nwjsLatestVersion: "0.69.1"
+    nwjsVersion: "0.69.1"
 }

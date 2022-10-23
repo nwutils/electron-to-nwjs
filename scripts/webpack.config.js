@@ -1,15 +1,12 @@
-
-// NW.js 0.14.7 includes Chromium 50.0.2661.102 and Node.js 5.11.1
-// https://nodejs.org/dist/latest-v5.x/docs/api/
-
 const fs = require('fs')
 const path = require('path')
 const cheerio = require('cheerio')
 const child_process = require('child_process')
 const glob = require('simple-glob')
 const defaults = require('../defaults')
+const Versions = require('./utils/versions')
 
-const latestNwjsVersion = defaults.nwjsLatestVersion
+const defaultNwjsVersion = defaults.nwjsVersion
 
 module.exports = (env, argv) => {
     const projectPath = env.projectPath
@@ -20,7 +17,33 @@ module.exports = (env, argv) => {
     const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
     const nwjs = projectPackageJson.nwjs || {}
-    const nwjsVersion = (env.prod ? nwjs.buildVersion : nwjs.runVersion) || nwjs.version || latestNwjsVersion
+    const nwjsVersion = (env.prod ? nwjs.buildVersion : nwjs.runVersion) || nwjs.version || defaultNwjsVersion
+
+    // NW.js 0.14.7 includes Chromium 50.0.2661.102 and Node.js 5.11.1
+    // https://nwjs.io/blog/
+
+    let nodeVersionByNwjsVersion = [
+        ["0.15.0", "6"],
+        ["0.18.3", "7"],
+        ["0.23.0", "8"],
+        ["0.26.3", "9"],
+        ["0.30.1", "10"],
+        ["0.34.1", "11"],
+        ["0.38.1", "12"],
+        ["0.42.1", "13"],
+        ["0.45.4", "14"],
+        ["0.49.2", "15"],
+        ["0.53.1", "16"],
+        ["0.59.0", "17"],
+        ["0.64.1", "18"]
+    ]
+    let nodeVersionTarget = "5"
+    nodeVersionByNwjsVersion.forEach(entry => {
+        if (Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, entry[0])) {
+            nodeVersionTarget = entry[1]
+        }
+    })
+    let addPolyfill = ["5", "6", "7"].includes(nodeVersionTarget)
 
     const jsFiles = []
     if (env.main === true) {
@@ -51,24 +74,27 @@ module.exports = (env, argv) => {
     const jsFileByOutputFile = {}
     if (env.main === true) {
         let jsFile = jsFiles[0];
-        jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [
+        let jsFileName = jsFile.substring(0, jsFile.length - 3)
+        jsFileByOutputFile[jsFileName] = [
             path.resolve(fakeLibsFolder, 'pre-main.js'),
             path.resolve(projectPath, jsFile),
             path.resolve(fakeLibsFolder, 'post-main.js')
         ]
+        if (addPolyfill) {
+            jsFileByOutputFile[jsFileName].unshift('regenerator-runtime/runtime');
+            jsFileByOutputFile[jsFileName].unshift('core-js/stable');
+        }
     }
     else {
-        // TODO: That may be needed later
-        //files.unshift('babel-polyfill');
         jsFiles.forEach(jsFile => {
             jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [path.resolve(projectPath, jsFile)]
         })
     }
 
     return {
-        target: ['nwjs', 'node5'],
+        target: ['nwjs', `node${nodeVersionTarget}`],
         entry: jsFileByOutputFile,
-        mode: "production",
+        mode: env.prod ? "production" : "development",
         output: {
             path: outputPath,
             filename: '[name].js'
@@ -129,7 +155,7 @@ module.exports = (env, argv) => {
                     loader: 'string-replace-loader',
                     options: {
                         search: '__nwjs_is_main',
-                        replace: env.main ? "true" : "false",
+                        replace: JSON.stringify(env.main),
                         flags: 'g'
                     }
                 },
@@ -138,7 +164,7 @@ module.exports = (env, argv) => {
                     loader: 'string-replace-loader',
                     options: {
                         search: '__nwjs_is_packaged',
-                        replace: env.prod ? "true" : "false",
+                        replace: JSON.stringify(env.prod),
                         flags: 'g'
                     }
                 },
@@ -147,7 +173,7 @@ module.exports = (env, argv) => {
                     loader: 'string-replace-loader',
                     options: {
                         search: '__nwjs_ignore_unimplemented_features',
-                        replace: env.ignoreUnimplementedFeatures ? "true" : "false",
+                        replace: JSON.stringify(ignoreUnimplementedFeatures),
                         flags: 'g'
                     }
                 },
@@ -158,8 +184,7 @@ module.exports = (env, argv) => {
                         loader: 'babel-loader',
                         options: {
                             sourceType: "script",
-                            presets: [['@babel/preset-env', {useBuiltIns: 'usage', corejs:'2'}]],
-                            plugins: ["@babel/plugin-transform-async-to-generator"]
+                            presets: [['@babel/preset-env']]
                         }
                     }
                 }
