@@ -92,7 +92,7 @@ module.exports = (env, argv) => {
         })
     }
 
-    return {
+    const config = {
         target: [`nwjs${nwjsVersionRedux}`],
         entry: jsFileByOutputFile,
         mode: env.prod ? "production" : "development",
@@ -195,4 +195,10 @@ module.exports = (env, argv) => {
             minimize: false
         }
     }
+
+    console.log("About to start webpack...")
+    console.log(`Target: ${config.target}`)
+    console.log(`Mode: ${config.mode}`)
+
+    return config
 };
