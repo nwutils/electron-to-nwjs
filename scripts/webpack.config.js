@@ -18,6 +18,7 @@ module.exports = (env, argv) => {
     const projectPackageJson = JSON.parse(projectPackageStr)
     const nwjs = projectPackageJson.nwjs || {}
     const nwjsVersion = (env.prod ? nwjs.buildVersion : nwjs.runVersion) || nwjs.version || defaultNwjsVersion
+    const nwjsVersionRedux = nwjsVersion.split(".").slice(0, 2).join(".")
 
     // NW.js 0.14.7 includes Chromium 50.0.2661.102 and Node.js 5.11.1
     // https://nwjs.io/blog/
@@ -92,7 +93,7 @@ module.exports = (env, argv) => {
     }
 
     return {
-        target: ['nwjs', `node${nodeVersionTarget}`],
+        target: [`nwjs${nwjsVersionRedux}`],
         entry: jsFileByOutputFile,
         mode: env.prod ? "production" : "development",
         output: {
