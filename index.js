@@ -68,7 +68,7 @@ const onTmpFolder = async function (callback) {
     finally {
         try {
             if (tmpDir) {
-                //fs.rmdirSync(tmpDir, { recursive: true });
+                fs_1.default.rmdirSync(tmpDir, { recursive: true });
             }
         }
         catch (e) {
@@ -93,7 +93,7 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
         await HtmlTranspiler({
             folder: tmpDir
         });
-        callback(tmpDir);
+        await callback(tmpDir);
     })
         .catch(e => console.error(e));
 };
@@ -191,26 +191,40 @@ program
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', dir);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts }, (tmpDir) => {
-        const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs());
-        var nw = new NwBuilder({
-            appName: config.appName,
-            appVersion: config.appVersion,
-            files: config.files,
-            version: opts.nwjsVersion
-        });
-        nw.on('log', console.log);
-        nw.on("stdout", (out) => {
-            console.log(Buffer.isBuffer(out) ? out.toString() : out);
-        });
-        nw.on("stderr", (out) => {
-            console.error(Buffer.isBuffer(out) ? out.toString() : out);
-        });
-        nw.run().then(function () {
-            console.info("App started");
-        })
-            .catch(function (error) {
-            console.error("App failed to start");
-            console.error(error);
+        return new Promise((resolve, reject) => {
+            const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs());
+            var nw = new NwBuilder({
+                appName: config.appName,
+                appVersion: config.appVersion,
+                files: config.files,
+                version: opts.nwjsVersion
+            });
+            nw.on('log', (log) => {
+                console.log(log);
+                let exitPrefix = "App exited with code ";
+                if (log.startsWith(exitPrefix)) {
+                    let exitCode = parseInt(log.substring(exitPrefix.length));
+                    if (exitCode === 0) {
+                        resolve(undefined);
+                    }
+                    else {
+                        reject(new Error(log));
+                    }
+                }
+            });
+            nw.on("stdout", (out) => {
+                console.log(Buffer.isBuffer(out) ? out.toString() : out);
+            });
+            nw.on("stderr", (out) => {
+                console.error(Buffer.isBuffer(out) ? out.toString() : out);
+            });
+            nw.run().then(function () {
+                console.info("App started");
+            })
+                .catch(function (error) {
+                console.error("App failed to start");
+                console.error(error);
+            });
         });
     });
 });
@@ -227,7 +241,7 @@ program
     .action(function () {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', opts.project);
-    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts: opts }, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts: opts }, async (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => opts[s]);
         if (platforms.length === 0) {
             platforms.push(getCurrentOs());

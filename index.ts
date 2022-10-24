@@ -57,6 +57,7 @@ const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     const appPrefix = 'electron-to-nwjs';
     try {
         tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
+        console.log(`Temporary folder: ${tmpDir}`)
         await callback(tmpDir)
     }
     catch (e) {
@@ -65,7 +66,7 @@ const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     finally {
         try {
             if (tmpDir) {
-                //fs.rmdirSync(tmpDir, { recursive: true });
+                fs.rmdirSync(tmpDir, { recursive: true });
             }
         }
         catch (e) {
@@ -74,7 +75,7 @@ const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     }
 }
 
-const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:boolean, opts:any}, callback:(tmpDir:string) => void) {
+const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:boolean, opts:any}, callback:(tmpDir:string) => Promise<void>) {
     const prebuildOutput = child_process.execSync("npm run nwjs:prebuild --if-present", {cwd:opts.projectDir, encoding:'utf-8'})
     console.log(prebuildOutput)
 
@@ -95,7 +96,7 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:b
             folder: tmpDir
         })
         
-        callback(tmpDir)
+        await callback(tmpDir)
     })
     .catch(e => console.error(e))
 }
@@ -209,30 +210,45 @@ program
     const opts = this.opts()
     const projectDir = path.resolve('.', dir)
     runPrebuildAndCreateNwjsProject({projectDir, prod:false, opts}, (tmpDir) => {
-        const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs())
+        return new Promise((resolve, reject) => {
+            const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs())
 
-        var nw = new NwBuilder({
-            appName: config.appName,
-            appVersion: config.appVersion,
-            files: config.files,
-            version: opts.nwjsVersion
-        });
-
-        nw.on('log', console.log);
-        nw.on("stdout", (out:string|Buffer) => {
-            console.log(Buffer.isBuffer(out) ? out.toString() : out)
-        });
-        nw.on("stderr", (out:string|Buffer) => {
-            console.error(Buffer.isBuffer(out) ? out.toString() : out)
-        });
-
-        nw.run().then(function(){
-            console.info("App started")
+            var nw = new NwBuilder({
+                appName: config.appName,
+                appVersion: config.appVersion,
+                files: config.files,
+                version: opts.nwjsVersion
+            });
+    
+            nw.on('log', (log:string) => {
+                console.log(log)
+    
+                let exitPrefix = "App exited with code "
+                if (log.startsWith(exitPrefix)) {
+                    let exitCode = parseInt(log.substring(exitPrefix.length))
+                    if (exitCode === 0) {
+                        resolve(undefined)
+                    }
+                    else {
+                        reject(new Error(log))
+                    }
+                }
+            });
+            nw.on("stdout", (out:string|Buffer) => {
+                console.log(Buffer.isBuffer(out) ? out.toString() : out)
+            });
+            nw.on("stderr", (out:string|Buffer) => {
+                console.error(Buffer.isBuffer(out) ? out.toString() : out)
+            });
+    
+            nw.run().then(function(){
+                console.info("App started")
+            })
+            .catch(function(error:Error) {
+                console.error("App failed to start");
+                console.error(error);
+            });
         })
-        .catch(function(error:Error) {
-            console.error("App failed to start");
-            console.error(error);
-        });
     })
   });
 
@@ -249,7 +265,7 @@ program
   .action(function() {
     const opts = this.opts()
     const projectDir = path.resolve('.', opts.project)
-    runPrebuildAndCreateNwjsProject({projectDir, prod:true, opts:opts}, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({projectDir, prod:true, opts:opts}, async (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => opts[s]) as ("mac"|"linux"|"win")[]
         if (platforms.length === 0) {
             platforms.push(getCurrentOs())
