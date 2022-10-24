@@ -22,7 +22,7 @@ module.exports = (env, argv) => {
     // NW.js 0.14.7 includes Chromium 50.0.2661.102 and Node.js 5.11.1
     // https://nwjs.io/blog/
 
-    let addPolyfill = !Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, "0.23.0")
+    const addPolyfill = !Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, "0.23.0")
 
     const jsFiles = []
     if (env.main === true) {
@@ -74,13 +74,6 @@ module.exports = (env, argv) => {
 
     const stringReplacements = [
         {
-            // Workaround for the lack of setImmediate
-            // https://github.com/nwjs/nw.js/issues/897
-
-            search: 'setImmediate',
-            replace: "global.setImmediate"
-        },
-        {
             // Workaround for the lack of __dirname
             // https://github.com/nwjs/nw.js/issues/264
 
@@ -114,6 +107,16 @@ module.exports = (env, argv) => {
             replace: JSON.stringify(ignoreUnimplementedFeatures)
         }
     ]
+
+    if (!addPolyfill) {
+        stringReplacements.unshift({
+            // Workaround for the lack of setImmediate
+            // https://github.com/nwjs/nw.js/issues/897
+
+            search: 'setImmediate',
+            replace: "global.setImmediate"
+        })
+    }
 
     const config = {
         target: [`nwjs${nwjsVersionRedux}`],
