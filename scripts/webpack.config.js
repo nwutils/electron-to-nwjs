@@ -66,7 +66,9 @@ module.exports = (env, argv) => {
     }
     else {
         jsFiles.forEach(jsFile => {
-            jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [path.resolve(projectPath, jsFile)]
+            jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [
+                path.resolve(projectPath, jsFile)
+            ]
         })
     }
 
@@ -99,6 +101,15 @@ module.exports = (env, argv) => {
                         replace: env.prod ?
                             "(require('path').dirname(process.execPath))" :
                             "(require('path').join(process.cwd(), require('path').dirname('[name].js')))",
+                        flags: 'g'
+                    }
+                },
+                {
+                    test: /\.js$/,
+                    loader: 'string-replace-loader',
+                    options: {
+                        search: 'setImmediate',
+                        replace: "global.setImmediate",
                         flags: 'g'
                     }
                 },

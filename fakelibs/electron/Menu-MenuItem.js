@@ -26,6 +26,7 @@
   needed, but that will require some refactoring.
 */
 
+const os = require('os')
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
 const MenuItemRoles = require('./utils/menu-item-roles')
 const throwUnsupportedException = require('./utils/unsupported-exception')
@@ -201,8 +202,11 @@ class Menu {
     constructor() {
         this.contextMenu = new nw.Menu();
         this.mainMenu = new nw.Menu({type:"menubar"});
-        this.mainMenu.createMacBuiltin(__nwjs_app_name);
         this.items = []
+        
+        if (os.platform() === "darwin") {
+            this.mainMenu.createMacBuiltin(__nwjs_app_name);
+        }
     }
 
     
