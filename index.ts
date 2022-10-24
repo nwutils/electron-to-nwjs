@@ -281,7 +281,7 @@ program
   .command('build')
   .description('build an Electron project with NW.js')
   .option('--projectDir, --project <dir>', 'The path to project directory. Defaults to current working directory.', '.')
-  .option('-m, -o, --mac, --macos', 'Build for macOS')
+  .option('-m, -o, --macos, --mac', 'Build for macOS')
   .option('-l, --linux', 'Build for Linux')
   .option('-w, --windows, --win', 'Build for Windows')
   .option('-v, --nwjs-version <version>', 'NW.js version', currentSystemRecommendedNwjsVersion())

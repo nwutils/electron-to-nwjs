@@ -55,6 +55,30 @@ const currentSystemRecommendedNwjsVersion = function () {
     }
     return "0.69.1";
 };
+const getNodeJsVersionByNwjsVersion = function (nwjsVersion) {
+    let nodeVersionByNwjsVersion = [
+        ["0.15.0", "6"],
+        ["0.18.3", "7"],
+        ["0.23.0", "8"],
+        ["0.26.3", "9"],
+        ["0.30.1", "10"],
+        ["0.34.1", "11"],
+        ["0.38.1", "12"],
+        ["0.42.1", "13"],
+        ["0.45.4", "14"],
+        ["0.49.2", "15"],
+        ["0.53.1", "16"],
+        ["0.59.0", "17"],
+        ["0.64.1", "18"]
+    ];
+    let nodeVersionTarget = "5";
+    nodeVersionByNwjsVersion.forEach(entry => {
+        if (Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, entry[0])) {
+            nodeVersionTarget = entry[1];
+        }
+    });
+    return nodeVersionTarget;
+};
 const onTmpFolder = async function (callback) {
     let tmpDir;
     const appPrefix = 'electron-to-nwjs';
@@ -233,7 +257,7 @@ program
     .command('build')
     .description('build an Electron project with NW.js')
     .option('--projectDir, --project <dir>', 'The path to project directory. Defaults to current working directory.', '.')
-    .option('-m, -o, --mac, --macos', 'Build for macOS')
+    .option('-m, -o, --macos, --mac', 'Build for macOS')
     .option('-l, --linux', 'Build for Linux')
     .option('-w, --windows, --win', 'Build for Windows')
     .option('-v, --nwjs-version <version>', 'NW.js version', currentSystemRecommendedNwjsVersion())
