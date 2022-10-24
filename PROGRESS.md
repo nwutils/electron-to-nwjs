@@ -33,8 +33,8 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `quit`                                 | 🌕🌕🌗🌑 | Working
 `exit`                                 | 🌑🌑🌑🌑 | Not Planned
 `relaunch`                             | 🌕🌑🌑🌑 | Planned
-`isReady`                              | 🌑🌑🌑🌑 | Not Planned
-`whenReady`                            | 🌑🌑🌑🌑 | Not Planned
+`isReady`                              | 🌕🌕🌗🌑 | Working
+`whenReady`                            | 🌕🌕🌗🌑 | Working
 `focus`                                | 🌑🌑🌑🌑 | Not Planned
 `hide`                                 | 🌑🌑🌑🌑 | Not Planned
 `isHidden`                             | 🌑🌑🌑🌑 | Not Planned
@@ -775,3 +775,4 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 **Variables**                          | **Rating** | **Status**
 :--                                    | :--        | :--
 `__dirname`                            | 🌕🌕🌗🌑 | Working
+`setImmediate`                         | 🌕🌕🌗🌑 | Working
