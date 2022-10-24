@@ -72,6 +72,46 @@ module.exports = (env, argv) => {
         })
     }
 
+    const stringReplacements = [
+        {
+            search: '__dirname',
+            replace: env.prod ?
+                "(require('path').dirname(process.execPath))" :
+                "(require('path').join(process.cwd(), require('path').dirname('[name].js')))",
+        },
+        {
+            // Workaround for the bug below
+            // https://github.com/nwjs/nw.js/issues/897
+            
+            search: 'setImmediate',
+            replace: "global.setImmediate"
+        },
+        {
+            search: '__nwjs_version',
+            replace: JSON.stringify(nwjsVersion)
+        },
+        {
+            search: '__nwjs_app_version',
+            replace: JSON.stringify(projectPackageJson.version)
+        },
+        {
+            search: '__nwjs_app_name',
+            replace: JSON.stringify((projectPackageJson.build || {}).productName || projectPackageJson.name)
+        },
+        {
+            search: '__nwjs_is_main',
+            replace: JSON.stringify(env.main)
+        },
+        {
+            search: '__nwjs_is_packaged',
+            replace: JSON.stringify(env.prod)
+        },
+        {
+            search: '__nwjs_ignore_unimplemented_features',
+            replace: JSON.stringify(ignoreUnimplementedFeatures)
+        }
+    ]
+
     const config = {
         target: [`nwjs${nwjsVersionRedux}`],
         entry: jsFileByOutputFile,
@@ -92,93 +132,30 @@ module.exports = (env, argv) => {
             topLevelAwait: true
         },
         module: {
-            rules: [
-                {
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    options: {
-                        search: '__dirname',
-                        replace: env.prod ?
-                            "(require('path').dirname(process.execPath))" :
-                            "(require('path').join(process.cwd(), require('path').dirname('[name].js')))",
-                        flags: 'g'
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    options: {
-                        search: 'setImmediate',
-                        replace: "global.setImmediate",
-                        flags: 'g'
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    options: {
-                        search: '__nwjs_version',
-                        replace: JSON.stringify(nwjsVersion),
-                        flags: 'g'
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    options: {
-                        search: '__nwjs_app_version',
-                        replace: JSON.stringify(projectPackageJson.version),
-                        flags: 'g'
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    options: {
-                        search: '__nwjs_app_name',
-                        replace: JSON.stringify((projectPackageJson.build || {}).productName || projectPackageJson.name),
-                        flags: 'g'
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    options: {
-                        search: '__nwjs_is_main',
-                        replace: JSON.stringify(env.main),
-                        flags: 'g'
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    options: {
-                        search: '__nwjs_is_packaged',
-                        replace: JSON.stringify(env.prod),
-                        flags: 'g'
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    options: {
-                        search: '__nwjs_ignore_unimplemented_features',
-                        replace: JSON.stringify(ignoreUnimplementedFeatures),
-                        flags: 'g'
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    exclude: /node_modules/,
-                    use: {
-                        loader: 'babel-loader',
+            rules: (stringReplacements.map(rep => {
+                    return {
+                        test: /\.js$/,
+                        loader: 'string-replace-loader',
                         options: {
-                            sourceType: "script",
-                            presets: [['@babel/preset-env']]
+                            search: rep.search,
+                            replace: rep.replace,
+                            flags: 'g'
                         }
                     }
-                }
-            ]
+                })).concat([
+                    {
+                        test: /\.js$/,
+                        exclude: /node_modules/,
+                        use: {
+                            loader: 'babel-loader',
+                            options: {
+                                sourceType: "script",
+                                presets: [['@babel/preset-env']]
+                            }
+                        }
+                    }
+                ]
+            )
         },
         optimization: {
             minimize: false
