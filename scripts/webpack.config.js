@@ -1,4 +1,5 @@
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const cheerio = require('cheerio')
 const child_process = require('child_process')
@@ -7,6 +8,37 @@ const defaults = require('../defaults')
 const Versions = require('./utils/versions')
 
 const defaultNwjsVersion = defaults.nwjsVersion
+
+const currentSystemRecommendedNwjsVersion = function() {
+    // Reference:
+    // https://nwjs.io/blog/
+    
+    let platform = os.platform()
+    if (platform === "darwin") {
+        let osVersion = child_process.execSync("sw_vers -productVersion").toString().trim()
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.7")) {
+            // https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V6.md
+            // MACOSX_DEPLOYMENT_TARGET has been bumped up to 10.7 #6402.
+            return "0.14.7"
+        }
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.10")) {
+            // https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V12.md
+            // increase MACOS_DEPLOYMENT_TARGET to 10.10 (Rod Vagg) #27275
+            return "0.37.4"
+        }
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.13")) {
+            // https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V14.md
+            // update macos deployment target to 10.13 for 14.x (AshCripps) #32454
+            return "0.45.3"
+        }
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.15")) {
+            // https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V18.md
+            // bump macOS deployment target to 10.15 (Richard Lau) #42292
+            return "0.64.0"
+        }
+    }
+    return defaultNwjsVersion
+}
 
 module.exports = (env, argv) => {
     const projectPath = env.projectPath
@@ -17,34 +49,13 @@ module.exports = (env, argv) => {
     const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
     const nwjs = projectPackageJson.nwjs || {}
-    const nwjsVersion = (env.prod ? nwjs.buildVersion : nwjs.runVersion) || nwjs.version || defaultNwjsVersion
+    const nwjsVersion = (env.prod ? nwjs.buildVersion : nwjs.runVersion) || nwjs.version || currentSystemRecommendedNwjsVersion()
     const nwjsVersionRedux = nwjsVersion.split(".").slice(0, 2).join(".")
 
     // NW.js 0.14.7 includes Chromium 50.0.2661.102 and Node.js 5.11.1
     // https://nwjs.io/blog/
 
-    let nodeVersionByNwjsVersion = [
-        ["0.15.0", "6"],
-        ["0.18.3", "7"],
-        ["0.23.0", "8"],
-        ["0.26.3", "9"],
-        ["0.30.1", "10"],
-        ["0.34.1", "11"],
-        ["0.38.1", "12"],
-        ["0.42.1", "13"],
-        ["0.45.4", "14"],
-        ["0.49.2", "15"],
-        ["0.53.1", "16"],
-        ["0.59.0", "17"],
-        ["0.64.1", "18"]
-    ]
-    let nodeVersionTarget = "5"
-    nodeVersionByNwjsVersion.forEach(entry => {
-        if (Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, entry[0])) {
-            nodeVersionTarget = entry[1]
-        }
-    })
-    let addPolyfill = ["5", "6", "7"].includes(nodeVersionTarget)
+    let addPolyfill = Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, "0.23.0")
 
     const jsFiles = []
     if (env.main === true) {
