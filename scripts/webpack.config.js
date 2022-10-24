@@ -140,10 +140,11 @@ module.exports = (env, argv) => {
             topLevelAwait: true
         },
         module: {
-            rules: [{
+            rules: [
+                {
                     test: /\.js$/,
                     loader: 'string-replace-loader',
-                    exclude: /node_modules\/core-js\//,
+                    exclude: /node_modules\/(core-js|([^\/]*babel[^\/]*))\//,
                     options: {
                         multiple: stringReplacements.map(rep => {
                             return {
