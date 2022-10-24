@@ -60,6 +60,7 @@ const onTmpFolder = async function (callback) {
     const appPrefix = 'electron-to-nwjs';
     try {
         tmpDir = fs_1.default.mkdtempSync(path_1.default.join(os_1.default.tmpdir(), appPrefix));
+        console.log(`Temporary folder: ${tmpDir}`);
         await callback(tmpDir);
     }
     catch (e) {
