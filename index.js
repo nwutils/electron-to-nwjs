@@ -215,6 +215,7 @@ program
     .action(function (dir) {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', dir);
+    opts.nodeVersion = getNodeJsVersionByNwjsVersion(opts.nwjsVersion);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts }, (tmpDir) => {
         return new Promise((resolve, reject) => {
             const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs());
@@ -266,7 +267,8 @@ program
     .action(function () {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', opts.project);
-    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts: opts }, async (tmpDir) => {
+    opts.nodeVersion = getNodeJsVersionByNwjsVersion(opts.nwjsVersion);
+    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts }, async (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => opts[s]);
         if (platforms.length === 0) {
             platforms.push(getCurrentOs());

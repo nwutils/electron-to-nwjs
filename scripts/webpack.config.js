@@ -165,6 +165,9 @@ module.exports = (env, argv) => {
                             sourceType: "script",
                             presets: [['@babel/preset-env', {
                                 useBuiltIns: "usage",
+                                targets: {
+                                    node: opts.nodeVersion
+                                },
                                 corejs: 3
                             }]]
                         }
