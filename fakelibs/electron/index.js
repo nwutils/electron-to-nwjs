@@ -1,4 +1,5 @@
 const app = require('./app')
+const autoUpdater = require('./autoUpdater')
 const BrowserWindow = require('./BrowserWindow')
 const ContextMenuParams = require('./ContextMenuParams')
 const dialog = require('./dialog')
@@ -37,7 +38,7 @@ if (!__nwjs_is_main) {
 if (__nwjs_is_main) {
     module.exports = {
         app,
-        // autoUpdater
+        autoUpdater,
         // BrowserView
         BrowserWindow,
         // clipboard
