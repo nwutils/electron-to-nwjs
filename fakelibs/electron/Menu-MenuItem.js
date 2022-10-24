@@ -201,6 +201,7 @@ class Menu {
     constructor() {
         this.contextMenu = new nw.Menu();
         this.mainMenu = new nw.Menu({type:"menubar"});
+        this.mainMenu.createMacBuiltin(__nwjs_app_name);
         this.items = []
     }
 
