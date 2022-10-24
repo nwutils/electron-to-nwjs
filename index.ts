@@ -6,11 +6,9 @@ import fse from 'fs-extra'
 import { Command } from 'commander';
 import plistUtils from 'plist'
 const NwBuilder = require('nw-builder');
-const defaults = require('./defaults')
 const HtmlTranspiler = require('./scripts/transpile-html')
 const JsTranspiler = require('./scripts/transpile-js')
-
-const latestNwjsVersion = defaults.nwjsVersion
+const Versions = require('./scripts/utils/versions')
 
 const getCurrentOs = function() {
     let platform = os.platform()
@@ -21,6 +19,37 @@ const getCurrentOs = function() {
         return 'linux'
     }
     return 'win'
+}
+
+const currentSystemRecommendedNwjsVersion = function() {
+    // Reference:
+    // https://nwjs.io/blog/
+    
+    let platform = getCurrentOs()
+    if (platform === "mac") {
+        let osVersion = child_process.execSync("sw_vers -productVersion").toString().trim()
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.7")) {
+            // https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V6.md
+            // MACOSX_DEPLOYMENT_TARGET has been bumped up to 10.7 #6402.
+            return "0.14.7"
+        }
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.10")) {
+            // https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V12.md
+            // increase MACOS_DEPLOYMENT_TARGET to 10.10 (Rod Vagg) #27275
+            return "0.37.4"
+        }
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.13")) {
+            // https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V14.md
+            // update macos deployment target to 10.13 for 14.x (AshCripps) #32454
+            return "0.45.3"
+        }
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.15")) {
+            // https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V18.md
+            // bump macOS deployment target to 10.15 (Richard Lau) #42292
+            return "0.64.0"
+        }
+    }
+    return "0.69.1"
 }
 
 const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
@@ -174,7 +203,7 @@ const program = new Command();
 program
   .command('start <dir>')
   .description('start an Electron project with NW.js')
-  .option('-v, --nwjs-version <version>', 'NW.js version', latestNwjsVersion)
+  .option('-v, --nwjs-version <version>', 'NW.js version', currentSystemRecommendedNwjsVersion())
   .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
   .action(function(dir) {
     const opts = this.opts()
@@ -214,7 +243,7 @@ program
   .option('-m, -o, --mac, --macos', 'Build for macOS')
   .option('-l, --linux', 'Build for Linux')
   .option('-w, --windows, --win', 'Build for Windows')
-  .option('-v, --nwjs-version <version>', 'NW.js version', latestNwjsVersion)
+  .option('-v, --nwjs-version <version>', 'NW.js version', currentSystemRecommendedNwjsVersion())
   .option('--x86', 'Build for x86')
   .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
   .action(function() {
