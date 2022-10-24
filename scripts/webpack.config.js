@@ -22,7 +22,7 @@ module.exports = (env, argv) => {
     // NW.js 0.14.7 includes Chromium 50.0.2661.102 and Node.js 5.11.1
     // https://nwjs.io/blog/
 
-    let addPolyfill = Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, "0.23.0")
+    let addPolyfill = !Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, "0.23.0")
 
     const jsFiles = []
     if (env.main === true) {
