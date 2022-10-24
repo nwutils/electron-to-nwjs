@@ -775,4 +775,6 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 **Variables**                          | **Rating** | **Status**
 :--                                    | :--        | :--
 `__dirname`                            | 🌕🌕🌗🌑 | Working
-`setImmediate`                         | 🌕🌕🌗🌑 | Working
+`*setImmediate`                        | 🌕🌕🌗🌑 | Working
+
+**\*:** Being added automatically by Babel.
