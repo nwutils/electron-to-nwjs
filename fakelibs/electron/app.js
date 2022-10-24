@@ -53,8 +53,27 @@ const app = {
     relaunch() {
         // https://github.com/nwjs/nw.js/issues/149
     },
-    // isReady()
-    // whenReady()
+    _ready() {
+        this._isReady = true
+        this.dispatchEvent(new Event("ready"));
+    },
+    isReady() {
+        return this._isReady === true
+    },
+    whenReady() {
+        let that = this
+        return new Promise((resolve, reject) => {
+            let test = function() {
+                if (that._isReady === true) {
+                    resolve()
+                }
+                else {
+                    setTimeout(test, 100)
+                }
+            }
+            test()
+        })
+    },
     // focus([options])
     // hide() (macOS only)
     // isHidden() (macOS only)

@@ -12,4 +12,4 @@ var option = {
 var shortcut = new nw.Shortcut(option);
 nw.App.registerGlobalHotKey(shortcut);
 
-electron.app.dispatchEvent(new Event("ready"));
+electron.app._ready()
