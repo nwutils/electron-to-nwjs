@@ -143,10 +143,11 @@ module.exports = (env, argv) => {
             rules: [{
                     test: /\.js$/,
                     loader: 'string-replace-loader',
+                    exclude: /node_modules\/core-js\//,
                     options: {
                         multiple: stringReplacements.map(rep => {
                             return {
-                                search: `[^\\w\\d_](${rep.search})[^\\w\\d_]`,
+                                search: `[^\\w\\d_\\.](${rep.search})[^\\w\\d_]`,
                                 replace(match) {
                                     return match.replace(rep.search, rep.replace)
                                 },
