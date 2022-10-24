@@ -52,21 +52,23 @@ module.exports = (env, argv) => {
     
     const jsFileByOutputFile = {}
     if (env.main === true) {
-        let jsFile = jsFiles[0];
-        let jsFileName = jsFile.substring(0, jsFile.length - 3)
-        jsFileByOutputFile[jsFileName] = [
-            path.resolve(fakeLibsFolder, 'pre-main.js'),
-            path.resolve(projectPath, jsFile),
-            path.resolve(fakeLibsFolder, 'post-main.js')
-        ]
-        if (addPolyfill) {
-            jsFileByOutputFile[jsFileName].unshift('regenerator-runtime/runtime');
-            jsFileByOutputFile[jsFileName].unshift('core-js/stable');
-        }
+        jsFiles.forEach(jsFile => {
+            let jsFileName = jsFile.substring(0, jsFile.length - 3)
+            jsFileByOutputFile[jsFileName] = [
+                path.resolve(fakeLibsFolder, 'pre-main.js'),
+                path.resolve(projectPath, jsFile),
+                path.resolve(fakeLibsFolder, 'post-main.js')
+            ]
+            if (addPolyfill) {
+                jsFileByOutputFile[jsFileName].unshift('regenerator-runtime/runtime');
+                jsFileByOutputFile[jsFileName].unshift('core-js/stable');
+            }
+        })
     }
     else {
         jsFiles.forEach(jsFile => {
-            jsFileByOutputFile[jsFile.substring(0, jsFile.length - 3)] = [
+            let jsFileName = jsFile.substring(0, jsFile.length - 3)
+            jsFileByOutputFile[jsFileName] = [
                 path.resolve(projectPath, jsFile)
             ]
         })
@@ -160,7 +162,10 @@ module.exports = (env, argv) => {
                         loader: 'babel-loader',
                         options: {
                             sourceType: "script",
-                            presets: [['@babel/preset-env']]
+                            presets: [['@babel/preset-env', {
+                                useBuiltIns: "usage",
+                                corejs: 3
+                            }]]
                         }
                     }
                 }
