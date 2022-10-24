@@ -43,13 +43,15 @@ const currentSystemRecommendedNwjsVersion = function() {
 module.exports = (env, argv) => {
     const projectPath = env.projectPath
     const outputPath = env.outputPath
-    const ignoreUnimplementedFeatures = env.ignoreUnimplementedFeatures
+    
+    const opts = env.opts || {}
+    const ignoreUnimplementedFeatures = opts.ignoreUnimplementedFeatures
 
     const projectPackagePath = path.resolve(projectPath, 'package.json')
     const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
     const nwjs = projectPackageJson.nwjs || {}
-    const nwjsVersion = (env.prod ? nwjs.buildVersion : nwjs.runVersion) || nwjs.version || currentSystemRecommendedNwjsVersion()
+    const nwjsVersion = opts.nwjsVersion || (env.prod ? nwjs.buildVersion : nwjs.runVersion) || nwjs.version || currentSystemRecommendedNwjsVersion()
     const nwjsVersionRedux = nwjsVersion.split(".").slice(0, 2).join(".")
 
     // NW.js 0.14.7 includes Chromium 50.0.2661.102 and Node.js 5.11.1

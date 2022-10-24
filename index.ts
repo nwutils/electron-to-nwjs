@@ -45,7 +45,7 @@ const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     }
 }
 
-const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:boolean, ignoreUnimplementedFeatures:boolean}, callback:(tmpDir:string) => void) {
+const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:boolean, opts:any}, callback:(tmpDir:string) => void) {
     const prebuildOutput = child_process.execSync("npm run nwjs:prebuild --if-present", {cwd:opts.projectDir, encoding:'utf-8'})
     console.log(prebuildOutput)
 
@@ -60,7 +60,7 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:b
             srcFolder: opts.projectDir, 
             dstFolder: tmpDir, 
             prod: opts.prod,
-            ignoreUnimplementedFeatures: opts.ignoreUnimplementedFeatures
+            opts: opts.opts
         })
         await HtmlTranspiler({
             folder: tmpDir
@@ -179,7 +179,7 @@ program
   .action(function(dir) {
     const opts = this.opts()
     const projectDir = path.resolve('.', dir)
-    runPrebuildAndCreateNwjsProject({projectDir, prod:false, ignoreUnimplementedFeatures:opts.ignoreUnimplementedFeatures}, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({projectDir, prod:false, opts:opts}, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs())
 
         var nw = new NwBuilder({
@@ -220,7 +220,7 @@ program
   .action(function() {
     const opts = this.opts()
     const projectDir = path.resolve('.', opts.project)
-    runPrebuildAndCreateNwjsProject({projectDir, prod:true, ignoreUnimplementedFeatures:opts.ignoreUnimplementedFeatures}, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({projectDir, prod:true, opts:opts}, (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => opts[s]) as ("mac"|"linux"|"win")[]
         if (platforms.length === 0) {
             platforms.push(getCurrentOs())

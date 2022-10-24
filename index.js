@@ -60,7 +60,7 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
             srcFolder: opts.projectDir,
             dstFolder: tmpDir,
             prod: opts.prod,
-            ignoreUnimplementedFeatures: opts.ignoreUnimplementedFeatures
+            opts: opts.opts
         });
         await HtmlTranspiler({
             folder: tmpDir
@@ -162,7 +162,7 @@ program
     .action(function (dir) {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', dir);
-    runPrebuildAndCreateNwjsProject({ projectDir, prod: false, ignoreUnimplementedFeatures: opts.ignoreUnimplementedFeatures }, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts: opts }, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs());
         var nw = new NwBuilder({
             appName: config.appName,
@@ -199,7 +199,7 @@ program
     .action(function () {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', opts.project);
-    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, ignoreUnimplementedFeatures: opts.ignoreUnimplementedFeatures }, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts: opts }, (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => opts[s]);
         if (platforms.length === 0) {
             platforms.push(getCurrentOs());
