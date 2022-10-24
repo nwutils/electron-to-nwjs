@@ -8,6 +8,8 @@ const Versions = require('./utils/versions')
 module.exports = (env, argv) => {
     const projectPath = env.projectPath
     const outputPath = env.outputPath
+    const isMain = env.main === true
+    const isBuild = env.prod === true
     
     const opts = env.opts || {}
     const ignoreUnimplementedFeatures = opts.ignoreUnimplementedFeatures
@@ -25,7 +27,7 @@ module.exports = (env, argv) => {
     const addPolyfill = !Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, "0.23.0")
 
     const jsFiles = []
-    if (env.main === true) {
+    if (isMain) {
         jsFiles.push(projectPackageJson.main)
     }
     else if (nwjs.webpack?.entry !== undefined) {
@@ -51,7 +53,7 @@ module.exports = (env, argv) => {
     const externals = nwjs.webpack?.externals || []
     
     const jsFileByOutputFile = {}
-    if (env.main === true) {
+    if (isMain) {
         jsFiles.forEach(jsFile => {
             let jsFileName = jsFile.substring(0, jsFile.length - 3)
             jsFileByOutputFile[jsFileName] = [
@@ -59,10 +61,6 @@ module.exports = (env, argv) => {
                 path.resolve(projectPath, jsFile),
                 path.resolve(fakeLibsFolder, 'post-main.js')
             ]
-            if (addPolyfill) {
-                jsFileByOutputFile[jsFileName].unshift('regenerator-runtime/runtime');
-                jsFileByOutputFile[jsFileName].unshift('core-js/stable');
-            }
         })
     }
     else {
@@ -80,7 +78,7 @@ module.exports = (env, argv) => {
             // https://github.com/nwjs/nw.js/issues/264
 
             search: '__dirname',
-            replace: env.prod ?
+            replace: isBuild ?
                 "(require('path').dirname(process.execPath))" :
                 "(require('path').join(process.cwd(), require('path').dirname('[name].js')))",
         },
@@ -98,11 +96,11 @@ module.exports = (env, argv) => {
         },
         {
             search: '__nwjs_is_main',
-            replace: JSON.stringify(env.main)
+            replace: JSON.stringify(isMain)
         },
         {
             search: '__nwjs_is_packaged',
-            replace: JSON.stringify(env.prod)
+            replace: JSON.stringify(isBuild)
         },
         {
             search: '__nwjs_ignore_unimplemented_features',
@@ -110,15 +108,7 @@ module.exports = (env, argv) => {
         }
     ]
 
-    if (!addPolyfill) {
-        stringReplacements.unshift({
-            // Workaround for the lack of setImmediate
-            // https://github.com/nwjs/nw.js/issues/897
-
-            search: 'setImmediate',
-            replace: "global.setImmediate"
-        })
-    }
+    
 
     const config = {
         target: [`nwjs${nwjsVersionRedux}`],
@@ -166,10 +156,11 @@ module.exports = (env, argv) => {
                             sourceType: "script",
                             presets: [['@babel/preset-env', {
                                 useBuiltIns: "usage",
+                                corejs: 3,
+                                debug: !isBuild,
                                 targets: {
                                     node: opts.nodeVersion
-                                },
-                                corejs: 3
+                                }
                             }]]
                         }
                     }
@@ -177,7 +168,7 @@ module.exports = (env, argv) => {
             ]
         },
         optimization: {
-            minimize: false
+            minimize: isBuild
         }
     }
 
