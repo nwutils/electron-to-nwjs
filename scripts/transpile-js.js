@@ -15,13 +15,13 @@ const asyncWebpack = (config) => {
     })
 }
 
-module.exports = async function({srcFolder, dstFolder, prod, ignoreUnimplementedFeatures}) {
+module.exports = async function({srcFolder, dstFolder, prod, opts}) {
     await asyncWebpack(webpackConfigFn({
         prod: prod,
         main: true,
         projectPath: srcFolder,
         outputPath: dstFolder,
-        ignoreUnimplementedFeatures
+        opts
     }))
     
     await asyncWebpack(webpackConfigFn({
@@ -29,6 +29,6 @@ module.exports = async function({srcFolder, dstFolder, prod, ignoreUnimplemented
         main: false,
         projectPath: srcFolder,
         outputPath: dstFolder,
-        ignoreUnimplementedFeatures
+        opts
     }))
 }

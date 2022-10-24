@@ -190,7 +190,7 @@ program
     .action(function (dir) {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', dir);
-    runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts: opts }, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts }, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs());
         var nw = new NwBuilder({
             appName: config.appName,

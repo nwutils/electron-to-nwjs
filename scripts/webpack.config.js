@@ -174,11 +174,13 @@ module.exports = (env, argv) => {
         }
     }
 
+    console.log("")
     console.log("About to start webpack...")
     console.log(`NW.js version: ${nwjsVersion}`)
     console.log(`Target: ${config.target}`)
     console.log(`Mode: ${config.mode}`)
     console.log(`Polyfill: ${addPolyfill}`)
+    console.log("")
 
     return config
 };
