@@ -77,15 +77,13 @@ module.exports = (env, argv) => {
             // Workaround for the lack of setImmediate
             // https://github.com/nwjs/nw.js/issues/897
 
-            search: '[^\\w\\d_](setImmediate)[^\\w\\d_]',
-            replace(match) {
-                return match.replace("setImmediate", "global.setImmediate")
-            }
+            search: 'setImmediate',
+            replace: "global.setImmediate"
         },
         {
             // Workaround for the lack of __dirname
             // https://github.com/nwjs/nw.js/issues/264
-            
+
             search: '__dirname',
             replace: env.prod ?
                 "(require('path').dirname(process.execPath))" :
@@ -143,9 +141,11 @@ module.exports = (env, argv) => {
                     options: {
                         multiple: stringReplacements.map(rep => {
                             return {
-                                search: rep.search,
-                                replace: rep.replace,
-                                flags: 'g'
+                                search: `[^\\w\\d_](${rep.search})[^\\w\\d_]`,
+                                replace(match) {
+                                    return match.replace(rep.search, rep.replace)
+                                },
+                                flags: 'gm'
                             }
                         })
                     }
