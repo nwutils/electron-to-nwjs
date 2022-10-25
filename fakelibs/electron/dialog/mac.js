@@ -31,6 +31,15 @@ class MacDialog extends BaseDialog {
     const noResolveAliases = properties.includes('noResolveAliases')
     const treatPackageAsDirectory = properties.includes('treatPackageAsDirectory')
     
+    if (buttonLabel) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'buttonLabel' property in the 'properties' argument")
+    }
+    if (message) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'message' property in the 'properties' argument")
+    }
+    if (securityScopedBookmarks) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'securityScopedBookmarks' property in the 'properties' argument")
+    }
     if (createDirectory) {
       throwUnsupportedException("dialog.showOpenDialog can't support the 'createDirectory' value in the 'properties' argument")
     }
@@ -75,7 +84,24 @@ class MacDialog extends BaseDialog {
     const showHiddenFiles = properties.includes('showHiddenFiles')
     const createDirectory = properties.includes('createDirectory')
     const treatPackageAsDirectory = properties.includes('treatPackageAsDirectory')
+
+    const extensions = filters === undefined ? [] : filters.flatMap(b => b.extensions)
     
+    if (buttonLabel) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'buttonLabel' property in the 'properties' argument")
+    }
+    if (message) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'message' property in the 'properties' argument")
+    }
+    if (nameFieldLabel) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'nameFieldLabel' property in the 'properties' argument")
+    }
+    if (showsTagField) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'showsTagField' property in the 'properties' argument")
+    }
+    if (securityScopedBookmarks) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'securityScopedBookmarks' property in the 'properties' argument")
+    }
     if (showHiddenFiles) {
       throwUnsupportedException("dialog.showOpenDialog can't support the 'showHiddenFiles' value in the 'properties' argument")
     }
@@ -114,7 +140,14 @@ class MacDialog extends BaseDialog {
       return undefined
     }
     let response = spawn.stdout
-    return response.trim()
+    let filename = response.trim()
+    if (extensions.length === 1) {
+      let extension = extension[0]
+      if (path.extname(filename) !== `.${extension}`) {
+        filename = `${filename}.${extension}`
+      }
+    }
+    return filename
   }
 
   static async showSaveDialog(window, opts) {
@@ -126,6 +159,22 @@ class MacDialog extends BaseDialog {
   }
 
   static showMessageBoxSync(window, {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys}) {
+    if (detail) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'detail' property in the 'properties' argument")
+    }
+    if (icon) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'icon' property in the 'properties' argument")
+    }
+    if (textWidth) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'textWidth' property in the 'properties' argument")
+    }
+    if (noLink) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'noLink' property in the 'properties' argument")
+    }
+    if (normalizeAccessKeys) {
+      throwUnsupportedException("dialog.showOpenDialog can't support the 'normalizeAccessKeys' property in the 'properties' argument")
+    }
+
     const titleArgs = title === undefined ? "" : `with title ${JSON.stringify(title)}`
     const buttonsArgs = buttons === undefined ? "" : `buttons {${buttons.map(b => JSON.stringify(b)).join(", ")}}`
     const defaultBtnArgs = (buttons === undefined || defaultId === undefined) ? "" : `default button ${JSON.stringify(buttons[defaultId])}`
