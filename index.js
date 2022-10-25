@@ -16,6 +16,7 @@ const NwBuilder = require('nw-builder');
 const HtmlTranspiler = require('./scripts/transpile-html');
 const JsTranspiler = require('./scripts/transpile-js');
 const Versions = require('./scripts/utils/versions');
+const distDir = "nwjs_dist";
 const getCurrentOs = function () {
     let platform = os_1.default.platform();
     if (platform === 'darwin') {
@@ -183,6 +184,7 @@ const buildNwjsBuilderConfig = function (projectPath, os) {
         nwjsConfig.files.unshift("**/**");
     }
     nwjsConfig.files.push("!.git");
+    nwjsConfig.files.push(`!${distDir}/*`);
     let removableDependencies = listNodeModulesThatShouldntBeKept(projectPath);
     removableDependencies.forEach(dep => {
         nwjsConfig.files.push(`!node_modules/${dep}/**`);
@@ -261,13 +263,14 @@ program
     .option('-m, -o, --macos, --mac', 'Build for macOS')
     .option('-l, --linux', 'Build for Linux')
     .option('-w, --windows, --win', 'Build for Windows')
-    .option('-v, --nwjs-version <version>', 'NW.js version', currentSystemRecommendedNwjsVersion())
+    .option('--nwjs-version <version>', 'NW.js version', currentSystemRecommendedNwjsVersion())
+    .option('--node-version <version>', 'Node version used by NW.js version')
     .option('--x86', 'Build for x86')
     .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
     .action(function () {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', opts.project);
-    opts.nodeVersion = getNodeJsVersionByNwjsVersion(opts.nwjsVersion);
+    opts.nodeVersion = opts.nodeVersion || getNodeJsVersionByNwjsVersion(opts.nwjsVersion);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts }, async (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => opts[s]);
         if (platforms.length === 0) {
@@ -283,10 +286,10 @@ program
                 files: config.files,
                 version: opts.nwjsVersion,
                 flavor: 'normal',
-                platforms: [nwjsPlatform + (opts.x86 ? "32" : "")],
+                platforms: [nwjsPlatform + (opts.x86 ? "32" : "64")],
                 appName: config.appName,
                 appVersion: config.appVersion,
-                buildDir: path_1.default.resolve(projectDir, './nwjs_dist'),
+                buildDir: path_1.default.resolve(projectDir, path_1.default.join('.', distDir)),
                 // macCredits (path to your credits.html)
                 macIcns: config.icon,
                 macPlist: config.macPlist,
