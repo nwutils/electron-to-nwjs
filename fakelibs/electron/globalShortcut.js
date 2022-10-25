@@ -19,7 +19,7 @@ var _registered_global_shortcuts = global.__nwjs_registered_global_shortcuts
 const globalShortcut = {
     register(combination, callback) {
         var option = {
-            key: combination,
+            key: combination.replace("Control", "Ctrl"),
             active: callback,
             failed: function(msg) {
                 console.error(msg);
