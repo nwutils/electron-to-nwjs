@@ -276,7 +276,7 @@ program
         if (platforms.length === 0) {
             platforms.push(getCurrentOs());
         }
-        platforms.forEach(platform => {
+        for (const platform of platforms) {
             const config = buildNwjsBuilderConfig(tmpDir, platform);
             let nwjsPlatform = platform;
             if (nwjsPlatform === "mac") {
@@ -303,14 +303,10 @@ program
                 useRcedit: true
             });
             nw.on('log', console.log);
-            nw.build().then(function () {
-                const postDistOutput = child_process_1.default.execSync("npm run nwjs:postdist --if-present", { cwd: projectDir });
-                console.log(postDistOutput);
-            })
-                .catch(function (error) {
-                console.error(error);
-            });
-        });
+            await nw.build();
+        }
+        const postDistOutput = child_process_1.default.execSync("npm run nwjs:postdist --if-present", { cwd: projectDir });
+        console.log(postDistOutput);
     });
 });
 program.parse(process.argv);

@@ -302,7 +302,7 @@ program
             platforms.push(getCurrentOs())
         }
 
-        platforms.forEach(platform => {
+        for (const platform of platforms) {
             const config = buildNwjsBuilderConfig(tmpDir, platform)
 
             let nwjsPlatform:string = platform
@@ -332,15 +332,11 @@ program
             });
     
             nw.on('log', console.log);
-    
-            nw.build().then(function(){
-                const postDistOutput = child_process.execSync("npm run nwjs:postdist --if-present", {cwd:projectDir})
-                console.log(postDistOutput)
-            })
-            .catch(function(error:Error) {
-                console.error(error);
-            });
-        })
+            await nw.build()
+        }
+
+        const postDistOutput = child_process.execSync("npm run nwjs:postdist --if-present", {cwd:projectDir})
+        console.log(postDistOutput)
     })
   });
 
