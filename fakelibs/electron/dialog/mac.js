@@ -23,10 +23,7 @@ const throwUnsupportedException = require('../utils/unsupported-exception')
 const BaseDialog = require('./base')
 
 class MacDialog extends BaseDialog {
-  static showOpenDialogSync(window, opts) {
-
-  }
-  static async showOpenDialog(window, {title, defaultPath, buttonLabel, filters, properties, message, securityScopedBookmarks}) {
+  static showOpenDialogSync(window, {title, defaultPath, buttonLabel, filters, properties, message, securityScopedBookmarks}) {
     properties = properties || []
     const openFile = properties.includes('openFile')
     const openDirectory = properties.includes('openDirectory')
@@ -57,11 +54,16 @@ class MacDialog extends BaseDialog {
       throwUnsupportedException("dialog.showOpenDialog can't support the 'dontAddToRecent' value in the 'properties' argument")
     }
 
+
   }
-  static showSaveDialogSync(window, opts) {
-    
+  static async showOpenDialog(window, opts) {
+    let response = this.showOpenDialogSync(window, opts)
+    return {
+      canceled: response === undefined,
+      filePaths: response
+    }
   }
-  static async showSaveDialog(window, {title, defaultPath, buttonLabel, filters, message, nameFieldLabel, showsTagField, properties, securityScopedBookmarks}) {
+  static showSaveDialogSync(window, {title, defaultPath, buttonLabel, filters, message, nameFieldLabel, showsTagField, properties, securityScopedBookmarks}) {
     properties = properties || []
     const showHiddenFiles = properties.includes('showHiddenFiles')
     const createDirectory = properties.includes('createDirectory')
@@ -86,6 +88,13 @@ class MacDialog extends BaseDialog {
     }
 
     
+  }
+  static async showSaveDialog(window, opts) {
+    let response = this.showSaveDialogSync(window, opts)
+    return {
+      canceled: response === undefined,
+      filePath: response
+    }
   }
   static showMessageBoxSync(window, {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys}) {
     const titleArgs = title === undefined ? "" : `with title ${JSON.stringify(title)}`
