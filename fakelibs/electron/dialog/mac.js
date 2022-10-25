@@ -206,15 +206,23 @@ class MacDialog extends BaseDialog {
   }
 
   static async showMessageBox(window, opts) {
-
+    let index = this.showMessageBoxSync(window, opts)
+    return {
+      response: index
+    }
   }
 
-  static showErrorBox(title, opts) {
-
+  static showErrorBox(title, content) {
+    this.showMessageBoxSync({message:content, type:"error", title})
   }
 
   static async showCertificateTrustDialog(window, opts) {
-
+    if (opts === undefined) {
+      opts = window
+      window = undefined
+    }
+    let certificate = opts.certificate
+    let message = opts.message
   }
 }
 module.exports = MacDialog
