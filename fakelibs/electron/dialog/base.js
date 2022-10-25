@@ -19,7 +19,7 @@
 */
 
 const path = require('path');
-const throwUnsupportedException = require('./utils/unsupported-exception')
+const throwUnsupportedException = require('../utils/unsupported-exception')
 
 const runAndRemoveInputFile = function(input) {
   return new Promise((resolve, reject) => {
@@ -42,11 +42,11 @@ const runAndRemoveInputFile = function(input) {
   })
 }
 
-const dialog = {
-  showOpenDialogSync(window, opts) {
+class BaseDialog {
+  static showOpenDialogSync(window, opts) {
 
-  },
-  async showOpenDialog(window, {title, defaultPath, buttonLabel, filters, properties, message, securityScopedBookmarks}) {
+  }
+  static async showOpenDialog(window, {title, defaultPath, buttonLabel, filters, properties, message, securityScopedBookmarks}) {
     properties = properties || []
     const openFile = properties.includes('openFile')
     const openDirectory = properties.includes('openDirectory')
@@ -100,11 +100,11 @@ const dialog = {
     catch(e) {
       return {canceled:true, filePaths:[]}
     }
-  },
-  showSaveDialogSync(window, opts) {
+  }
+  static showSaveDialogSync(window, opts) {
     
-  },
-  async showSaveDialog(window, {title, defaultPath, buttonLabel, filters, message, nameFieldLabel, showsTagField, properties, securityScopedBookmarks}) {
+  }
+  static async showSaveDialog(window, {title, defaultPath, buttonLabel, filters, message, nameFieldLabel, showsTagField, properties, securityScopedBookmarks}) {
     properties = properties || []
     const showHiddenFiles = properties.includes('showHiddenFiles')
     const createDirectory = properties.includes('createDirectory')
@@ -153,8 +153,8 @@ const dialog = {
     catch(e) {
       return {canceled:true, filePath:undefined}
     }
-  },
-  showMessageBoxSync(window, {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys}) {
+  }
+  static showMessageBoxSync(window, {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys}) {
     const windowDOM = window.window.window
     buttons = buttons || []
 
@@ -181,15 +181,16 @@ const dialog = {
 
     throwUnsupportedException("dialog.showMessageBoxSync implementation is not complete yet")
     return -1
-  },
-  async showMessageBox(window, opts) {
+  }
+  static async showMessageBox(window, opts) {
 
-  },
-  showErrorBox(title, opts) {
+  }
+  static showErrorBox(title, opts) {
 
-  },
-  async showCertificateTrustDialog(window, opts) {
+  }
+  static async showCertificateTrustDialog(window, opts) {
 
   }
 }
-module.exports = dialog
+
+module.exports = BaseDialog

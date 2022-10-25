@@ -26,10 +26,11 @@
   needed, but that will require some refactoring.
 */
 
-const os = require('os')
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
 const MenuItemRoles = require('./utils/menu-item-roles')
 const throwUnsupportedException = require('./utils/unsupported-exception')
+
+const isMac = process.platform === 'darwin';
 
 global.__nwjs_menu_mouse_position = global.__nwjs_menu_mouse_position || {}
 const menu_mouse_position = global.__nwjs_menu_mouse_position
@@ -204,7 +205,7 @@ class Menu {
         this.mainMenu = new nw.Menu({type:"menubar"});
         this.items = []
         
-        if (os.platform() === "darwin") {
+        if (isMac) {
             // TODO: Figure out why it doesn't work in macOS yet
             // https://github.com/nwjs/nw.js/issues/348
             // https://github.com/nwjs/nw.js/issues/1807

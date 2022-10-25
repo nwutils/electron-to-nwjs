@@ -12,7 +12,6 @@
 */
 
 const fs = require('fs')
-const upngJs = require('upng-js')
 
 const throwUnsupportedException = require('./utils/unsupported-exception')
 
@@ -33,6 +32,13 @@ class NativeImage {
         img._scaleFactor = 1.0
     }
 
+
+    static get upngJs() {
+        if (this._upngJs === undefined) {
+            this._upngJs = require('upng-js')
+        }
+        return this._upngJs
+    }
     static createEmpty() {
         return new NativeImage()
     }
@@ -52,7 +58,7 @@ class NativeImage {
     static createFromBuffer(buffer, options) {
         let bitmap = null
         if (isPngBuffer(buffer)) {
-            bitmap = upngJs.decode(buffer)
+            bitmap = NativeImage.upngJs.decode(buffer)
         }
         if (isJpgBuffer(buffer)) {
             // TODO
@@ -77,7 +83,7 @@ class NativeImage {
         if (options) {
             throwUnsupportedException("NativeImage.toPNG can't support the 'options' argument")
         }
-        return upngJs.encode(this._buffer, this._width, this._height, 0)
+        return NativeImage.upngJs.encode(this._buffer, this._width, this._height, 0)
     }
     toJPEG(quality) {
         return Buffer.alloc(0)
