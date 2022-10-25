@@ -175,10 +175,11 @@ const buildNwjsBuilderConfig = function (projectPath, os) {
         company: authorName,
         copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
         files: (build[os] || {}).files || build.files || ["**/**"],
-        icon: (build[os] || {}).icon
+        icon: path_1.default.join("build", (build[os] || {}).icon || ({ mac: "icon.icns", linux: "icon.icns", win: "icon.ico" }[os]))
     };
-    if (nwjsConfig.icon) {
-        nwjsConfig.icon = path_1.default.join(projectPath, nwjsConfig.icon);
+    nwjsConfig.icon = path_1.default.join(projectPath, nwjsConfig.icon);
+    if (!fs_1.default.existsSync(nwjsConfig.icon)) {
+        nwjsConfig.icon = path_1.default.join(projectPath, "build", "icon.png");
     }
     if (!nwjsConfig.files.includes("**/**")) {
         nwjsConfig.files.unshift("**/**");
