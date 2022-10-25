@@ -5,6 +5,10 @@
   HTML5 Docs
   https://developer.mozilla.org/en-US/docs/Web/API/Notification
   https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification
+  
+  NW.js Docs
+  https://docs.nwjs.io/en/latest/References/Chrome%20Extension%20APIs/
+  https://developer.chrome.com/docs/extensions/reference/notifications/
 
   Create OS desktop notifications.
   Only available in the main process.

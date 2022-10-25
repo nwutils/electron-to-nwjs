@@ -2,6 +2,7 @@ const app = require('./app')
 const autoUpdater = require('./autoUpdater')
 const BrowserWindow = require('./BrowserWindow')
 const ContextMenuParams = require('./ContextMenuParams')
+const desktopCapturer = require('./desktopCapturer')
 const dialog = require('./dialog')
 const globalShortcut = require('./globalShortcut')
 const nativeTheme = require('./nativeTheme')
@@ -45,7 +46,7 @@ if (__nwjs_is_main) {
         ContextMenuParams,
         // contentTracing
         // crashReporter
-        // desktopCapturer
+        desktopCapturer,
         dialog,
         Event,
         globalShortcut,
@@ -85,7 +86,7 @@ else {
         // clipboard
         // contextBridge
         // crashReporter
-        // desktopCapturer
+        desktopCapturer,
         Event,
         ipcRenderer,
         nativeImage

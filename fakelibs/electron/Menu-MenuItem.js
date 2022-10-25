@@ -205,6 +205,9 @@ class Menu {
         this.items = []
         
         if (os.platform() === "darwin") {
+            // TODO: Figure out why it doesn't work in macOS yet
+            // https://github.com/nwjs/nw.js/issues/348
+            // https://github.com/nwjs/nw.js/issues/1807
             this.mainMenu.createMacBuiltin(__nwjs_app_name);
         }
     }
