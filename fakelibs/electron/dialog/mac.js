@@ -14,6 +14,8 @@
   Some specific features are not available thought.
 */
 
+const fs = require('fs')
+const path = require('path')
 const applescript = require('../utils/applescript')
 const throwUnsupportedException = require('../utils/unsupported-exception')
 const BaseDialog = require('./base')
@@ -26,32 +28,40 @@ class MacDialog extends BaseDialog {
     const multiSelections = properties.includes('multiSelections')
     const showHiddenFiles = properties.includes('showHiddenFiles')
     const createDirectory = properties.includes('createDirectory')
-    const promptToCreate = properties.includes('promptToCreate')
     const noResolveAliases = properties.includes('noResolveAliases')
     const treatPackageAsDirectory = properties.includes('treatPackageAsDirectory')
-    const dontAddToRecent = properties.includes('dontAddToRecent')
-
-    if (showHiddenFiles) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'showHiddenFiles' value in the 'properties' argument")
-    }
+    
     if (createDirectory) {
       throwUnsupportedException("dialog.showOpenDialog can't support the 'createDirectory' value in the 'properties' argument")
-    }
-    if (promptToCreate) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'promptToCreate' value in the 'properties' argument")
     }
     if (noResolveAliases) {
       throwUnsupportedException("dialog.showOpenDialog can't support the 'noResolveAliases' value in the 'properties' argument")
     }
-    if (treatPackageAsDirectory) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'treatPackageAsDirectory' value in the 'properties' argument")
+    
+    const fileOfFolderArg = openDirectory ? "folder" : "file"
+    const promptArgs = title === undefined ? "" : `with prompt ${JSON.stringify(title)}`
+    const filtersArgs = filters === undefined ? "" : `of type {${filters.flatMap(b => b.extensions).map(b => JSON.stringify(b)).join(", ")}}`
+    const defaultPathArgs = defaultPath === undefined ? "" : `default location ${JSON.stringify(defaultPath)}`
+    const invisiblesArgs = !showHiddenFiles ? "" : `invisibles true`
+    const multiSelectionsArgs = !multiSelections ? "" : `multiple selections allowed true`
+    const treatPackageAsDirectoryArgs = !treatPackageAsDirectory ? "" : `showing package contents true`
+    
+    let spawn = applescript.eval(`
+      set AppleScript's text item delimiters to "\\n"
+      set theFiles to choose ${fileOfFolderArg} ${promptArgs} ${filtersArgs} ${defaultPathArgs} ${invisiblesArgs} ${multiSelectionsArgs} ${treatPackageAsDirectoryArgs}
+      set thePOSIXFiles to {}
+      repeat with aFile in theFiles
+        set end of thePOSIXFiles to POSIX path of aFile
+      end repeat
+      return thePOSIXFiles as string
+    `)
+    if (spawn.status === 1) {
+      return undefined
     }
-    if (dontAddToRecent) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'dontAddToRecent' value in the 'properties' argument")
-    }
-
-
+    let response = spawn.stdout
+    return response.trim().split("\n")
   }
+
   static async showOpenDialog(window, opts) {
     let response = this.showOpenDialogSync(window, opts)
     return {
@@ -59,14 +69,13 @@ class MacDialog extends BaseDialog {
       filePaths: response
     }
   }
+
   static showSaveDialogSync(window, {title, defaultPath, buttonLabel, filters, message, nameFieldLabel, showsTagField, properties, securityScopedBookmarks}) {
     properties = properties || []
     const showHiddenFiles = properties.includes('showHiddenFiles')
     const createDirectory = properties.includes('createDirectory')
     const treatPackageAsDirectory = properties.includes('treatPackageAsDirectory')
-    const showOverwriteConfirmation = properties.includes('showOverwriteConfirmation')
-    const dontAddToRecent = properties.includes('dontAddToRecent')
-
+    
     if (showHiddenFiles) {
       throwUnsupportedException("dialog.showOpenDialog can't support the 'showHiddenFiles' value in the 'properties' argument")
     }
@@ -76,15 +85,38 @@ class MacDialog extends BaseDialog {
     if (treatPackageAsDirectory) {
       throwUnsupportedException("dialog.showOpenDialog can't support the 'treatPackageAsDirectory' value in the 'properties' argument")
     }
-    if (showOverwriteConfirmation) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'showOverwriteConfirmation' value in the 'properties' argument")
+
+    let defaultPathIsDirectory = false
+    try {
+      if (defaultPath) {
+        defaultPathIsDirectory = fs.statSync(defaultPath).isDirectory()
+      }
     }
-    if (dontAddToRecent) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'dontAddToRecent' value in the 'properties' argument")
+    catch (err) {}
+
+    let defaultFolder = defaultPath
+    let defaultName = undefined
+    if (defaultPath !== undefined && !defaultPathIsDirectory) {
+      defaultFolder = path.dirname(defaultFolder)
+      defaultName = path.basename(defaultFolder)
     }
 
+    const promptArgs = title === undefined ? "" : `with prompt ${JSON.stringify(title)}`
+    const filtersArgs = defaultName === undefined ? "" : `default name ${JSON.stringify(defaultName)}`
+    const defaultPathArgs = defaultFolder === undefined ? "" : `default location ${JSON.stringify(defaultFolder)}`
     
+    let spawn = applescript.eval(`
+      set AppleScript's text item delimiters to "\\n"
+      set theFile to choose file name ${promptArgs} ${filtersArgs} ${defaultPathArgs}
+      set thePOSIXFile to POSIX path of theFile
+    `)
+    if (spawn.status === 1) {
+      return undefined
+    }
+    let response = spawn.stdout
+    return response.trim()
   }
+
   static async showSaveDialog(window, opts) {
     let response = this.showSaveDialogSync(window, opts)
     return {
@@ -92,6 +124,7 @@ class MacDialog extends BaseDialog {
       filePath: response
     }
   }
+
   static showMessageBoxSync(window, {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys}) {
     const titleArgs = title === undefined ? "" : `with title ${JSON.stringify(title)}`
     const buttonsArgs = buttons === undefined ? "" : `buttons {${buttons.map(b => JSON.stringify(b)).join(", ")}}`
@@ -122,12 +155,15 @@ class MacDialog extends BaseDialog {
     }
     return buttons.indexOf(response.trim())
   }
+
   static async showMessageBox(window, opts) {
 
   }
+
   static showErrorBox(title, opts) {
 
   }
+
   static async showCertificateTrustDialog(window, opts) {
 
   }
