@@ -8,7 +8,9 @@
   Intercept and modify the contents of a request at various stages of its lifetime.
   Only available in the main process.
 
-  ?
+  chrome.webRequest.* can used to replicate the behaviour of Electron's WebRequest
+  functions, but so far I can't find a way to split it among different WebRequest
+  instances.
 */
 
 class WebRequest {
@@ -24,9 +26,6 @@ class WebRequest {
     return electronResponseHeaders
   }
   _chromeHeadersFromElectronHeaders(electronResponseHeaders) {
-    if (!electronResponseHeaders) {
-      return undefined
-    }
     let chromeResponseHeaders = []
     Object.keys(electronResponseHeaders).forEach(name => {
       let values = electronResponseHeaders[name]
@@ -87,11 +86,14 @@ class WebRequest {
         electronResponseHeaders = responseHeaders
       })
       
-      let chromeResponseHeaders = that._chromeHeadersFromElectronHeaders(electronResponseHeaders)
       if (chromeCancel) {
         return {cancel:true}
       }
-      return {responseHeaders: chromeResponseHeaders}
+      if (electronResponseHeaders) {
+        let chromeResponseHeaders = that._chromeHeadersFromElectronHeaders(electronResponseHeaders)
+        return {responseHeaders: chromeResponseHeaders}
+      }
+      return undefined
     }
     const extraInfoSpec = ["blocking", "responseHeaders", "extraHeaders"]
     chrome.webRequest.onHeadersReceived.addListener(chromeCallback, filter, extraInfoSpec)
