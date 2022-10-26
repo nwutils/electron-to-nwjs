@@ -19,6 +19,7 @@
 */
 
 const path = require('path');
+const BrowserWindowManager = require('../utils/BrowserWindowManager')
 const throwUnsupportedException = require('../utils/unsupported-exception')
 
 const runAndRemoveInputFile = function(input) {
@@ -46,7 +47,12 @@ class BaseDialog {
   static showOpenDialogSync(window, opts) {
 
   }
-  static async showOpenDialog(window, {title, defaultPath, buttonLabel, filters, properties, message, securityScopedBookmarks}) {
+  static async showOpenDialog(window, opts) {
+    if (opts === undefined) {
+      opts = window
+      window = BrowserWindowManager.getFocusedWindow()
+    }
+    let {title, defaultPath, buttonLabel, filters, properties, message, securityScopedBookmarks} = opts
     properties = properties || []
     const openFile = properties.includes('openFile')
     const openDirectory = properties.includes('openDirectory')
@@ -104,7 +110,12 @@ class BaseDialog {
   static showSaveDialogSync(window, opts) {
     
   }
-  static async showSaveDialog(window, {title, defaultPath, buttonLabel, filters, message, nameFieldLabel, showsTagField, properties, securityScopedBookmarks}) {
+  static async showSaveDialog(window, opts) {
+    if (opts === undefined) {
+      opts = window
+      window = BrowserWindowManager.getFocusedWindow()
+    }
+    let {title, defaultPath, buttonLabel, filters, message, nameFieldLabel, showsTagField, properties, securityScopedBookmarks} = opts
     properties = properties || []
     const showHiddenFiles = properties.includes('showHiddenFiles')
     const createDirectory = properties.includes('createDirectory')
@@ -154,7 +165,12 @@ class BaseDialog {
       return {canceled:true, filePath:undefined}
     }
   }
-  static showMessageBoxSync(window, {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys}) {
+  static showMessageBoxSync(window, opts) {
+    if (opts === undefined) {
+      opts = window
+      window = BrowserWindowManager.getFocusedWindow()
+    }
+    let {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys} = opts
     const windowDOM = window.window.window
     buttons = buttons || []
 
@@ -185,8 +201,8 @@ class BaseDialog {
   static async showMessageBox(window, opts) {
 
   }
-  static showErrorBox(title, opts) {
-
+  static showErrorBox(title, content) {
+    this.showMessageBoxSync({message:content, type:"error", title})
   }
   static async showCertificateTrustDialog(window, opts) {
 

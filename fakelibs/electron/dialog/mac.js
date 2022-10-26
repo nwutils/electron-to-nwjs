@@ -21,7 +21,12 @@ const throwUnsupportedException = require('../utils/unsupported-exception')
 const BaseDialog = require('./base')
 
 class MacDialog extends BaseDialog {
-  static showOpenDialogSync(window, {title, defaultPath, buttonLabel, filters, properties, message, securityScopedBookmarks}) {
+  static showOpenDialogSync(window, opts) {
+    if (opts === undefined) {
+      opts = window
+      window = undefined
+    }
+    let {title, defaultPath, buttonLabel, filters, properties, message, securityScopedBookmarks} = opts
     properties = properties || []
     const openFile = properties.includes('openFile')
     const openDirectory = properties.includes('openDirectory')
@@ -81,7 +86,12 @@ class MacDialog extends BaseDialog {
     }
   }
 
-  static showSaveDialogSync(window, {title, defaultPath, buttonLabel, filters, message, nameFieldLabel, showsTagField, properties, securityScopedBookmarks}) {
+  static showSaveDialogSync(window, opts) {
+    if (opts === undefined) {
+      opts = window
+      window = undefined
+    }
+    let {title, defaultPath, buttonLabel, filters, message, nameFieldLabel, showsTagField, properties, securityScopedBookmarks} = opts
     properties = properties || []
     const showHiddenFiles = properties.includes('showHiddenFiles')
     const createDirectory = properties.includes('createDirectory')
@@ -160,7 +170,12 @@ class MacDialog extends BaseDialog {
     }
   }
 
-  static showMessageBoxSync(window, {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys}) {
+  static showMessageBoxSync(window, opts) {
+    if (opts === undefined) {
+      opts = window
+      window = undefined
+    }
+    let {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys} = opts
     if (title) {
       throwUnsupportedException("dialog.showMessageBoxSync can't support the 'title' property in the 'properties' argument", true)
     }
@@ -215,7 +230,7 @@ class MacDialog extends BaseDialog {
   }
 
   static showErrorBox(title, content) {
-    this.showMessageBoxSync(undefined, {message:content, type:"error", title})
+    this.showMessageBoxSync({message:content, type:"error", title})
   }
 
   static async showCertificateTrustDialog(window, opts) {
