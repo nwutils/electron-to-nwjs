@@ -14,7 +14,12 @@
 
 const os = require('os');
 const path = require('path');
+const child_process = require('child_process')
 const NativeImage = require('./nativeImage')
+
+const isMac = process.platform === 'darwin';
+const isWindows = process.platform === 'win32';
+const isLinux = process.platform === 'linux';
 
 const app = {
     // accessibilitySupportEnabled (Windows and macOS only)
@@ -51,7 +56,17 @@ const app = {
     },
     // exit([exitCode])
     relaunch() {
+        // TODO
         // https://github.com/nwjs/nw.js/issues/149
+
+        const appPath = this.getAppPath()
+        if (isLinux) {
+            child_process.spawn("bash", ["-c", `sleep 1 && xdg-open "${appPath}"`])
+        }
+        if (isMac) {
+            child_process.spawn("bash", ["-c", `sleep 1 && open "${appPath}"`])
+        }
+        this.quit()
     },
     _ready() {
         this._isReady = true
@@ -88,7 +103,7 @@ const app = {
             case "appData":     return path.dirname(this.getPath("userData"));
             case "userData":    return path.dirname(nw.App.dataPath);
             case "sessionData": break;
-            case "temp":        break;
+            case "temp":        return os.tmpdir();
             case "exe":         return process.execPath;
             case "module":      break;
             case "desktop":     return path.join(this.getPath("home"), "Desktop");
@@ -163,10 +178,16 @@ const app = {
     // startAccessingSecurityScopedResource(bookmarkData) (macOS only)
     // enableSandbox()
     isInApplicationsFolder() {
-
+        if (!isMac || !__nwjs_is_packaged) {
+            return true
+        }
+        return this.getAppPath().contains("/Applications/")
     },
     moveToApplicationsFolder() {
-
+        if (!isMac || !__nwjs_is_packaged) {
+            return true
+        }
+        // TODO
     }
     // isSecureKeyboardEntryEnabled() (macOS only)
     // setSecureKeyboardEntryEnabled(enabled) (macOS only)
