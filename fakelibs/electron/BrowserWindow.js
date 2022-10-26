@@ -160,8 +160,8 @@ class BrowserWindow {
             }, 
             (win) => {
                 that.window = win;
-                that._windowPromiseResolves.forEach(windowPromiseResolve => windowPromiseResolve(win))
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
+                that._windowPromiseResolves.forEach(windowPromiseResolve => windowPromiseResolve(win))
 
                 that.setMenu(global.__nwjs_app_menu)
                 that.setOpacity(that._opacity)
@@ -746,6 +746,23 @@ class BrowserWindow {
         this._getWindow().then(win => win.on(nwjsEvent, function(a1, a2, a3, a4, a5) {
             return callback(eventObj, a1, a2, a3, a4, a5)
         }));
+    }
+
+
+    _forEachElementWithTagName(tagName, callback) {
+        this._getWindow().then(win => {
+            let winDocument = win.window.document
+            winDocument.addEventListener("DOMNodeInserted", function(e) {
+                try {
+                    if (e.target.tagName.toLowerCase() === tagName) {
+                        callback(e.target)
+                    }
+                } catch(ex) {}
+            }, false);
+
+            let webviews = [...winDocument.getElementsByTagName(tagName)]
+            webviews.forEach(webview => callback(webview))
+        })
     }
 }
 module.exports = BrowserWindow
