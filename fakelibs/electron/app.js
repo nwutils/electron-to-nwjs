@@ -38,15 +38,25 @@ const app = {
     // runningUnderARM64Translation (Windows and macOS only)
 
 
+    _onceEvents: {},
     _events: {},
     dispatchEvent(event) {
         let listener = this._events[event.type];
         if (listener) {
             listener(event);
         }
+        let onceListener = this._onceEvents[event.type];
+        if (onceListener) {
+            onceListener(event);
+            delete this._onceEvents[event.type];
+        }
     },
     on(event, listener) {
         this._events[event] = listener;
+        return this;
+    },
+    once(event, listener) {
+        this._onceEvents[event] = listener;
         return this;
     },
 
@@ -178,13 +188,13 @@ const app = {
     // startAccessingSecurityScopedResource(bookmarkData) (macOS only)
     // enableSandbox()
     isInApplicationsFolder() {
-        if (!isMac || !__nwjs_is_packaged) {
+        if (!isMac || !this.isPackaged) {
             return true
         }
         return this.getAppPath().contains("/Applications/")
     },
     moveToApplicationsFolder() {
-        if (!isMac || !__nwjs_is_packaged) {
+        if (!isMac || !this.isPackaged) {
             return true
         }
         // TODO
