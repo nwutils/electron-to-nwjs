@@ -80,23 +80,20 @@ const app = {
     },
     _ready() {
         this._isReady = true
+        this._whenReadyPromiseResolves.forEach(whenReadyPromiseResolves => whenReadyPromiseResolves())
         this.dispatchEvent(new Event("ready"));
     },
     isReady() {
         return this._isReady === true
     },
+    _whenReadyPromiseResolves: [],
     whenReady() {
-        let that = this
+        const that = this
         return new Promise((resolve, reject) => {
-            let test = function() {
-                if (that._isReady === true) {
-                    resolve()
-                }
-                else {
-                    setTimeout(test, 100)
-                }
+            if (that._isReady === true) {
+                return resolve();
             }
-            test()
+            that._whenReadyPromiseResolves.push(resolve)
         })
     },
     // focus([options])
