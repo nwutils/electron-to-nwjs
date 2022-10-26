@@ -74,13 +74,18 @@ module.exports = (env, argv) => {
 
     const stringReplacements = [
         {
-            // Workaround for the lack of __dirname
+            // Workaround for the lack of __dirname, also compatible with older versions of NW.js
             // https://github.com/nwjs/nw.js/issues/264
 
             search: '__dirname',
             replace: isBuild ?
                 "(require('path').dirname(process.execPath))" :
                 "(require('path').join(process.cwd(), require('path').dirname('[name].js')))",
+        },
+        {
+            // TODO: Untested
+            search: 'process.resourcesPath',
+            replace: "(process.cwd())"
         },
         {
             search: '__nwjs_version',
@@ -147,6 +152,9 @@ module.exports = (env, argv) => {
                     }
                 },
                 {
+                    // Workaround for the lack of setImmediate
+                    // https://github.com/nwjs/nw.js/issues/897
+
                     test: /\.js$/,
                     loader: 'string-replace-loader',
                     exclude: /node_modules\/(core-js|([^\/]*babel[^\/]*))\//,

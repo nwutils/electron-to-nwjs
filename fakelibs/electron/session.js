@@ -24,6 +24,9 @@ class Session {
         cache: true
     })
     static fromPartition(partition, opts) {
+        if (partition === "") {
+            return this.defaultSession
+        }
         const shouldPersist = partition.startsWith("persist:")
         if (this._sessions[partition]) {
             return _sessions[partition]

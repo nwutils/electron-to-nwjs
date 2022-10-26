@@ -18,19 +18,24 @@ class ClientRequest {
         if (typeof options === "string") {
             options = {url:options}
         }
-        options.method = options.method || "GET"
-        options.session = options.session !== undefined ? options.session : (session.fromPartition(options.partition || ""))
+        this.method = options.method || "GET"
+        this.session = options.session !== undefined ? options.session : (session.fromPartition(options.partition || ""))
         // credentials
-        options.useSessionCookies = options.useSessionCookies || false
-        options.protocol = options.protocol || "http:"
-        options.redirect = options.redirect || "follow"
+        this.useSessionCookies = options.useSessionCookies || false
+        this.redirect = options.redirect || "follow"
+        
         if (options.url) {
-            // protocol
-            // host
-            // hostname
-            // port
-            // path
+            this.url = options.url
         }
+        else {
+            let protocol = options.protocol || "http:"
+            let host = options.host || `${options.hostname}:${options.port}`
+            this.url = `${protocol}//${host}${options.path}`
+        }
+    }
+
+    on(eventName, callback) {
+        
     }
 }
 
