@@ -31,24 +31,24 @@ class MacDialog extends BaseDialog {
     const noResolveAliases = properties.includes('noResolveAliases')
     const treatPackageAsDirectory = properties.includes('treatPackageAsDirectory')
     
-    if (buttonLabel) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'buttonLabel' property in the 'properties' argument")
+    if (title) {
+      throwUnsupportedException("dialog.showOpenDialogSync can't support the 'title' property in the 'properties' argument")
     }
-    if (message) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'message' property in the 'properties' argument")
+    if (buttonLabel) {
+      throwUnsupportedException("dialog.showOpenDialogSync can't support the 'buttonLabel' property in the 'properties' argument")
     }
     if (securityScopedBookmarks) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'securityScopedBookmarks' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showOpenDialogSync can't support the 'securityScopedBookmarks' property in the 'properties' argument")
     }
     if (createDirectory) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'createDirectory' value in the 'properties' argument")
+      throwUnsupportedException("dialog.showOpenDialogSync can't support the 'createDirectory' value in the 'properties' argument")
     }
     if (noResolveAliases) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'noResolveAliases' value in the 'properties' argument")
+      throwUnsupportedException("dialog.showOpenDialogSync can't support the 'noResolveAliases' value in the 'properties' argument")
     }
     
     const fileOfFolderArg = openDirectory ? "folder" : "file"
-    const promptArgs = title === undefined ? "" : `with prompt ${JSON.stringify(title)}`
+    const promptArgs = message === undefined ? "" : `with prompt ${JSON.stringify(message)}`
     const filtersArgs = filters === undefined ? "" : `of type {${filters.flatMap(b => b.extensions).map(b => JSON.stringify(b)).join(", ")}}`
     const defaultPathArgs = defaultPath === undefined ? "" : `default location ${JSON.stringify(defaultPath)}`
     const invisiblesArgs = !showHiddenFiles ? "" : `invisibles true`
@@ -87,29 +87,29 @@ class MacDialog extends BaseDialog {
 
     const extensions = filters === undefined ? [] : filters.flatMap(b => b.extensions)
     
-    if (buttonLabel) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'buttonLabel' property in the 'properties' argument")
+    if (title) {
+      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'title' property in the 'properties' argument")
     }
-    if (message) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'message' property in the 'properties' argument")
+    if (buttonLabel) {
+      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'buttonLabel' property in the 'properties' argument")
     }
     if (nameFieldLabel) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'nameFieldLabel' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'nameFieldLabel' property in the 'properties' argument")
     }
     if (showsTagField) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'showsTagField' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'showsTagField' property in the 'properties' argument")
     }
     if (securityScopedBookmarks) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'securityScopedBookmarks' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'securityScopedBookmarks' property in the 'properties' argument")
     }
     if (showHiddenFiles) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'showHiddenFiles' value in the 'properties' argument")
+      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'showHiddenFiles' value in the 'properties' argument")
     }
     if (createDirectory) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'createDirectory' value in the 'properties' argument")
+      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'createDirectory' value in the 'properties' argument")
     }
     if (treatPackageAsDirectory) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'treatPackageAsDirectory' value in the 'properties' argument")
+      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'treatPackageAsDirectory' value in the 'properties' argument")
     }
 
     let defaultPathIsDirectory = false
@@ -127,7 +127,7 @@ class MacDialog extends BaseDialog {
       defaultName = path.basename(defaultFolder)
     }
 
-    const promptArgs = title === undefined ? "" : `with prompt ${JSON.stringify(title)}`
+    const promptArgs = message === undefined ? "" : `with prompt ${JSON.stringify(message)}`
     const filtersArgs = defaultName === undefined ? "" : `default name ${JSON.stringify(defaultName)}`
     const defaultPathArgs = defaultFolder === undefined ? "" : `default location ${JSON.stringify(defaultFolder)}`
     
@@ -159,23 +159,23 @@ class MacDialog extends BaseDialog {
   }
 
   static showMessageBoxSync(window, {message, type, buttons, defaultId, title, detail, icon, textWidth, cancelId, noLink, normalizeAccessKeys}) {
-    if (detail) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'detail' property in the 'properties' argument")
+    if (title) {
+      throwUnsupportedException("dialog.showMessageBoxSync can't support the 'title' property in the 'properties' argument", true)
     }
     if (icon) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'icon' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showMessageBoxSync can't support the 'icon' property in the 'properties' argument")
     }
     if (textWidth) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'textWidth' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showMessageBoxSync can't support the 'textWidth' property in the 'properties' argument")
     }
     if (noLink) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'noLink' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showMessageBoxSync can't support the 'noLink' property in the 'properties' argument")
     }
     if (normalizeAccessKeys) {
-      throwUnsupportedException("dialog.showOpenDialog can't support the 'normalizeAccessKeys' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showMessageBoxSync can't support the 'normalizeAccessKeys' property in the 'properties' argument")
     }
 
-    const titleArgs = title === undefined ? "" : `with title ${JSON.stringify(title)}`
+    const titleArgs = message === undefined ? "" : `with title ${JSON.stringify(message)}`
     const buttonsArgs = buttons === undefined ? "" : `buttons {${buttons.map(b => JSON.stringify(b)).join(", ")}}`
     const defaultBtnArgs = (buttons === undefined || defaultId === undefined) ? "" : `default button ${JSON.stringify(buttons[defaultId])}`
     const cancelBtnArgs = (buttons === undefined || cancelId === undefined) ? "" : `cancel button ${JSON.stringify(buttons[cancelId])}`
@@ -190,7 +190,7 @@ class MacDialog extends BaseDialog {
     const displayDialogIcon = displayDialogIconByIcon[type || "none"]
     const iconArgs = displayDialogIcon === undefined ? "" : `with icon ${displayDialogIcon}`
     let spawn = applescript.eval(`
-      set theDialogText to ${JSON.stringify(message)}
+      set theDialogText to ${JSON.stringify(detail)}
       set theDialog to display dialog theDialogText ${buttonsArgs} ${defaultBtnArgs} ${cancelBtnArgs} ${titleArgs} ${iconArgs}
       button returned of theDialog
     `)
