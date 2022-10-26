@@ -134,7 +134,6 @@ module.exports = (env, argv) => {
                 {
                     test: /\.js$/,
                     loader: 'string-replace-loader',
-                    exclude: /node_modules\/(core-js|([^\/]*babel[^\/]*))\//,
                     options: {
                         multiple: stringReplacements.map(rep => {
                             return {
@@ -145,6 +144,21 @@ module.exports = (env, argv) => {
                                 flags: 'gm'
                             }
                         })
+                    }
+                },
+                {
+                    test: /\.js$/,
+                    loader: 'string-replace-loader',
+                    exclude: /node_modules\/(core-js|([^\/]*babel[^\/]*))\//,
+                    options: {
+                        search: `((var\\s+)|(let\\s+)|(const\\s+)|([^\\w\\d_\\.]))(setImmediate)[^\\w\\d_]`,
+                        replace(match) {
+                            if (match.startsWith("const") || match.startsWith("let") || match.startsWith("var")) {
+                                return match
+                            }
+                            return match.replace("setImmediate", "global.setImmediate")
+                        },
+                        flags: 'gm'
                     }
                 },
                 {
