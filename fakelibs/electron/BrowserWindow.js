@@ -121,19 +121,15 @@ class BrowserWindow {
         return BrowserWindowManager.getWindowById(id)
     }
 
-    async _getWindow() {
+    _windowPromiseResolves = []
+    _getWindow() {
         const that = this
-        const attachOn = function() {
-            return new Promise((resolve, reject) => {
-                if (that.window) {
-                    return resolve(that.window);
-                }
-                setTimeout(() => {
-                    attachOn().then(resolve, reject)
-                }, 100)
-            })
-        }
-        return await attachOn()
+        return new Promise((resolve, reject) => {
+            if (that.window) {
+                return resolve(that.window);
+            }
+            that._windowPromiseResolves.push(resolve)
+        })
     }
 
 
@@ -164,6 +160,7 @@ class BrowserWindow {
             }, 
             (win) => {
                 that.window = win;
+                that._windowPromiseResolves.forEach(windowPromiseResolve => windowPromiseResolve(win))
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
 
                 that.setMenu(global.__nwjs_app_menu)
