@@ -55,7 +55,7 @@ class MacDialog extends BaseDialog {
     const multiSelectionsArgs = !multiSelections ? "" : `multiple selections allowed true`
     const treatPackageAsDirectoryArgs = !treatPackageAsDirectory ? "" : `showing package contents true`
     
-    let spawn = applescript.eval(`
+    let spawn = applescript.spawnSync(`
       set AppleScript's text item delimiters to "\\n"
       set theFiles to choose ${fileOfFolderArg} ${promptArgs} ${filtersArgs} ${defaultPathArgs} ${invisiblesArgs} ${multiSelectionsArgs} ${treatPackageAsDirectoryArgs}
       set thePOSIXFiles to {}
@@ -131,7 +131,7 @@ class MacDialog extends BaseDialog {
     const filtersArgs = defaultName === undefined ? "" : `default name ${JSON.stringify(defaultName)}`
     const defaultPathArgs = defaultFolder === undefined ? "" : `default location ${JSON.stringify(defaultFolder)}`
     
-    let spawn = applescript.eval(`
+    let spawn = applescript.spawnSync(`
       set AppleScript's text item delimiters to "\\n"
       set theFile to choose file name ${promptArgs} ${filtersArgs} ${defaultPathArgs}
       set thePOSIXFile to POSIX path of theFile
@@ -189,7 +189,7 @@ class MacDialog extends BaseDialog {
     }
     const displayDialogIcon = displayDialogIconByIcon[type || "none"]
     const iconArgs = displayDialogIcon === undefined ? "" : `with icon ${displayDialogIcon}`
-    let spawn = applescript.eval(`
+    let spawn = applescript.spawnSync(`
       set theDialogText to ${JSON.stringify(detail)}
       set theDialog to display dialog theDialogText ${buttonsArgs} ${defaultBtnArgs} ${cancelBtnArgs} ${titleArgs} ${iconArgs}
       button returned of theDialog
