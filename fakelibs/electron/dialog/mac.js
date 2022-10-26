@@ -68,7 +68,9 @@ class MacDialog extends BaseDialog {
       return undefined
     }
     let response = spawn.stdout
-    return response.trim().split("\n")
+    return response.trim()
+        .split("\n").filter(l => l.length > 0)
+        .map(l => l.endsWith("/") ? l.slice(0, -1) : l)
   }
 
   static async showOpenDialog(window, opts) {
