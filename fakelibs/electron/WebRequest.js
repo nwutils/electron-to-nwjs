@@ -13,6 +13,8 @@
   instances.
 */
 
+const BrowserWindowManager = require('./utils/BrowserWindowManager')
+
 class WebRequest {
   _electronHeadersFromChromeHeaders(responseHeaders) {
     let electronResponseHeaders = {}
@@ -96,7 +98,16 @@ class WebRequest {
       return undefined
     }
     const extraInfoSpec = ["blocking", "responseHeaders", "extraHeaders"]
+    
     chrome.webRequest.onHeadersReceived.addListener(chromeCallback, filter, extraInfoSpec)
+
+    // TODO: The code below was supposed to work, but it isn't working
+    BrowserWindowManager.getAllWindows()
+      .forEach(eWindow => eWindow._forEachElementWithTagName("webview", webview => {
+        console.log("webview found")
+        console.log(webview)
+        webview.request.onHeadersReceived.addListener(chromeCallback, filter, extraInfoSpec)
+      }))
   }
 }
 module.exports = WebRequest
