@@ -9,6 +9,7 @@ const nativeTheme = require('./nativeTheme')
 const nativeImage = require('./nativeImage')
 const NewWindowWebContentsEvent = require('./NewWindowWebContentsEvent')
 const Notification = require('./Notification')
+const net = require('./net')
 const session = require('./session')
 const shell = require('./shell')
 const systemPreferences = require('./systemPreferences')
@@ -60,7 +61,7 @@ if (__nwjs_is_main) {
         // MessagePortMain
         nativeImage,
         nativeTheme,
-        // net
+        net,
         // netLog
         NewWindowWebContentsEvent,
         Notification,
