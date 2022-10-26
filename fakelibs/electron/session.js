@@ -15,15 +15,35 @@ const WebRequest = require('./WebRequest')
 const throwUnsupportedException = require('./utils/unsupported-exception')
 
 class Session {
+    static _sessions = {}
+
+
     static defaultSession = new Session({
-        persistent:true
+        name: "",
+        persistent: true,
+        cache: true
     })
+    static fromPartition(partition, opts) {
+        const shouldPersist = partition.startsWith("persist:")
+        if (this._sessions[partition]) {
+            return _sessions[partition]
+        }
+        let session = new Session({
+            name: partition,
+            persistent: shouldPersist,
+            cache: opts?.cache === undefined ? true : opts?.cache
+        })
+        this._sessions[partition] = session
+        return session
+    }
 
 
     constructor(opts) {
         this.spellCheckerEnabled = false
         this._webRequest = new WebRequest()
-        this._persistent = opts?.persistent === true
+        this._name = opts.name
+        this._persistent = opts.persistent
+        this._enabledCache = opts.cache
     }
 
 
