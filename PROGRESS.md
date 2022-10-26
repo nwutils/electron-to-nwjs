@@ -87,8 +87,8 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `showEmojiPanel`                       | 🌑🌑🌑🌑 | Not Planned
 `startAccessingSecurityScopedResource` | 🌑🌑🌑🌑 | Not Planned
 `enableSandbox`                        | 🌑🌑🌑🌑 | Not Planned
-`isInApplicationsFolder`               | 🌑🌑🌑🌑 | Not Planned
-`moveToApplicationsFolder`             | 🌑🌑🌑🌑 | Not Planned
+`isInApplicationsFolder`               | 🌕🌕🌗🌑 | Working
+`moveToApplicationsFolder`             | 🌕🌕🌑🌑 | Partially Working
 `isSecureKeyboardEntryEnabled`         | 🌑🌑🌑🌑 | Not Planned
 `setSecureKeyboardEntryEnabled`        | 🌑🌑🌑🌑 | Not Planned
 `allowRendererProcessReuse`            | 🌑🌑🌑🌑 | Not Planned
@@ -359,13 +359,13 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 **API**                                | **Rating** | **Status**
 :--                                    | :--        | :--
-`showOpenDialogSync`                   | 🔴🔴🔴🔴 | On Hold
-`showOpenDialog`                       | 🌕🌕🌑🌑 | Partially Working
-`showSaveDialogSync`                   | 🔴🔴🔴🔴 | On Hold
-`showSaveDialog`                       | 🌕🌕🌑🌑 | Partially Working
-`showMessageBoxSync`                   | 🌕🌕🌑🌑 | Partially Working
-`showMessageBox`                       | 🌑🌑🌑🌑 | Not Planned
-`showErrorBox`                         | 🌑🌑🌑🌑 | Not Planned
+`showOpenDialogSync`                   | 🌕🌕🌑🌑 | Partially Working (macOS 64%)
+`showOpenDialog`                       | 🌕🌕🌑🌑 | Partially Working (macOS 64%, others 26%)
+`showSaveDialogSync`                   | 🌕🌕🌑🌑 | Partially Working (macOS 33%)
+`showSaveDialog`                       | 🌕🌕🌑🌑 | Partially Working (macOS 33%, others 14%)
+`showMessageBoxSync`                   | 🌕🌕🌑🌑 | Partially Working (macOS 50%, others 25%)
+`showMessageBox`                       | 🌕🌕🌑🌑 | Partially Working (macOS 50%, others 25%)
+`showErrorBox`                         | 🌕🌕🌑🌑 | Partially Working (macOS 100%, others 33%)
 `showCertificateTrustDialog`           | 🌑🌑🌑🌑 | Not Planned
 
 ## globalShortcut

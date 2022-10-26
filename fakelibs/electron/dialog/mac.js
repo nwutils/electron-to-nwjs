@@ -230,7 +230,7 @@ class MacDialog extends BaseDialog {
   }
 
   static showErrorBox(title, content) {
-    this.showMessageBoxSync({message:content, type:"error", title})
+    this.showMessageBoxSync({detail:content, type:"error", message:title})
   }
 
   static async showCertificateTrustDialog(window, opts) {

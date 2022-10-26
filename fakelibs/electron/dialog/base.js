@@ -174,7 +174,7 @@ class BaseDialog {
     const windowDOM = window.window.window
     buttons = buttons || []
 
-    if (buttons.length <= 1) {
+    if (buttons.length === 0) {
       if (type) {
         throwUnsupportedException("dialog.showMessageBoxSync can't support the 'type' property in the 'options' argument")
       }
@@ -187,9 +187,6 @@ class BaseDialog {
       if (textWidth) {
         throwUnsupportedException("dialog.showMessageBoxSync can't support the 'textWidth' property in the 'options' argument")
       }
-      if (buttons.length == 1) {
-        throwUnsupportedException("dialog.showMessageBoxSync can't support values in the 'buttons' property in the 'options' argument")
-      }
 
       windowDOM.alert(message + (detail === undefined ? "" : `\n\n${detail}`))
       return 0
@@ -199,7 +196,10 @@ class BaseDialog {
     return -1
   }
   static async showMessageBox(window, opts) {
-
+    let index = this.showMessageBoxSync(window, opts)
+    return {
+      response: index
+    }
   }
   static showErrorBox(title, content) {
     this.showMessageBoxSync({message:content, type:"error", title})
