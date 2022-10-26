@@ -32,7 +32,7 @@ class MacDialog extends BaseDialog {
     const treatPackageAsDirectory = properties.includes('treatPackageAsDirectory')
     
     if (title) {
-      throwUnsupportedException("dialog.showOpenDialogSync can't support the 'title' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showOpenDialogSync can't support the 'title' property in the 'properties' argument", true)
     }
     if (buttonLabel) {
       throwUnsupportedException("dialog.showOpenDialogSync can't support the 'buttonLabel' property in the 'properties' argument")
@@ -90,7 +90,7 @@ class MacDialog extends BaseDialog {
     const extensions = filters === undefined ? [] : filters.flatMap(b => b.extensions)
     
     if (title) {
-      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'title' property in the 'properties' argument")
+      throwUnsupportedException("dialog.showSaveDialogSync can't support the 'title' property in the 'properties' argument", true)
     }
     if (buttonLabel) {
       throwUnsupportedException("dialog.showSaveDialogSync can't support the 'buttonLabel' property in the 'properties' argument")
