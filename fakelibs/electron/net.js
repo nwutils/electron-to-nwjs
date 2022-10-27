@@ -4,18 +4,18 @@
   https://www.electronjs.org/docs/latest/api/client-request
 
   node-fetch Docs
-  https://www.npmjs.com/package/node-fetch
+  https://javascript.info/fetch-api
 
   Issue HTTP/HTTPS requests using Chromium's native networking library.
   Only available in the main process.
 
   NW.js doesn't have classes made specifically to make requests, so we need
-  to use something available for Node or HTML. node-fetch seems to be a fit
+  to use something available for Node or HTML. fetch seems to be a fit
   replacement, at least to start with.
 */
 
 const session = require('./session')
-const fetch = require('node-fetch')
+const fetch = require('cross-fetch')
 
 class IncomingMessage {
     constructor(response, error) {
@@ -104,7 +104,6 @@ class ClientRequest {
 
         const headers = {
             // session
-            // credentials
             // useSessionCookies
         }
 
@@ -114,6 +113,7 @@ class ClientRequest {
         fetch(this.url, {
             method: that.method,
             headers: headers,
+            credentials: credentials,
             redirect: that.redirect,
         }).then(response => {
             that.response = response

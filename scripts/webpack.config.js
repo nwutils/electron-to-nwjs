@@ -53,7 +53,7 @@ module.exports = (env, argv) => {
 
     const externals = nwjs.webpack?.externals || {}
 
-    // Workarounds to make node-fetch work properly
+    // Workarounds to make libs that import "node:*" work properly
     const nodeCoreModules = ["buffer", "child_process", "crypto", "fs", "http", "http2", "https",
                              "net", "os", "path", "stream", "url", "util", "zlib"]
     nodeCoreModules.forEach(nodeCoreModule => externals[`node:${nodeCoreModule}`] = `require('${nodeCoreModule}')`)
@@ -192,7 +192,7 @@ module.exports = (env, argv) => {
                                 }
                             }]],
                             plugins: [
-                                "@babel/plugin-proposal-optional-chaining" // Required by NW.js 0.37.4
+                                "@babel/plugin-proposal-optional-chaining" // Required by NW.js 0.37.4 (?)
                             ]
                         }
                     }
