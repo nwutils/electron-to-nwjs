@@ -28,6 +28,9 @@ NW.js didn't support adding an `Alt` shortcut, so had to change the shortcut to 
 ### I'm using the require function in a HTML file, and it isn't finding the DOM elements
 You must load it using the `<script src="">` tag. Using `require` will load the file in a different NW.js context.
 
+### My `<webview>` element isn't behaving like it should
+We are not able to support webview's properly, and since they are being deprecated anyway, try replacing it with an `<iframe>`.
+
 ### Due to a specific need, I need to find out when I'm dealing with Electron and when I'm dealing with NW.js
 This is your new best friend. It works in both main and renderer.
 ```
