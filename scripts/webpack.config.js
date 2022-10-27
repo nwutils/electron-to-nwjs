@@ -116,7 +116,7 @@ module.exports = (env, argv) => {
     
 
     const config = {
-        target: [`nwjs${nwjsVersionRedux}`],
+        target: [`nwjs${nwjsVersionRedux}`, `node${opts.nodeVersion}`],
         entry: jsFileByOutputFile,
         mode: "production",
         output: {
