@@ -21,6 +21,26 @@ class IncomingMessage {
     constructor(response, error) {
         this._response = response
         this._error = error
+
+        this.statusCode = response.status
+        this.statusMessage = response.statusText
+        this.headers = response.headers.raw()
+        
+        // this.httpVersion
+        // this.httpVersionMajor
+        // this.httpVersionMinor
+
+        let rawHeaders = []
+        let headers = this.headers
+        let headerKeys = Object.keys(headers)
+        headerKeys.forEach(headerKey => {
+            let values = headers[headerKey]
+            values.forEach(value => {
+                rawHeaders.push(headerKey)
+                rawHeaders.push(value)
+            })
+        })
+        this.rawHeaders = rawHeaders
     }
 
     on(eventName, callback) {
