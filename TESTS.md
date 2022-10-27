@@ -1,7 +1,9 @@
 
 ## Result of tests
+The tests below were all done using a computer running Debian Bullseye. At first I tried to make those builds using macOS High Sierra as well, but for some reason webpack doesn't seem to work properly in it; it skips some of the plugins when targetting old NW.js versions, and the final build ends up just not working.
 
-### Debian Bullseye
+Since Mac builds can be created in any system, I will just ignore that for now. Although, once we get to the point of making electron-builder working we gonna need Apple's code signing, which can only be made on macOS, we gonna need to find a fix for that.
+
 - **0.27.5**: NOT WORKING (not launching, with no clear error)
 - **0.28.0**: ?
 - **0.28.1**: ?
@@ -159,9 +161,5 @@
 - **0.69.0**: ?
 - **0.69.1**: WORKING
 
-### macOS High Siera
-- **0.38.3**: NOT WORKING (issue with optional chaining)
-- **0.69.1**: WORKING
-
-### Currently know incompatibilities
+## Currently know incompatibilities
 - **node-fetch**: requires NW.js 0.38.0 or superior
