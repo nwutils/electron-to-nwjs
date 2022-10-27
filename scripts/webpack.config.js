@@ -182,9 +182,9 @@ module.exports = (env, argv) => {
                                 debug: !isBuild,
                                 targets: {
                                     node: opts.nodeVersion
-                                },
-                                plugins: ["@babel/plugin-proposal-optional-chaining"]
-                            }]]
+                                }
+                            }]],
+                            plugins: ["@babel/plugin-proposal-optional-chaining"]
                         }
                     }
                 }
