@@ -20,6 +20,7 @@ module.exports = (env, argv) => {
     const nwjs = projectPackageJson.nwjs || {}
     const nwjsVersion = opts.nwjsVersion
     const nwjsVersionRedux = nwjsVersion.split(".").slice(0, 2).join(".")
+    const nodeVersion = opts.nodeVersion
 
     // NW.js 0.14.7 includes Chromium 50.0.2661.102 and Node.js 5.11.1
     // https://nwjs.io/blog/
@@ -50,7 +51,13 @@ module.exports = (env, argv) => {
     dependenciesThatShouldBeFaked.filter(dep => !dep.endsWith(".js"))
         .forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
 
-    const externals = nwjs.webpack?.externals || []
+    const externals = nwjs.webpack?.externals || {}
+
+    // Workarounds to make node-fetch work properly
+    const nodeCoreModules = ["buffer", "child_process", "crypto", "fs", "http", "http2", "https",
+                             "net", "os", "path", "stream", "url", "util", "zlib"]
+    nodeCoreModules.forEach(nodeCoreModule => externals[`node:${nodeCoreModule}`] = `require('${nodeCoreModule}')`)
+    externals["fs/promises"] = "require('fs').promises"
     
     const jsFileByOutputFile = {}
     if (isMain) {
@@ -116,7 +123,7 @@ module.exports = (env, argv) => {
     
 
     const config = {
-        target: [`nwjs${nwjsVersionRedux}`],
+        target: [`nwjs${nwjsVersionRedux}`, `node${nodeVersion}`],
         entry: jsFileByOutputFile,
         mode: "production",
         output: {
@@ -181,10 +188,12 @@ module.exports = (env, argv) => {
                                 corejs: 3,
                                 debug: !isBuild,
                                 targets: {
-                                    node: opts.nodeVersion
+                                    node: nodeVersion
                                 }
                             }]],
-                            plugins: ["@babel/plugin-proposal-optional-chaining"]
+                            plugins: [
+                                "@babel/plugin-proposal-optional-chaining" // Required by NW.js 0.37.4
+                            ]
                         }
                     }
                 }
