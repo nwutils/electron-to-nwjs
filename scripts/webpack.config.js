@@ -22,11 +22,6 @@ module.exports = (env, argv) => {
     const nwjsVersionRedux = nwjsVersion.split(".").slice(0, 2).join(".")
     const nodeVersion = opts.nodeVersion
 
-    // NW.js 0.14.7 includes Chromium 50.0.2661.102 and Node.js 5.11.1
-    // https://nwjs.io/blog/
-
-    const addPolyfill = !Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, "0.23.0")
-
     const jsFiles = []
     if (isMain) {
         jsFiles.push(projectPackageJson.main)
@@ -209,7 +204,6 @@ module.exports = (env, argv) => {
     console.log(`NW.js version: ${nwjsVersion}`)
     console.log(`Target: ${config.target}`)
     console.log(`Mode: ${config.mode}`)
-    console.log(`Polyfill: ${addPolyfill}`)
     console.log("")
 
     return config
