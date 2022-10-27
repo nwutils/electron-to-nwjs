@@ -9,11 +9,48 @@
   Issue HTTP/HTTPS requests using Chromium's native networking library.
   Only available in the main process.
 
-  ?
+  NW.js doesn't have classes made specifically to make requests, so we need
+  to use something available for Node or HTML. node-fetch seems to be a fit
+  replacement, at least to start with.
 */
 
 const session = require('./session')
 const fetch = require('node-fetch')
+
+class IncomingMessage {
+    constructor(response, error) {
+        this._response = response
+        this._error = error
+    }
+
+    on(eventName, callback) {
+        switch(eventName) {
+            case "data":
+                let stdout = this._response.body
+                var bufs = [];
+                stdout.on('data', function(d){ bufs.push(d); });
+                stdout.on('end', function(){
+                    var buf = Buffer.concat(bufs);
+                    callback(eventName, buf);
+                })
+                return
+            case "end":
+                callback(eventName);
+                return
+            case "aborted": 
+                if (this._error instanceof AbortError) {
+                    callback(eventName);
+                }
+                return
+            case "error": 
+                if (!(this._error instanceof AbortError)) {
+                    callback(eventName, this._error);
+                }
+                return
+            default: return
+        }
+    }
+}
 
 class ClientRequest {
     constructor(options) {
@@ -72,10 +109,14 @@ class ClientRequest {
             }
 
             let setCookie = response.headers.raw()['set-cookie']
-            // that.dispatchEvent({type:'response', args:[response]})
+            that.dispatchEvent({type:'response', args:[new IncomingMessage(response, undefined)]})
 
             that.dispatchEvent({type:'close', args:[]})
         }).catch(error => {
+            that.dispatchEvent({type:'finish', args:[]})
+
+            that.dispatchEvent({type:'response', args:[new IncomingMessage(undefined, error)]})
+
             if (error instanceof AbortError) {
                 that.dispatchEvent({type:'abort', args:[]})
             }
