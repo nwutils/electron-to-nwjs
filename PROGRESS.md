@@ -518,6 +518,14 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 ## net
 
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`static request`                       | 🌕🌗🌑🌑 | Started
+`static isOnline`                      | 🌕🌗🌑🌑 | Started
+`static online`                        | 🌕🌗🌑🌑 | Started
+
 ## netLog
 
 ## Notification
@@ -769,6 +777,21 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 ## webFrame
 
 ## webFrameMain
+
+## WebRequest
+
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`onBeforeRequest`                      | 🌑🌑🌑🌑 | Not Planned
+`onBeforeSendHeaders`                  | 🌑🌑🌑🌑 | Not Planned
+`onSendHeaders`                        | 🌑🌑🌑🌑 | Not Planned
+`onHeadersReceived`                    | 🌕🌕🌑🌑 | Partially Working
+`onResponseStarted`                    | 🌑🌑🌑🌑 | Not Planned
+`onBeforeRedirect`                     | 🌑🌑🌑🌑 | Not Planned
+`onCompleted`                          | 🌑🌑🌑🌑 | Not Planned
+`onErrorOccurred`                      | 🌑🌑🌑🌑 | Not Planned
 
 ## Others
 
