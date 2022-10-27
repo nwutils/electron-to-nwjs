@@ -116,7 +116,7 @@ module.exports = (env, argv) => {
     
 
     const config = {
-        target: [`nwjs${nwjsVersionRedux}`, `node${opts.nodeVersion}`],
+        target: [`nwjs${nwjsVersionRedux}`],
         entry: jsFileByOutputFile,
         mode: "production",
         output: {
@@ -182,7 +182,8 @@ module.exports = (env, argv) => {
                                 debug: !isBuild,
                                 targets: {
                                     node: opts.nodeVersion
-                                }
+                                },
+                                plugins: ["@babel/plugin-proposal-optional-chaining"]
                             }]]
                         }
                     }
