@@ -108,7 +108,11 @@ const app = {
         switch(name) {
             case "home":        return os.homedir();
             case "appData":     return path.dirname(this.getPath("userData"));
-            case "userData":    return path.dirname(nw.App.dataPath);
+            case "userData":
+                // For most NW.js versions, "path.dirname(nw.App.dataPath)" is enought, but
+                // some older versions append "-node" to the end of the folder name for some reason;
+                // With this workaround, we will always mimic Electron's behaviour
+                return path.join(path.dirname(path.dirname(nw.App.dataPath)), __nwjs_project_name);
             case "sessionData": break;
             case "temp":        return os.tmpdir();
             case "exe":         return process.execPath;

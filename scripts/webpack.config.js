@@ -94,6 +94,10 @@ module.exports = (env, argv) => {
             replace: JSON.stringify(nwjsVersion)
         },
         {
+            search: '__nwjs_project_name',
+            replace: JSON.stringify(projectPackageJson.name)
+        },
+        {
             search: '__nwjs_app_version',
             replace: JSON.stringify(projectPackageJson.version)
         },
