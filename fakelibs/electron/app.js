@@ -118,6 +118,7 @@ const app = {
                 if (isWindows) {
                     return path.join(process.env.APPDATA, __nwjs_project_name)
                 }
+                break;
             case "sessionData": break;
             case "temp":        return os.tmpdir();
             case "exe":         return process.execPath;
