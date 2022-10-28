@@ -109,10 +109,15 @@ const app = {
             case "home":        return os.homedir();
             case "appData":     return path.dirname(this.getPath("userData"));
             case "userData":
-                // For most NW.js versions, "path.dirname(nw.App.dataPath)" is enought, but
-                // some older versions append "-node" to the end of the folder name for some reason;
-                // With this workaround, we will always mimic Electron's behaviour
-                return path.join(path.dirname(path.dirname(nw.App.dataPath)), __nwjs_project_name);
+                if (isLinux) {
+                    return path.join(this.getPath("home"), ".config", __nwjs_project_name);
+                }
+                if (isMac) {
+                    return path.join(this.getPath("home"), "Library", "Application Support", __nwjs_project_name);
+                }
+                if (isWindows) {
+                    return path.join(process.env.APPDATA, __nwjs_project_name)
+                }
             case "sessionData": break;
             case "temp":        return os.tmpdir();
             case "exe":         return process.execPath;
