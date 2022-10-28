@@ -163,5 +163,8 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 - **0.69.0**: ?
 - **0.69.1**: WORKING
 
-## Currently know incompatibilities
+## Current node incompatibilities
+- **fs.mkdirSync**: requires NW.js 0.34.0 or superior to work properly
+
+## Current package incompatibilities
 - **node-fetch**: requires NW.js 0.38.0 or superior
