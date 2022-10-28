@@ -1,10 +1,12 @@
 
 ## Result of tests
-The tests below were all done using a computer running Debian Bullseye. At first I tried to test on macOS High Sierra as well, but for some reason webpack doesn't seem to work properly in it; it skips some of the plugins when targetting old NW.js versions, and the final build ends up just not working.
+The tests below were all done using a computer running Debian Bullseye, building the Porting Kit application.
+
+At first I tried to test on macOS High Sierra as well, but for some reason webpack doesn't seem to work properly in it; it skips some of the plugins when targetting old NW.js versions, and the final build ends up just not working.
 
 Since Mac builds can be created in any system, I will just ignore that for now. Although, once we get to the point of making electron-builder working we gonna need Apple's code signing, which can only be made on macOS, we gonna need to find a fix for that.
 
-- **0.27.5**: NOT WORKING (not launching; error seems to be related with node's conf API)
+- **0.27.5**: NOT WORKING (not launching; error seems to be related with the conf package)
 - **0.28.0**: ?
 - **0.28.1**: ?
 - **0.28.2**: ?
@@ -31,11 +33,11 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 - **0.32.2**: ?
 - **0.32.3**: ?
 - **0.32.4**: NOT WORKING (not launching, also errors related with fonts)
-- **0.33.0**: NOT WORKING (not launching; error seems to be related with node's conf API)
+- **0.33.0**: NOT WORKING (not launching; error seems to be related with the conf package)
 - **0.33.1**: ?
 - **0.33.2**: ?
 - **0.33.3**: ?
-- **0.33.4**: ?
+- **0.33.4**: NOT WORKING (not launching; error seems to be related with the conf package)
 - **0.34.0**: WORKING
 - **0.34.1**: ?
 - **0.34.2**: ?
