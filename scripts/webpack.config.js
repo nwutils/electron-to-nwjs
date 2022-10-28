@@ -122,7 +122,7 @@ module.exports = (env, argv) => {
     
 
     const config = {
-        target: [`nwjs${nwjsVersionRedux}`, `node${nodeVersion}`],
+        target: [`nwjs${nwjsVersionRedux}`],
         entry: jsFileByOutputFile,
         mode: "production",
         output: {
@@ -177,7 +177,7 @@ module.exports = (env, argv) => {
                 },
                 {
                     test: /\.js$/,
-                    exclude: /node_modules/,
+                    exclude: /node_modules\/(core-js|([^\/]*babel[^\/]*))\//,
                     use: {
                         loader: 'babel-loader',
                         options: {
@@ -185,14 +185,8 @@ module.exports = (env, argv) => {
                             presets: [['@babel/preset-env', {
                                 useBuiltIns: "usage",
                                 corejs: 3,
-                                debug: !isBuild,
-                                targets: {
-                                    node: nodeVersion
-                                }
-                            }]],
-                            plugins: [
-                                "@babel/plugin-proposal-optional-chaining" // Required by NW.js 0.37.4 (?)
-                            ]
+                                debug: !isBuild
+                            }]]
                         }
                     }
                 }
