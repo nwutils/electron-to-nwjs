@@ -166,8 +166,8 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 - **0.69.1**: WORKING
 
 ## Current node incompatibilities
-- fs.realpath.native is not implemented in every Node.js version
 - ABI-stable Node.js API (N-API) is required in Node.js lower than 10
 
 ## Current package incompatibilities
-- **node-fetch**: requires NW.js 0.38.0 or superior
+- **node-fetch**: requires NW.js 0.38.0 or superior (may have been fixed)
+- **electron-updater**: requires NW.js 0.23.2 or superior
