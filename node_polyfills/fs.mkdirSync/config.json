@@ -1,5 +1,4 @@
 {
     "description": "Node.js 9 and below doesn't have fs.mkdirSync. Technically, versions between 0.30.1 and 0.34.0 use Node.js 10, which has fs.mkdirSync, but it's bugged",
-    "nwjs": "<0.34.0",
-    "type": "replacement"
+    "nwjs": "<0.34.0"
 }

@@ -86,7 +86,6 @@ module.exports = (env, argv) => {
     }
 
     const extraDependencies = []
-    const functionsThatShouldBePolyfilled = []
     const nodePolyfillsFolder = path.resolve(__dirname, '..', "node_polyfills")
     fs.readdirSync(nodePolyfillsFolder)
         .filter(fun => {
@@ -97,23 +96,7 @@ module.exports = (env, argv) => {
                 return
             }
 
-            const funType = funConfig.type
-            if (funType === "dependency") {
-                extraDependencies.push(funConfig.dependency)
-                return
-            }
-            if (funType === "module") {
-                extraDependencies.push(path.join(nodePolyfillsFolder, fun, "index.js"))
-                return
-            }
-            if (funType === "replacement") {
-                const funPath = path.join(nodePolyfillsFolder, fun, "index.js")
-                const funStr = fs.readFileSync(funPath, {encoding:'utf-8'})
-                functionsThatShouldBePolyfilled.push({
-                    search: fun,
-                    replace: `((function(){${funStr}})())`
-                })
-            }
+            extraDependencies.push(path.join(nodePolyfillsFolder, fun, "index.js"))
         })
 
     const aliases = {}
@@ -188,25 +171,6 @@ module.exports = (env, argv) => {
                     }
                 },
                 {
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    exclude: /node_modules\/(core-js|([^\/]*babel[^\/]*))\//,
-                    options: {
-                        multiple: functionsThatShouldBePolyfilled.map(rep => {
-                            return {
-                                search: `((var\\s+)|(let\\s+)|(const\\s+)|([^\\w\\d_\\.]))(${rep.search})[^\\w\\d_]`,
-                                replace(match) {
-                                    if (match.startsWith("const") || match.startsWith("let") || match.startsWith("var")) {
-                                        return match
-                                    }
-                                    return match.replace(rep.search, rep.replace)
-                                },
-                                flags: 'gm'
-                            }
-                        })
-                    }
-                },
-                {
                     // Workaround for the lack of setImmediate
                     // https://github.com/nwjs/nw.js/issues/897
 
@@ -246,7 +210,7 @@ module.exports = (env, argv) => {
         }
     }
 
-    const npResume = functionsThatShouldBePolyfilled.map(f => f.search).join(", ")
+    const npResume = extraDependencies.map(f => path.basename(path.dirname(f))).join(", ")
 
     console.log("")
     console.log("About to start webpack...")

@@ -1,0 +1,4 @@
+{
+    "description": "Node.js 8 and below doesn't have fs.realpath.native",
+    "nwjs": "<=0.26.2"
+}

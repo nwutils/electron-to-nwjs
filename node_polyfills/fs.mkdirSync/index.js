@@ -6,6 +6,7 @@
 
 var path = require('path')
 var fs = require('fs')
+var origMkdirSync = fs.mkdirSync
 
 var isDirectory = function(dir) {
     try {
@@ -22,7 +23,7 @@ var mkdirSync = function(aPath, options) {
     var mode = options.mode
     var recursive = options.recursive || false
     if (!recursive) {
-        return fs.mkdirSync(aPath, mode)
+        return origMkdirSync(aPath, mode)
     }
 
     var dirname = path.dirname(aPath)
@@ -30,8 +31,8 @@ var mkdirSync = function(aPath, options) {
         mkdirSync(dirname, options)
     }
     if (!fs.existsSync(aPath) || !isDirectory(aPath)) {
-        fs.mkdirSync(aPath, mode)
+        origMkdirSync(aPath, mode)
     }
 }
 
-return mkdirSync
+fs.mkdirSync = mkdirSync
