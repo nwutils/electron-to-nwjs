@@ -164,10 +164,11 @@ const listNodeModulesThatShouldntBeKept = function(projectDir:string) {
     return removableDependencies
 }
 
-const buildNwjsBuilderConfig = function(projectPath:string, os:"mac"|"linux"|"win") {
+const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"linux"|"win") {
     const projectPackagePath = path.resolve(projectPath, 'package.json')
     let projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
+    const enableNapiModules = Versions.doesVersionMatchesConditions(opts.nwjsVersion, ">=0.18.6 <0.30.1")
 
     const nwjs = projectPackageJson.nwjs || {}
     
@@ -178,6 +179,11 @@ const buildNwjsBuilderConfig = function(projectPath:string, os:"mac"|"linux"|"wi
     ]
     projectPackageJson["chromium-args"] = flags.join(" ")
     projectPackageJson["node-remote"] = nwjs["node-remote"]
+
+    console.log("")
+    console.log(`chromium-args: ${projectPackageJson["chromium-args"]}`)
+    console.log(`node-remote: ${projectPackageJson["node-remote"] || ""}`)
+    console.log("")
 
     projectPackageStr = JSON.stringify(projectPackageJson, null, 2)
     fs.writeFileSync(projectPackagePath, projectPackageStr, {encoding:'utf-8'})
@@ -241,7 +247,7 @@ program
     opts.nodeVersion = getNodeJsVersionByNwjsVersion(opts.nwjsVersion)
     runPrebuildAndCreateNwjsProject({projectDir, prod:false, opts}, (tmpDir) => {
         return new Promise((resolve, reject) => {
-            const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs())
+            const config = buildNwjsBuilderConfig(tmpDir, opts, getCurrentOs())
 
             var nw = new NwBuilder({
                 appName: config.appName,
@@ -304,7 +310,7 @@ program
         }
 
         for (const platform of platforms) {
-            const config = buildNwjsBuilderConfig(tmpDir, platform)
+            const config = buildNwjsBuilderConfig(tmpDir, opts, platform)
 
             let nwjsPlatform:string = platform
             if (nwjsPlatform === "mac") {

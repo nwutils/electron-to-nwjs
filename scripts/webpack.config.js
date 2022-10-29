@@ -233,12 +233,13 @@ module.exports = (env, argv) => {
         }
     }
 
+    const npResume = functionsThatShouldBePolyfilled.map(f => f.search).join(", ")
+
     console.log("")
     console.log("About to start webpack...")
     console.log(`NW.js version: ${nwjsVersion}`)
     console.log(`Target: ${config.target}`)
     console.log(`Mode: ${config.mode}`)
-    let npResume = functionsThatShouldBePolyfilled.map(f => f.search).join(", ")
     console.log(`Node polyfills: ${npResume.length === 0 ? "none" : npResume}`)
     console.log("")
 

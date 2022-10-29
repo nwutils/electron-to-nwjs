@@ -153,10 +153,11 @@ const listNodeModulesThatShouldntBeKept = function (projectDir) {
     let removableDependencies = allDependencies.filter((v, i) => neededDependencies.indexOf(v) === -1);
     return removableDependencies;
 };
-const buildNwjsBuilderConfig = function (projectPath, os) {
+const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     const projectPackagePath = path_1.default.resolve(projectPath, 'package.json');
     let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
     const projectPackageJson = JSON.parse(projectPackageStr);
+    const enableNapiModules = Versions.doesVersionMatchesConditions(opts.nwjsVersion, ">=0.18.6 <0.30.1");
     const nwjs = projectPackageJson.nwjs || {};
     // Mixed-context can't be used, otherwise the ipc methods won't work
     let flags = [
@@ -165,6 +166,10 @@ const buildNwjsBuilderConfig = function (projectPath, os) {
     ];
     projectPackageJson["chromium-args"] = flags.join(" ");
     projectPackageJson["node-remote"] = nwjs["node-remote"];
+    console.log("");
+    console.log(`chromium-args: ${projectPackageJson["chromium-args"]}`);
+    console.log(`node-remote: ${projectPackageJson["node-remote"] || ""}`);
+    console.log("");
     projectPackageStr = JSON.stringify(projectPackageJson, null, 2);
     fs_1.default.writeFileSync(projectPackagePath, projectPackageStr, { encoding: 'utf-8' });
     let build = (projectPackageJson.build || {});
@@ -221,7 +226,7 @@ program
     opts.nodeVersion = getNodeJsVersionByNwjsVersion(opts.nwjsVersion);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts }, (tmpDir) => {
         return new Promise((resolve, reject) => {
-            const config = buildNwjsBuilderConfig(tmpDir, getCurrentOs());
+            const config = buildNwjsBuilderConfig(tmpDir, opts, getCurrentOs());
             var nw = new NwBuilder({
                 appName: config.appName,
                 appVersion: config.appVersion,
@@ -278,7 +283,7 @@ program
             platforms.push(getCurrentOs());
         }
         for (const platform of platforms) {
-            const config = buildNwjsBuilderConfig(tmpDir, platform);
+            const config = buildNwjsBuilderConfig(tmpDir, opts, platform);
             let nwjsPlatform = platform;
             if (nwjsPlatform === "mac") {
                 nwjsPlatform = "osx";
