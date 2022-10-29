@@ -86,17 +86,17 @@ module.exports = (env, argv) => {
     }
 
     const extraDependencies = []
-    const nodePolyfillsFolder = path.resolve(__dirname, '..', "node_polyfills")
-    fs.readdirSync(nodePolyfillsFolder)
+    const monkeypatchesFolder = path.resolve(__dirname, '..', "monkeypatches")
+    fs.readdirSync(monkeypatchesFolder)
         .filter(fun => {
-            const funConfigPath = path.join(nodePolyfillsFolder, fun, "config.json")
+            const funConfigPath = path.join(monkeypatchesFolder, fun, "config.json")
             const funConfigStr = fs.readFileSync(funConfigPath, {encoding:'utf-8'})
             const funConfig = JSON.parse(funConfigStr)
             if (!Versions.doesVersionMatchesConditions(nwjsVersion, funConfig.nwjs)) {
                 return
             }
 
-            extraDependencies.push(path.join(nodePolyfillsFolder, fun, "index.js"))
+            extraDependencies.push(path.join(monkeypatchesFolder, fun, "index.js"))
         })
 
     const aliases = {}
