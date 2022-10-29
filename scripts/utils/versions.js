@@ -8,7 +8,10 @@ class Versions {
         return semver.gt(version1, version2)
     }
     static doesVersionMatchesConditions(version, conditions) {
-        return semver.satisfies(version, conditions || "*")
+        if (!conditions) {
+            return true
+        }
+        return semver.satisfies(version, conditions)
     }
 }
 
