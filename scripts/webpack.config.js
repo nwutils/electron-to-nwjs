@@ -22,75 +22,6 @@ module.exports = (env, argv) => {
     const nwjsVersionRedux = nwjsVersion.split(".").slice(0, 2).join(".")
     const nodeVersion = opts.nodeVersion
 
-    const jsFiles = []
-    if (isMain) {
-        jsFiles.push(projectPackageJson.main)
-    }
-    else if (nwjs.webpack?.entry !== undefined) {
-        jsFiles.push(...glob({cwd:projectPath}, nwjs.webpack.entry))
-    }
-    else {
-        const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: projectPath, encoding: 'utf8'})
-        const listHtmls = listHtmlsStr.split("\n").filter(line => line.trim().length > 0 && !line.startsWith("./node_modules/"))
-        listHtmls.forEach(htmlPath => {
-            const indexHtmlContents = fs.readFileSync(path.join(projectPath, htmlPath), {encoding: 'utf-8'})
-            const $ = cheerio.load(indexHtmlContents);
-            const scripts = $('script[src]')
-            jsFiles.push(...scripts.map(function() { return $(this).attr('src'); }).get())
-        })
-    }
-
-    const nodePolyfillsFolder = path.resolve(__dirname, '..', "node_polyfills")
-    const functionsThatShouldBePolyfilled = fs.readdirSync(nodePolyfillsFolder)
-        .filter(fun => {
-            const funConfigPath = path.join(nodePolyfillsFolder, fun, "config.json")
-            const funConfigStr = fs.readFileSync(funConfigPath, {encoding:'utf-8'})
-            const funConfig = JSON.parse(funConfigStr)
-            return Versions.doesVersionMatchesConditions(nwjsVersion, funConfig.nwjs)
-        })
-        .map(fun => {
-            const funPath = path.join(nodePolyfillsFolder, fun, "index.js")
-            const funStr = fs.readFileSync(funPath, {encoding:'utf-8'})
-            return {
-                search: fun,
-                replace: `((function(){${funStr}})())`
-            }
-        })
-
-    const aliases = {}
-    const fakeLibsFolder = path.resolve(__dirname, '..', "fakelibs")
-    const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
-    dependenciesThatShouldBeFaked.filter(dep => !dep.endsWith(".js"))
-        .forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
-
-    const externals = nwjs.webpack?.externals || {}
-
-    // Workarounds to make libs that import "node:*" work properly
-    const nodeCoreModules = ["buffer", "child_process", "crypto", "fs", "http", "http2", "https",
-                             "net", "os", "path", "stream", "url", "util", "zlib"]
-    nodeCoreModules.forEach(nodeCoreModule => externals[`node:${nodeCoreModule}`] = `require('${nodeCoreModule}')`)
-    externals["fs/promises"] = "require('fs').promises"
-    
-    const jsFileByOutputFile = {}
-    if (isMain) {
-        jsFiles.forEach(jsFile => {
-            let jsFileName = jsFile.substring(0, jsFile.length - 3)
-            jsFileByOutputFile[jsFileName] = [
-                path.resolve(fakeLibsFolder, 'pre-main.js'),
-                path.resolve(projectPath, jsFile),
-                path.resolve(fakeLibsFolder, 'post-main.js')
-            ]
-        })
-    }
-    else {
-        jsFiles.forEach(jsFile => {
-            let jsFileName = jsFile.substring(0, jsFile.length - 3)
-            jsFileByOutputFile[jsFileName] = [
-                path.resolve(projectPath, jsFile)
-            ]
-        })
-    }
-
     const stringReplacements = [
         {
             // Workaround for the lack of __dirname, also compatible with older versions of NW.js
@@ -136,7 +67,89 @@ module.exports = (env, argv) => {
         }
     ]
 
+    const jsFiles = []
+    if (isMain) {
+        jsFiles.push(projectPackageJson.main)
+    }
+    else if (nwjs.webpack?.entry !== undefined) {
+        jsFiles.push(...glob({cwd:projectPath}, nwjs.webpack.entry))
+    }
+    else {
+        const listHtmlsStr = child_process.execSync('find . -type f -name "*.html"', {cwd: projectPath, encoding: 'utf8'})
+        const listHtmls = listHtmlsStr.split("\n").filter(line => line.trim().length > 0 && !line.startsWith("./node_modules/"))
+        listHtmls.forEach(htmlPath => {
+            const indexHtmlContents = fs.readFileSync(path.join(projectPath, htmlPath), {encoding: 'utf-8'})
+            const $ = cheerio.load(indexHtmlContents);
+            const scripts = $('script[src]')
+            jsFiles.push(...scripts.map(function() { return $(this).attr('src'); }).get())
+        })
+    }
+
+    const extraDependencies = []
+    const functionsThatShouldBePolyfilled = []
+    const nodePolyfillsFolder = path.resolve(__dirname, '..', "node_polyfills")
+    fs.readdirSync(nodePolyfillsFolder)
+        .filter(fun => {
+            const funConfigPath = path.join(nodePolyfillsFolder, fun, "config.json")
+            const funConfigStr = fs.readFileSync(funConfigPath, {encoding:'utf-8'})
+            const funConfig = JSON.parse(funConfigStr)
+            if (!Versions.doesVersionMatchesConditions(nwjsVersion, funConfig.nwjs)) {
+                return
+            }
+
+            const funType = funConfig.type
+            if (funType === "dependency") {
+                extraDependencies.push(funConfig.dependency)
+                return
+            }
+            if (funType === "module") {
+                extraDependencies.push(path.join(nodePolyfillsFolder, fun, "index.js"))
+                return
+            }
+            if (funType === "replacement") {
+                const funPath = path.join(nodePolyfillsFolder, fun, "index.js")
+                const funStr = fs.readFileSync(funPath, {encoding:'utf-8'})
+                functionsThatShouldBePolyfilled.push({
+                    search: fun,
+                    replace: `((function(){${funStr}})())`
+                })
+            }
+        })
+
+    const aliases = {}
+    const fakeLibsFolder = path.resolve(__dirname, '..', "fakelibs")
+    const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
+    dependenciesThatShouldBeFaked.filter(dep => !dep.endsWith(".js"))
+        .forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
+
+    const externals = nwjs.webpack?.externals || {}
+
+    // Workarounds to make libs that import "node:*" work properly
+    const nodeCoreModules = ["buffer", "child_process", "crypto", "fs", "http", "http2", "https",
+                             "net", "os", "path", "stream", "url", "util", "zlib"]
+    nodeCoreModules.forEach(nodeCoreModule => externals[`node:${nodeCoreModule}`] = `require('${nodeCoreModule}')`)
+    externals["fs/promises"] = "require('fs').promises"
     
+    const jsFileByOutputFile = {}
+    if (isMain) {
+        jsFiles.forEach(jsFile => {
+            let jsFileName = jsFile.substring(0, jsFile.length - 3)
+            jsFileByOutputFile[jsFileName] = [
+                path.resolve(fakeLibsFolder, 'pre-main.js'),
+                path.resolve(projectPath, jsFile),
+                path.resolve(fakeLibsFolder, 'post-main.js')
+            ]
+            jsFileByOutputFile[jsFileName].unshift(...extraDependencies)
+        })
+    }
+    else {
+        jsFiles.forEach(jsFile => {
+            let jsFileName = jsFile.substring(0, jsFile.length - 3)
+            jsFileByOutputFile[jsFileName] = [
+                path.resolve(projectPath, jsFile)
+            ]
+        })
+    }
 
     const config = {
         target: [`nwjs${nwjsVersionRedux}`],

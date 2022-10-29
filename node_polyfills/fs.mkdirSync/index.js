@@ -1,11 +1,11 @@
-var path = require('path')
-var fs = require('fs')
-
 // fs.mkdirSync(path[, options])
 //  path <string> | <Buffer> | <URL>
 //  options <Object> | <integer>
 //      recursive <boolean> Default: false
 //      mode <integer> Not supported on Windows. Default: 0o777.
+
+var path = require('path')
+var fs = require('fs')
 
 var isDirectory = function(dir) {
     try {

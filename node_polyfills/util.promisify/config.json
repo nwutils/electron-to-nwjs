@@ -1,0 +1,5 @@
+{
+    "description": "Node.js 7 and below doesn't have util.promisify",
+    "nwjs": "<=0.22.3",
+    "type": "module"
+}

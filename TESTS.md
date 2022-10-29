@@ -167,7 +167,6 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 
 ## Current node incompatibilities
 - fs.realpath.native is not implemented in every Node.js version
-- util.promisify is not implemented in Node.js versions below 8
 - ABI-stable Node.js API (N-API) is required in Node.js lower than 10
 
 ## Current package incompatibilities
