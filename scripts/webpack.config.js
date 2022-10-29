@@ -40,6 +40,23 @@ module.exports = (env, argv) => {
         })
     }
 
+    const nodePolyfillsFolder = path.resolve(__dirname, '..', "node_polyfills")
+    const functionsThatShouldBePolyfilled = fs.readdirSync(nodePolyfillsFolder)
+        .filter(fun => {
+            const funConfigPath = path.join(nodePolyfillsFolder, fun, "config.json")
+            const funConfigStr = fs.readFileSync(funConfigPath, {encoding:'utf-8'})
+            const funConfig = JSON.parse(funConfigStr)
+            return Versions.doesVersionMatchesConditions(nwjsVersion, funConfig.nwjs)
+        })
+        .map(fun => {
+            const funPath = path.join(nodePolyfillsFolder, fun, "index.js")
+            const funStr = fs.readFileSync(funPath, {encoding:'utf-8'})
+            return {
+                search: fun,
+                replace: `((function(){${funStr}})())`
+            }
+        })
+
     const aliases = {}
     const fakeLibsFolder = path.resolve(__dirname, '..', "fakelibs")
     const dependenciesThatShouldBeFaked = fs.readdirSync(fakeLibsFolder)
@@ -158,6 +175,25 @@ module.exports = (env, argv) => {
                     }
                 },
                 {
+                    test: /\.js$/,
+                    loader: 'string-replace-loader',
+                    exclude: /node_modules\/(core-js|([^\/]*babel[^\/]*))\//,
+                    options: {
+                        multiple: functionsThatShouldBePolyfilled.map(rep => {
+                            return {
+                                search: `((var\\s+)|(let\\s+)|(const\\s+)|([^\\w\\d_\\.]))(${rep.search})[^\\w\\d_]`,
+                                replace(match) {
+                                    if (match.startsWith("const") || match.startsWith("let") || match.startsWith("var")) {
+                                        return match
+                                    }
+                                    return match.replace(rep.search, rep.replace)
+                                },
+                                flags: 'gm'
+                            }
+                        })
+                    }
+                },
+                {
                     // Workaround for the lack of setImmediate
                     // https://github.com/nwjs/nw.js/issues/897
 
@@ -202,6 +238,8 @@ module.exports = (env, argv) => {
     console.log(`NW.js version: ${nwjsVersion}`)
     console.log(`Target: ${config.target}`)
     console.log(`Mode: ${config.mode}`)
+    let npResume = functionsThatShouldBePolyfilled.map(f => f.search).join(", ")
+    console.log(`Node polyfills: ${npResume.length === 0 ? "none" : npResume}`)
     console.log("")
 
     return config
