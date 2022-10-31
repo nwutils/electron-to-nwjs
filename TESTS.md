@@ -6,7 +6,10 @@ At first I tried to test on macOS High Sierra as well, but for some reason webpa
 
 Since Mac builds can be created in any system, I will just ignore that for now. Although, once we get to the point of making electron-builder working we gonna need Apple's code signing, which can only be made on macOS, we gonna need to find a fix for that.
 
-- **0.18.3**: ?
+- **0.18.3**: NOT WORKING (electron-updater breaks)
+- **0.18.8**: NOT WORKING (electron-updater breaks)
+- **0.19.0**: WORKING
+- **0.20.1**: WORKING
 - **0.23.2**: WORKING
 - **0.23.3**: ?
 - **0.23.4**: ?
@@ -197,4 +200,4 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 
 ## Current package incompatibilities
 - **electron-updater**: requires NW.js 0.23.2 or superior
-- **inline-css**: requires NW.js 0.23.7 or superior
+- **inline-css**: requires NW.js 0.24.0 or superior
