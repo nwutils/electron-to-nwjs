@@ -95,7 +95,7 @@ class WebRequest {
       }
       return undefined
     }
-    const extraInfoSpec = ["blocking", "responseHeaders", "extraHeaders"]
+    const extraInfoSpec = ["blocking", "responseHeaders"]
     
     chrome.webRequest.onHeadersReceived.addListener(chromeCallback, filter, extraInfoSpec)
   }
