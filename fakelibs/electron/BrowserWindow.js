@@ -136,7 +136,7 @@ class BrowserWindow {
     _load(url) {
         const that = this
         return new Promise((resolve, reject) => {
-            nw.Window.open(url, {
+            const nwWindowOpts = {
                 id: that.id+"",
                 title: that._title,
                 width: that._width,
@@ -152,13 +152,15 @@ class BrowserWindow {
                 always_on_top: that._alwaysOnTop,
                 visible_on_all_workspaces: that._visibleOnAllWorkspaces,
                 fullscreen: that._fullscreen,
-                show_in_taskbar: that._skipTaskbar,
                 frame: that._frame,
                 show: that._visible,
                 kiosk: that._kiosk,
                 transparent: that._transparent
-            }, 
-            (win) => {
+            }
+            if (__nwjs_version_gt_0_18_8) {
+                nwWindowOpts.show_in_taskbar = !that._skipTaskbar
+            }
+            nw.Window.open(url, nwWindowOpts, (win) => {
                 that.window = win;
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
                 that._windowPromiseResolves.forEach(windowPromiseResolve => windowPromiseResolve(win))
@@ -550,6 +552,10 @@ class BrowserWindow {
         this._getWindow().then(win => win.requestAttention(true));
     }
     setSkipTaskbar(skip) {
+        if (__nwjs_version_lte_0_18_8) {
+            throwUnsupportedException("BrowserWindow.setSkipTaskbar isn't supported in NW.js 0.18.8 or lower")
+            return
+        }
         this._getWindow().then(win => win.setShowInTaskbar(!skip));
     }
     setKiosk(kiosk) {
