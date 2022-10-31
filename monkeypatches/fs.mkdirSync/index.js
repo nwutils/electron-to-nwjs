@@ -17,10 +17,13 @@ var isDirectory = function(dir) {
 }
 
 var mkdirSync = function(aPath, options) {
+    if (options === undefined) {
+        options = {}
+    }
     if (typeof options === "number") {
         options = {mode:options}
     }
-    var mode = options.mode
+    var mode = options.mode || 0o777
     var recursive = options.recursive || false
     if (!recursive) {
         return origMkdirSync(aPath, mode)
