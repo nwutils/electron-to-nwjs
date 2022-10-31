@@ -1,0 +1,4 @@
+{
+    "description": "Workaround for the lack of setImmediate",
+    "url": "https://github.com/nwjs/nw.js/issues/897"
+}

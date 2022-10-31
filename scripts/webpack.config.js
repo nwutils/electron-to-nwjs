@@ -24,15 +24,6 @@ module.exports = (env, argv) => {
 
     const stringReplacements = [
         {
-            // Workaround for the lack of __dirname, also compatible with older versions of NW.js
-            // https://github.com/nwjs/nw.js/issues/264
-
-            search: '__dirname',
-            replace: isBuild ?
-                "(require('path').dirname(process.execPath))" :
-                "(require('path').join(process.cwd(), require('path').dirname('[name].js')))",
-        },
-        {
             // TODO: Untested
             search: 'process.resourcesPath',
             replace: "(process.cwd())"
@@ -160,6 +151,25 @@ module.exports = (env, argv) => {
         module: {
             rules: [
                 {
+                    // Workaround for the lack of __dirname, also compatible with older versions of NW.js
+                    // https://github.com/nwjs/nw.js/issues/264
+
+                    test: /\.js$/,
+                    loader: 'string-replace-loader',
+                    options: {
+                        search: `[^\\w\\d_\\.](__dirname)[^\\w\\d_]`,
+                        replace(match) {
+                            if (isBuild) {
+                                return match.replace("__dirname", `(require("path").dirname(process.execPath))`)
+                            }
+                            let resourceFolderPath = path.dirname(path.relative(projectPath, this.resource))
+                            return match.replace("__dirname", 
+                                `(require("path").join(process.cwd(), ${JSON.stringify(resourceFolderPath)}))`)
+                        },
+                        flags: 'g'
+                    }
+                },
+                {
                     test: /\.js$/,
                     loader: 'string-replace-loader',
                     options: {
@@ -172,24 +182,6 @@ module.exports = (env, argv) => {
                                 flags: 'gm'
                             }
                         })
-                    }
-                },
-                {
-                    // Workaround for the lack of setImmediate
-                    // https://github.com/nwjs/nw.js/issues/897
-
-                    test: /\.js$/,
-                    loader: 'string-replace-loader',
-                    exclude: /node_modules\/(core-js|([^\/]*babel[^\/]*))\//,
-                    options: {
-                        search: `((var\\s+)|(let\\s+)|(const\\s+)|([^\\w\\d_\\.]))(setImmediate)[^\\w\\d_]`,
-                        replace(match) {
-                            if (match.startsWith("const") || match.startsWith("let") || match.startsWith("var")) {
-                                return match
-                            }
-                            return match.replace("setImmediate", "global.setImmediate")
-                        },
-                        flags: 'gm'
                     }
                 },
                 {
