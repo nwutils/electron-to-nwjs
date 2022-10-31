@@ -6,8 +6,35 @@ At first I tried to test on macOS High Sierra as well, but for some reason webpa
 
 Since Mac builds can be created in any system, I will just ignore that for now. Although, once we get to the point of making electron-builder working we gonna need Apple's code signing, which can only be made on macOS, we gonna need to find a fix for that.
 
-- **0.18.3**: NOT WORKING
-- **0.23.2**: NOT WORKING (ABI-stable Node.js API (N-API) required)
+- **0.18.3**: ?
+- **0.23.2**: WORKING
+- **0.23.3**: ?
+- **0.23.4**: ?
+- **0.23.5**: ?
+- **0.23.6**: ?
+- **0.23.7**: WORKING
+- **0.24.0**: WORKING
+- **0.24.1**: ?
+- **0.24.2**: ?
+- **0.24.3**: ?
+- **0.24.4**: ?
+- **0.25.0**: WORKING
+- **0.25.1**: WORKING
+- **0.25.2**: WORKING
+- **0.25.3**: WORKING
+- **0.25.4**: WORKING
+- **0.26.0**: ?
+- **0.26.1**: ?
+- **0.26.2**: ?
+- **0.26.3**: ?
+- **0.26.4**: ?
+- **0.26.5**: ?
+- **0.26.6**: ?
+- **0.27.0**: ?
+- **0.27.1**: ?
+- **0.27.2**: ?
+- **0.27.3**: ?
+- **0.27.4**: ?
 - **0.27.5**: WORKING
 - **0.28.0**: ?
 - **0.28.1**: ?
@@ -166,8 +193,8 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 - **0.69.1**: WORKING
 
 ## Current node incompatibilities
-- ABI-stable Node.js API (N-API) is required in Node.js lower than 10
+- ABI-stable Node.js API (N-API) requires a flag in NW.js 0.25.3 and lower, and I don't know if there is a way to add it
 
 ## Current package incompatibilities
-- **node-fetch**: requires NW.js 0.38.0 or superior (may have been fixed)
 - **electron-updater**: requires NW.js 0.23.2 or superior
+- **inline-css**: requires NW.js 0.23.7 or superior

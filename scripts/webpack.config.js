@@ -57,8 +57,8 @@ module.exports = (env, argv) => {
             replace: JSON.stringify(ignoreUnimplementedFeatures)
         },
         {
-            search: '__nwjs_node_api_is_available',
-            replace: JSON.stringify(Versions.doesVersionMatchesConditions(nwjsVersion, ">0.23.2"))
+            search: '__nwjs_feature_node_api_available',
+            replace: JSON.stringify(Versions.doesVersionMatchesConditions(nwjsVersion, ">0.25.3"))
         }
     ]
 
