@@ -64,6 +64,10 @@ module.exports = (env, argv) => {
         {
             search: '__nwjs_ignore_unimplemented_features',
             replace: JSON.stringify(ignoreUnimplementedFeatures)
+        },
+        {
+            search: '__nwjs_node_api_is_available',
+            replace: JSON.stringify(Versions.doesVersionMatchesConditions(nwjsVersion, ">0.23.2"))
         }
     ]
 
@@ -184,6 +188,27 @@ module.exports = (env, argv) => {
                                 return match
                             }
                             return match.replace("setImmediate", "global.setImmediate")
+                        },
+                        flags: 'gm'
+                    }
+                },
+                {
+                    test: /\.js$/,
+                    loader: 'string-replace-loader',
+                    exclude: /node_modules\/(core-js|([^\/]*babel[^\/]*))\//,
+                    options: {
+                        search: `__nwjs_version_(lte|lt|gte|gt)_[0-9_]+`,
+                        replace(match) {
+                            let subMatch = match.substring("__nwjs_version_".length).split("_")
+                            let comparison = subMatch.shift()
+                            let comparisonOperator = {
+                                lte: "<=",
+                                lt:  "<",
+                                gte: ">=",
+                                gt:  ">"
+                            }[comparison]
+                            let version = subMatch.join(".")
+                            return Versions.doesVersionMatchesConditions(nwjsVersion, `${comparisonOperator}${version}`).toString()
                         },
                         flags: 'gm'
                     }
