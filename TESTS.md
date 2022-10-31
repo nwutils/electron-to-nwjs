@@ -7,7 +7,7 @@ At first I tried to test on macOS High Sierra as well, but for some reason webpa
 Since Mac builds can be created in any system, I will just ignore that for now. Although, once we get to the point of making electron-builder working we gonna need Apple's code signing, which can only be made on macOS, we gonna need to find a fix for that.
 
 - **0.18.3**: NOT WORKING
-- **0.23.2**: WORKING
+- **0.23.2**: NOT WORKING (ABI-stable Node.js API (N-API) required)
 - **0.27.5**: WORKING
 - **0.28.0**: ?
 - **0.28.1**: ?
@@ -19,7 +19,7 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 - **0.29.3**: ?
 - **0.29.4**: ?
 - **0.30.0**: ?
-- **0.30.1**: ?
+- **0.30.1**: WORKING
 - **0.30.2**: ?
 - **0.30.3**: ?
 - **0.30.4**: ?
