@@ -10,9 +10,9 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 - **0.15.0**: ?
 - **0.15.1**: ?
 - **0.15.2**: ?
-- **0.15.3**: ?
+- **0.15.3**: WORKING
 - **0.15.4**: ?
-- **0.16.0**: CRASH ON STARTUP
+- **0.16.0**: ?
 - **0.16.1**: WORKING
 - **0.17.0**: ?
 - **0.17.1**: ?

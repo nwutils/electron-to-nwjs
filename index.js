@@ -107,6 +107,9 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
     console.log(prebuildOutput);
     onTmpFolder(async function (tmpDir) {
         fs_extra_1.default.copySync(opts.projectDir, tmpDir);
+        // So the cache folder won't be copied, since it is not only not needed,
+        // but it also can be become very big
+        fs_extra_1.default.rmdirSync(path_1.default.resolve(tmpDir, 'cache'), { recursive: true });
         // So the electron node_module won't be compressed in the end, no matter what
         // That solves a building issue in Mac OS X 10.13 and lower
         fs_extra_1.default.rmdirSync(path_1.default.resolve(tmpDir, 'node_modules', 'electron'), { recursive: true });

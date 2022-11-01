@@ -1,0 +1,4 @@
+{
+    "description": "fs.constants was implemented in Node 6.x",
+    "nwjs": "<=0.16.0"
+}
