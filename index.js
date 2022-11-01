@@ -158,11 +158,12 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     const projectPackagePath = path_1.default.resolve(projectPath, 'package.json');
     let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
     const projectPackageJson = JSON.parse(projectPackageStr);
+    const disableNw2 = Versions.doesVersionMatchesConditions(opts.nwjsVersion, ">=0.42.4 <=0.43.0");
     const enableNapiModules = Versions.doesVersionMatchesConditions(opts.nwjsVersion, ">=0.18.6 <0.30.1");
     const nwjs = projectPackageJson.nwjs || {};
-    // Mixed-context can't be used, otherwise the ipc methods won't work
     let flags = [
         "--enable-logging=stderr",
+        disableNw2 ? "--disable-features=nw2" : "",
         nwjs["chromium-args"] || ""
     ];
     projectPackageJson["chromium-args"] = flags.join(" ");

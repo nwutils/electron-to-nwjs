@@ -130,10 +130,10 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 - **0.42.1**: ?
 - **0.42.2**: ?
 - **0.42.3**: WORKING
-- **0.42.4**: NOT WORKING (require is not defined)
-- **0.42.5**: NOT WORKING (require is not defined)
-- **0.42.6**: NOT WORKING (require is not defined)
-- **0.43.0**: NOT WORKING (require is not defined)
+- **0.42.4**: NOT WORKING (Package exports for './node_modules/tslib' do not define a valid '.' target)
+- **0.42.5**: NOT WORKING (Package exports for './node_modules/tslib' do not define a valid '.' target)
+- **0.42.6**: NOT WORKING (Package exports for './node_modules/tslib' do not define a valid '.' target)
+- **0.43.0**: WORKING
 - **0.43.1**: WORKING
 - **0.43.2**: WORKING
 - **0.43.3**: ?
