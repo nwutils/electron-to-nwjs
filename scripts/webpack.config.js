@@ -20,7 +20,6 @@ module.exports = (env, argv) => {
     const nwjs = projectPackageJson.nwjs || {}
     const nwjsVersion = opts.nwjsVersion
     const nwjsVersionRedux = nwjsVersion.split(".").slice(0, 2).join(".")
-    const nodeVersion = opts.nodeVersion
 
     const stringReplacements = [
         {

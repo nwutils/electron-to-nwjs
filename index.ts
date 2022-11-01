@@ -51,31 +51,6 @@ const currentSystemRecommendedNwjsVersion = function() {
     return "0.69.1"
 }
 
-const getNodeJsVersionByNwjsVersion = function(nwjsVersion:string) {
-    let nodeVersionByNwjsVersion = [
-        ["0.15.0", "6"],
-        ["0.18.3", "7"],
-        ["0.23.0", "8"],
-        ["0.26.3", "9"],
-        ["0.30.1", "10"],
-        ["0.34.1", "11"],
-        ["0.38.1", "12"],
-        ["0.42.1", "13"],
-        ["0.45.4", "14"],
-        ["0.49.2", "15"],
-        ["0.53.1", "16"],
-        ["0.59.0", "17"],
-        ["0.64.1", "18"]
-    ]
-    let nodeVersionTarget = "5"
-    nodeVersionByNwjsVersion.forEach(entry => {
-        if (Versions.isVersionEqualOrSuperiorThanVersion(nwjsVersion, entry[0])) {
-            nodeVersionTarget = entry[1]
-        }
-    })
-    return nodeVersionTarget
-}
-
 const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     let tmpDir;
     const appPrefix = 'electron-to-nwjs';
@@ -144,8 +119,11 @@ const listNodeModulesThatShouldntBeKept = function(projectDir:string) {
 
     const getAllDependenciesFromModule = function(module:string) {
         let moduleFolder = path.resolve(nodeModulesFolder, module)
+        if (!fs.existsSync(moduleFolder)) {
+            return []
+        }
         let moduleJson = loadPackageJsonFromFolder(moduleFolder)
-        let moduleDependencies = Object.keys(moduleJson.dependencies)
+        let moduleDependencies = Object.keys(moduleJson.dependencies || [])
         let allDependencies = moduleDependencies.concat([])
         moduleDependencies.forEach(dep => {
             allDependencies.push(...getAllDependenciesFromModule(dep))
@@ -155,11 +133,11 @@ const listNodeModulesThatShouldntBeKept = function(projectDir:string) {
 
     rootDependencies.forEach(dep => {
         neededDependencies.push(dep)
-        let moduleFolder = path.resolve(nodeModulesFolder, dep)
-        loadPackageJsonFromFolder(moduleFolder)
+        neededDependencies.push(...getAllDependenciesFromModule(dep))
     })
 
     neededDependencies = neededDependencies.filter((v, i, a) => a.indexOf(v) === i)
+    //console.log(`Needed dependencies:\n${neededDependencies.map(d => `- ${d}`).join('\n')}\n\n`)
 
     let allDependencies = fs.readdirSync(nodeModulesFolder)
     let removableDependencies = allDependencies.filter((v, i) => neededDependencies.indexOf(v) === -1)
@@ -171,7 +149,7 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
     let projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
     const disableNw2 = Versions.doesVersionMatchesConditions(opts.nwjsVersion, ">=0.42.4 <=0.43.0")
-    const enableNapiModules = Versions.doesVersionMatchesConditions(opts.nwjsVersion, ">=0.18.6 <0.30.1")
+    const enableNapiModules = Versions.doesVersionMatchesConditions(opts.nwjsVersion, ">=0.18.6 <=0.25.3")
 
     const nwjs = projectPackageJson.nwjs || {}
     
@@ -237,6 +215,13 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
     return nwjsConfig
 }
 
+const showWarningForVersionIfNeeded = function(version:string) {
+    if (Versions.doesVersionMatchesConditions(version, "<0.14.7")) {
+        console.warn("WARNING!!! electron-to-nwjs officially only supports NW.js 0.14.7 and superior versions!")
+        return
+    }
+}
+
 const program = new Command();
 
 program
@@ -246,8 +231,9 @@ program
   .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
   .action(function(dir) {
     const opts = this.opts()
+    showWarningForVersionIfNeeded(opts.nwjsVersion)
+
     const projectDir = path.resolve('.', dir)
-    opts.nodeVersion = getNodeJsVersionByNwjsVersion(opts.nwjsVersion)
     runPrebuildAndCreateNwjsProject({projectDir, prod:false, opts}, (tmpDir) => {
         return new Promise((resolve, reject) => {
             const config = buildNwjsBuilderConfig(tmpDir, opts, getCurrentOs())
@@ -304,8 +290,9 @@ program
   .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
   .action(function() {
     const opts = this.opts()
+    showWarningForVersionIfNeeded(opts.nwjsVersion)
+
     const projectDir = path.resolve('.', opts.project)
-    opts.nodeVersion = opts.nodeVersion || getNodeJsVersionByNwjsVersion(opts.nwjsVersion)
     runPrebuildAndCreateNwjsProject({projectDir, prod:true, opts}, async (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => opts[s]) as ("mac"|"linux"|"win")[]
         if (platforms.length === 0) {
