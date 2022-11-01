@@ -215,7 +215,7 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 
 ## Current code incompatibilities
 - ABI-stable Node.js API (N-API) requires a flag in NW.js 0.25.3 and lower, and I don't know if there is a way to add it
-- Application menu isn't working on macOS yet
+- Application menu isn't working properly on macOS yet
 
 ## Current package incompatibilities
 - **electron-updater**: requires NW.js 0.19.0 or superior (needs to be fixed)
