@@ -203,7 +203,7 @@ class BrowserWindow {
         if (!this._autoHideMenuBar) {
             return
         }
-        this.window.menu = this._menuBarVisible ? null : this.menu.mainMenu
+        this.window.menu = this._menuBarVisible ? null : this.menu._nwjsMainMenu()
         this._menuBarVisible = !this._menuBarVisible
     }
 
@@ -631,7 +631,7 @@ class BrowserWindow {
         this.menu = menu
         let that = this
         this._getWindow().then(win => {
-            win.menu = that._menuBarVisible ? (that.menu === null ? null : that.menu.mainMenu) : null
+            win.menu = that._menuBarVisible ? (that.menu === null ? null : that.menu._nwjsMainMenu()) : null
         });
     }
     removeMenu() {

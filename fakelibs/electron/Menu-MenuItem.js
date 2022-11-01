@@ -41,6 +41,9 @@ class MenuItemConstructorOptions {
 
 class MenuItem {
     constructor(options) {
+        const id = Math.floor(Math.random() * 1000000000);
+        this.id = options.id || String(id)
+        
         this._label = options.label
         this._click = options.click
         this._tooltip = options.toolTip
@@ -90,7 +93,7 @@ class MenuItem {
         //menuItemOpts.key {String} Optional the key of the shortcut
         //menuItemOpts.modifiers {String} Optional the modifiers of the shortcut
         if (this._submenu) {
-            menuItemOpts.submenu = this._submenu.contextMenu
+            menuItemOpts.submenu = this._submenu._nwjsContextMenu()
         }
         this.menuItem = new nw.MenuItem(menuItemOpts);
     }
@@ -149,7 +152,7 @@ class MenuItem {
     }
     set submenu(val) {
         this._submenu = val
-        this.menuItem.submenu = val.contextMenu
+        this.menuItem.submenu = val._nwjsContextMenu()
     }
     get type() {
         return this._type
@@ -201,16 +204,7 @@ class MenuItem {
 
 class Menu {
     constructor() {
-        this.contextMenu = new nw.Menu();
-        this.mainMenu = new nw.Menu({type:"menubar"});
         this.items = []
-        
-        if (isMac) {
-            // TODO: Figure out why it doesn't work in macOS yet
-            // https://github.com/nwjs/nw.js/issues/348
-            // https://github.com/nwjs/nw.js/issues/1807
-            this.mainMenu.createMacBuiltin(__nwjs_app_name);
-        }
     }
 
     
@@ -273,26 +267,43 @@ class Menu {
             options.x += menu_mouse_position.viewportX
             options.y += menu_mouse_position.viewportY
         }
-        this.contextMenu.popup(options.x, options.y)
+        this._nwjsContextMenu().popup(options.x, options.y)
         this.dispatchEvent(new Event('menu-will-show'))
     }
     // closePopup([browserWindow])
     append(item) {
-        this.mainMenu.append(item.menuItem)
-        this.contextMenu.append(item.menuItem)
-        if (item.id) {
-            this.items.push(item)
-        }
+        this.items.push(item)
     }
     getMenuItemById(id) {
         return this.items.filter(i => i.id === id).shift()
     }
     insert(pos, item) {
-        this.mainMenu.insert(item.menuItem, pos)
-        this.contextMenu.insert(item.menuItem, pos)
-        if (item.id) {
-            this.items.splice(pos, 0, item);
+        this.items.splice(pos, 0, item);
+    }
+
+    _nwjsContextMenu() {
+        if (this.contextMenu) {
+            return this.contextMenu
         }
+        let contextMenu = new nw.Menu();
+        this.items.forEach(item => contextMenu.append(item.menuItem))
+        this.contextMenu = contextMenu
+        return contextMenu
+    }
+    _nwjsMainMenu() {
+        if (this.mainMenu) {
+            return this.mainMenu
+        }
+        let mainMenu = new nw.Menu({type:"menubar"});
+        if (isMac) {
+            // TODO: Figure out why it doesn't work in macOS yet
+            // https://github.com/nwjs/nw.js/issues/348
+            // https://github.com/nwjs/nw.js/issues/1807
+            mainMenu.createMacBuiltin(__nwjs_app_name);
+        }
+        this.items.forEach(item => mainMenu.append(item.menuItem))
+        this.mainMenu = mainMenu
+        return mainMenu
     }
 }
 
