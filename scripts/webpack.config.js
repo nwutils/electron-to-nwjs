@@ -59,6 +59,13 @@ module.exports = (env, argv) => {
         {
             search: '__nwjs_feature_node_api_available',
             replace: JSON.stringify(Versions.doesVersionMatchesConditions(nwjsVersion, ">0.25.3"))
+        },
+        {
+            // show_in_taskbar was unavailable for a while
+            // https://github.com/nwjs/nw.js/issues/4970
+
+            search: '__nwjs_feature_show_in_taskbar_available',
+            replace: JSON.stringify(Versions.doesVersionMatchesConditions(nwjsVersion, ">0.18.8"))
         }
     ]
 

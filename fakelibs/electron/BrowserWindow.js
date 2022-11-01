@@ -157,7 +157,7 @@ class BrowserWindow {
                 kiosk: that._kiosk,
                 transparent: that._transparent
             }
-            if (__nwjs_version_gt_0_18_8) {
+            if (__nwjs_feature_show_in_taskbar_available) {
                 nwWindowOpts.show_in_taskbar = !that._skipTaskbar
             }
             nw.Window.open(url, nwWindowOpts, (win) => {
@@ -552,7 +552,7 @@ class BrowserWindow {
         this._getWindow().then(win => win.requestAttention(true));
     }
     setSkipTaskbar(skip) {
-        if (__nwjs_version_lte_0_18_8) {
+        if (!__nwjs_feature_show_in_taskbar_available) {
             throwUnsupportedException("BrowserWindow.setSkipTaskbar isn't supported in NW.js 0.18.8 or lower")
             return
         }
