@@ -25,29 +25,26 @@ const getCurrentOs = function() {
 
 const currentSystemRecommendedNwjsVersion = function() {
     // Reference:
-    // https://nwjs.io/blog/
+    // https://dev.to/thejaredwilcurt/guide-to-nw-js-versions-5d38#osx-support
     
     let platform = getCurrentOs()
     if (platform === "mac") {
         let osVersion = child_process.execSync("sw_vers -productVersion").toString().trim()
-        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.7")) {
-            // https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V6.md
-            // MACOSX_DEPLOYMENT_TARGET has been bumped up to 10.7 #6402.
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.9")) {
+            // NW.js v0.14.7 and below works with 10.6+
+            // NW.js v0.15.0 works with 10.9+
             return "0.14.7"
         }
         if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.10")) {
-            // https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V12.md
-            // increase MACOS_DEPLOYMENT_TARGET to 10.10 (Rod Vagg) #27275
-            return "0.37.4"
+            // NW.js v0.29.0 works with 10.10+
+            return "0.28.3"
         }
-        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.13")) {
-            // https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V14.md
-            // update macos deployment target to 10.13 for 14.x (AshCripps) #32454
-            return "0.45.3"
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.11")) {
+            // NW.js v0.51.0 works with 10.11+
+            return "0.50.3"
         }
         if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.15")) {
-            // https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V18.md
-            // bump macOS deployment target to 10.15 (Richard Lau) #42292
+            // NW.js v0.64.1 works with 10.15 and no longer accurately updates the plist file
             return "0.64.0"
         }
     }
