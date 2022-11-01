@@ -7,8 +7,8 @@ At first I tried to test on macOS High Sierra as well, but for some reason webpa
 Since Mac builds can be created in any system, I will just ignore that for now. Although, once we get to the point of making electron-builder working we gonna need Apple's code signing, which can only be made on macOS, we gonna need to find a fix for that.
 
 - **0.14.7**: NOT WORKING ((nw:83600): Pango-ERROR **: 20:49:44.919: Harfbuzz version too old (1.2.1))
-- **0.15.0**: NOT WORKING (random crash after a little while, but with no crash logs)
-- **0.15.1**: NOT WORKING (random crash after a little while, but with no crash logs)
+- **0.15.0**: WORKING
+- **0.15.1**: WORKING
 - **0.15.2**: WORKING
 - **0.15.3**: WORKING
 - **0.15.4**: ?
@@ -213,7 +213,7 @@ Since Mac builds can be created in any system, I will just ignore that for now. 
 - **0.69.0**: ?
 - **0.69.1**: WORKING
 
-## Current node incompatibilities
+## Current code incompatibilities
 - ABI-stable Node.js API (N-API) requires a flag in NW.js 0.25.3 and lower, and I don't know if there is a way to add it
 
 ## Current package incompatibilities
