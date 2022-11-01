@@ -6,6 +6,24 @@ At first I tried to test on macOS High Sierra as well, but for some reason webpa
 
 Since Mac builds can be created in any system, I will just ignore that for now. Although, once we get to the point of making electron-builder working we gonna need Apple's code signing, which can only be made on macOS, we gonna need to find a fix for that.
 
+- **0.14.7**: NOT WORKING ((nw:83600): Pango-ERROR **: 20:49:44.919: Harfbuzz version too old (1.2.1))
+- **0.15.0**: ?
+- **0.15.1**: ?
+- **0.15.2**: ?
+- **0.15.3**: ?
+- **0.15.4**: ?
+- **0.16.0**: CRASH ON STARTUP
+- **0.16.1**: WORKING
+- **0.17.0**: ?
+- **0.17.1**: ?
+- **0.17.2**: ?
+- **0.17.3**: ?
+- **0.17.4**: ?
+- **0.17.5**: ?
+- **0.17.6**: ?
+- **0.18.0**: ?
+- **0.18.1**: ?
+- **0.18.2**: WORKING
 - **0.18.3**: WORKING
 - **0.18.8**: WORKING
 - **0.19.0**: WORKING
