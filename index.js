@@ -128,18 +128,47 @@ const listNodeModulesThatShouldntBeKept = function (projectDir) {
         neededDependencies.push(...getAllDependenciesFromModule(dep));
     });
     neededDependencies = neededDependencies.filter((v, i, a) => a.indexOf(v) === i);
-    console.log(`Needed dependencies:\n${neededDependencies.map(d => `- ${d}`).join('\n')}\n\n`);
+    //console.log(`Needed dependencies:\n${neededDependencies.map(d => `- ${d}`).join('\n')}\n\n`)
     let allDependencies = fs_1.default.readdirSync(nodeModulesFolder);
     let removableDependencies = allDependencies.filter((v, i) => neededDependencies.indexOf(v) === -1);
     return removableDependencies;
+};
+const getElectronToNwjsProjectConfig = function (projectPath, flagOpts) {
+    let config = {};
+    const electronToNwjsConfigJsPath = path_1.default.join(projectPath, "electron-to-nwjs.config.js");
+    if (fs_1.default.existsSync(electronToNwjsConfigJsPath)) {
+        config = require(electronToNwjsConfigJsPath);
+        if (typeof config === 'function') {
+            config = config();
+        }
+    }
+    config.target = config.target || {};
+    config.target.architecture = flagOpts.x86 ? "x64" : (config.target.architecture || "x64");
+    let osList = ["mac", "linux", "win"];
+    let flagOsList = osList.filter(os => flagOpts[os]);
+    if (flagOsList.length > 0) {
+        osList.forEach(os => delete config.target[os]);
+        flagOsList.forEach(os => config.target[os] = true);
+    }
+    config.nwjs = config.nwjs || {};
+    config.nwjs.version = config.nwjs.version || flagOpts.nwjsVersion;
+    config.nwjs.ignoreUnimplementedFeatures = config.nwjs.ignoreUnimplementedFeatures || flagOpts.ignoreUnimplementedFeatures;
+    return config;
 };
 const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     const projectPackagePath = path_1.default.resolve(projectPath, 'package.json');
     let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
     const projectPackageJson = JSON.parse(projectPackageStr);
-    const disableNw2 = Versions.doesVersionMatchesConditions(opts.nwjsVersion, ">=0.42.4 <=0.43.0");
-    const enableNapiModules = Versions.doesVersionMatchesConditions(opts.nwjsVersion, ">=0.18.6 <=0.25.3");
-    const nwjs = projectPackageJson.nwjs || {};
+    const disableNw2 = Versions.doesVersionMatchesConditions(opts.nwjs.version, ">=0.42.4 <=0.43.0");
+    const enableNapiModules = Versions.doesVersionMatchesConditions(opts.nwjs.version, ">=0.18.6 <=0.25.3");
+    let nwjs = {};
+    const electronToNwjsConfigJsPath = path_1.default.join(projectPath, "electron-to-nwjs.config.js");
+    if (fs_1.default.existsSync(electronToNwjsConfigJsPath)) {
+        nwjs = require(electronToNwjsConfigJsPath);
+        if (typeof nwjs === 'function') {
+            nwjs = nwjs();
+        }
+    }
     let flags = [
         "--enable-logging=stderr",
         disableNw2 ? "--disable-features=nw2" : "",
@@ -209,16 +238,17 @@ program
     .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
     .action(function (dir) {
     const opts = this.opts();
-    showWarningForVersionIfNeeded(opts.nwjsVersion);
     const projectDir = path_1.default.resolve('.', dir);
-    runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts }, (tmpDir) => {
+    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, opts);
+    showWarningForVersionIfNeeded(nwjsConfig.nwjs.version);
+    runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts: nwjsConfig }, (tmpDir) => {
         return new Promise((resolve, reject) => {
-            const config = buildNwjsBuilderConfig(tmpDir, opts, getCurrentOs());
+            const config = buildNwjsBuilderConfig(tmpDir, nwjsConfig, getCurrentOs());
             var nw = new NwBuilder({
                 appName: config.appName,
                 appVersion: config.appVersion,
                 files: config.files,
-                version: opts.nwjsVersion
+                version: nwjsConfig.nwjs.version
             });
             nw.on('log', (log) => {
                 console.log(log);
@@ -262,24 +292,25 @@ program
     .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
     .action(function () {
     const opts = this.opts();
-    showWarningForVersionIfNeeded(opts.nwjsVersion);
     const projectDir = path_1.default.resolve('.', opts.project);
-    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts }, async (tmpDir) => {
-        const platforms = ["mac", "linux", "win"].filter(s => opts[s]);
+    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, opts);
+    showWarningForVersionIfNeeded(nwjsConfig.nwjs.version);
+    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts: nwjsConfig }, async (tmpDir) => {
+        const platforms = ["mac", "linux", "win"].filter(s => nwjsConfig.target[s]);
         if (platforms.length === 0) {
             platforms.push(getCurrentOs());
         }
         for (const platform of platforms) {
-            const config = buildNwjsBuilderConfig(tmpDir, opts, platform);
+            const config = buildNwjsBuilderConfig(tmpDir, nwjsConfig, platform);
             let nwjsPlatform = platform;
             if (nwjsPlatform === "mac") {
                 nwjsPlatform = "osx";
             }
             var nw = new NwBuilder({
                 files: config.files,
-                version: opts.nwjsVersion,
+                version: nwjsConfig.nwjs.version,
                 flavor: 'normal',
-                platforms: [nwjsPlatform + (opts.x86 ? "32" : "64")],
+                platforms: [nwjsPlatform + (nwjsConfig.target.architecture === "x86" ? "32" : "64")],
                 appName: config.appName,
                 appVersion: config.appVersion,
                 buildDir: path_1.default.resolve(projectDir, path_1.default.join('.', distDir)),

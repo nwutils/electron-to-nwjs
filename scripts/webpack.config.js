@@ -12,13 +12,21 @@ module.exports = (env, argv) => {
     const isBuild = env.prod === true
     
     const opts = env.opts || {}
-    const ignoreUnimplementedFeatures = opts.ignoreUnimplementedFeatures
+    const ignoreUnimplementedFeatures = opts.nwjs.ignoreUnimplementedFeatures
 
     const projectPackagePath = path.resolve(projectPath, 'package.json')
     const projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
-    const nwjs = projectPackageJson.nwjs || {}
-    const nwjsVersion = opts.nwjsVersion
+    
+    let nwjs = {}
+    const electronToNwjsConfigJsPath = path.join(projectPath, "electron-to-nwjs.config.js")
+    if (fs.existsSync(electronToNwjsConfigJsPath)) {
+        nwjs = require(electronToNwjsConfigJsPath)
+        if (typeof nwjs === 'function') {
+            nwjs = nwjs()
+        }
+    }
+    const nwjsVersion = opts.nwjs.version
     const nwjsVersionRedux = nwjsVersion.split(".").slice(0, 2).join(".")
 
     const stringReplacements = [
