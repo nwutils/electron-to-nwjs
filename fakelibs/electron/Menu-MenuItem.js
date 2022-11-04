@@ -296,12 +296,13 @@ class Menu {
         }
         let mainMenu = new nw.Menu({type:"menubar"});
         if (isMac) {
-            // TODO: It works on macOS now, but the App, Edit and Window menus are doubled
-            // https://github.com/nwjs/nw.js/issues/348
-            // https://github.com/nwjs/nw.js/issues/1807
-            mainMenu.createMacBuiltin(__nwjs_app_name);
+            mainMenu.createMacBuiltin(__nwjs_app_name, {hideEdit:true, hideWindow:true});
+            this.items.forEach(item => mainMenu.append(item.menuItem))
+            mainMenu.removeAt(0)
         }
-        this.items.forEach(item => mainMenu.append(item.menuItem))
+        else {
+            this.items.forEach(item => mainMenu.append(item.menuItem))
+        }
         this.mainMenu = mainMenu
         return mainMenu
     }
