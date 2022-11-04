@@ -144,7 +144,7 @@ const listNodeModulesThatShouldntBeKept = function(projectDir:string) {
     return removableDependencies
 }
 
-const getElectronToNwjsProjectConfig = function(projectPath:string, flagOpts:any) {
+const getElectronToNwjsProjectConfig = function(projectPath:string, isBuild:boolean, flagOpts:any) {
     let config = {} as {[id:string]:any}
     const electronToNwjsConfigJsPath = path.join(projectPath, "electron-to-nwjs.config.js")
     if (fs.existsSync(electronToNwjsConfigJsPath)) {
@@ -165,7 +165,7 @@ const getElectronToNwjsProjectConfig = function(projectPath:string, flagOpts:any
     }
 
     config.nwjs = config.nwjs || {}
-    config.nwjs.version = config.nwjs.version || flagOpts.nwjsVersion
+    config.nwjs.version = (isBuild ? config.nwjs.build?.version : undefined) || config.nwjs.version || flagOpts.nwjsVersion
     config.nwjs.ignoreUnimplementedFeatures = config.nwjs.ignoreUnimplementedFeatures || flagOpts.ignoreUnimplementedFeatures
     
     return config
@@ -266,7 +266,7 @@ program
   .action(function(dir) {
     const opts = this.opts()
     const projectDir = path.resolve('.', dir)
-    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, opts)
+    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, false, opts)
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version)
 
     runPrebuildAndCreateNwjsProject({projectDir, prod:false, opts:nwjsConfig}, (tmpDir) => {
@@ -326,7 +326,7 @@ program
   .action(function() {
     const opts = this.opts()
     const projectDir = path.resolve('.', opts.project)
-    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, opts)
+    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, true, opts)
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version)
 
     runPrebuildAndCreateNwjsProject({projectDir, prod:true, opts:nwjsConfig}, async (tmpDir) => {

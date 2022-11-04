@@ -133,7 +133,7 @@ const listNodeModulesThatShouldntBeKept = function (projectDir) {
     let removableDependencies = allDependencies.filter((v, i) => neededDependencies.indexOf(v) === -1);
     return removableDependencies;
 };
-const getElectronToNwjsProjectConfig = function (projectPath, flagOpts) {
+const getElectronToNwjsProjectConfig = function (projectPath, isBuild, flagOpts) {
     let config = {};
     const electronToNwjsConfigJsPath = path_1.default.join(projectPath, "electron-to-nwjs.config.js");
     if (fs_1.default.existsSync(electronToNwjsConfigJsPath)) {
@@ -151,7 +151,7 @@ const getElectronToNwjsProjectConfig = function (projectPath, flagOpts) {
         flagOsList.forEach(os => config.target[os] = true);
     }
     config.nwjs = config.nwjs || {};
-    config.nwjs.version = config.nwjs.version || flagOpts.nwjsVersion;
+    config.nwjs.version = (isBuild ? config.nwjs.build?.version : undefined) || config.nwjs.version || flagOpts.nwjsVersion;
     config.nwjs.ignoreUnimplementedFeatures = config.nwjs.ignoreUnimplementedFeatures || flagOpts.ignoreUnimplementedFeatures;
     return config;
 };
@@ -239,7 +239,7 @@ program
     .action(function (dir) {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', dir);
-    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, opts);
+    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, false, opts);
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts: nwjsConfig }, (tmpDir) => {
         return new Promise((resolve, reject) => {
@@ -293,7 +293,7 @@ program
     .action(function () {
     const opts = this.opts();
     const projectDir = path_1.default.resolve('.', opts.project);
-    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, opts);
+    const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, true, opts);
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts: nwjsConfig }, async (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => nwjsConfig.target[s]);
