@@ -16,10 +16,13 @@
 global.__nwjs_registered_global_shortcuts = global.__nwjs_registered_global_shortcuts || []
 var _registered_global_shortcuts = global.__nwjs_registered_global_shortcuts
 
+const isMac = process.platform === 'darwin';
+
 const globalShortcut = {
     register(combination, callback) {
+        let accelerator = this._nwjsAcceleratorFromElectronAccelerator(combination)
         var option = {
-            key: combination.replace("Control", "Ctrl"),
+            key: accelerator,
             active: callback,
             failed: function(msg) {
                 console.error(msg);
@@ -48,6 +51,64 @@ const globalShortcut = {
         Object.keys(this._registrationHistory).forEach(combination => {
             that.unregister(combination)
         })
+    },
+
+    _nwjsAcceleratorFromElectronAccelerator(accelerator) {
+        if (accelerator.toLowerCase().includes("altgr")) {
+            throwUnsupportedException("MenuItem.accelerator can't support the AltGr key")
+        }
+        let keys = accelerator.split("+")
+        let _key = keys.pop()
+        _key = {
+            // ~, !, @, #, $
+            // Plus
+            "Space": " ",
+            "Tab": "Tab",
+            "Capslock": "CapsLock",
+            "Numlock": "NumLock",
+            "Scrolllock": "ScrollLock",
+            "Backspace": "Backspace",
+            "Delete": "Delete",
+            "Insert": "Insert",
+            "Return": "Enter",
+            "Enter": "Enter",
+            "Up": "Up",
+            "Down": "Down",
+            "Left": "Left",
+            "Right": "Right",
+            "Home": "Home",
+            "End": "End",
+            "PageUp": "PageUp",
+            "PageDown": "PageDown",
+            "Escape": "Escape",
+            "Esc": "Escape",
+            "VolumeUp": "AudioVolumeUp",
+            "VolumeDown": "AudioVolumeDown",
+            "VolumeMute": "AudioVolumeMute",
+            "MediaNextTrack": "MediaNextTrack",
+            "MediaPreviousTrack": "MediaPreviousTrack",
+            "MediaStop": "MediaStop",
+            "MediaPlayPause": "MediaPlayPause",
+            "PrintScreen": "PrintScreen",
+            // NumPad Keys
+            // num0 - num9
+            // numdec - decimal key
+            // numadd - numpad + key
+            // numsub - numpad - key
+            // nummult - numpad * key
+            // numdiv - numpad ÷ key
+        }[_key] || _key.toLowerCase()
+        
+        let _modifiers = keys.join("+")
+                .replace("CmdOrCtrl", isMac ? "Command" : "Ctrl")
+                .replace("CommandOrControl", isMac ? "Command" : "Ctrl")
+                .replace("Control", "Ctrl")
+                .replace("Option", "Ctrl")
+                .replace("Meta", "Command")
+                .replace("AltGr", "Alt")
+        _modifiers = (_modifiers.length === 0) ? undefined : _modifiers
+        
+        return _modifiers === undefined ? _key : (_modifiers + "+" + _key)
     }
 }
 

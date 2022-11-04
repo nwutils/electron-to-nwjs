@@ -133,7 +133,6 @@ class MenuItem {
             }
         }
         // specs.registerAccelerator
-        // specs.accelerator
         // specs.nonNativeMacOSRole
         if (specs.submenu) {
             this._submenu = Menu.buildFromTemplate(specs.submenu)
@@ -202,7 +201,46 @@ class MenuItem {
             throwUnsupportedException("MenuItem.accelerator can't support the AltGr key")
         }
         let keys = val.split("+")
-        this._key = keys.pop()
+        const _key = keys.pop()
+        this._key = {
+            // ~, !, @, #, $
+            // Plus
+            "Space": " ",
+            "Tab": "Tab",
+            "Capslock": "CapsLock",
+            "Numlock": "NumLock",
+            "Scrolllock": "ScrollLock",
+            "Backspace": "Backspace",
+            "Delete": "Delete",
+            "Insert": "Insert",
+            "Return": "Enter",
+            "Enter": "Enter",
+            "Up": "Up",
+            "Down": "Down",
+            "Left": "Left",
+            "Right": "Right",
+            "Home": "Home",
+            "End": "End",
+            "PageUp": "PageUp",
+            "PageDown": "PageDown",
+            "Escape": "Escape",
+            "Esc": "Escape",
+            "VolumeUp": "AudioVolumeUp",
+            "VolumeDown": "AudioVolumeDown",
+            "VolumeMute": "AudioVolumeMute",
+            "MediaNextTrack": "MediaNextTrack",
+            "MediaPreviousTrack": "MediaPreviousTrack",
+            "MediaStop": "MediaStop",
+            "MediaPlayPause": "MediaPlayPause",
+            "PrintScreen": "PrintScreen",
+            // NumPad Keys
+            // num0 - num9
+            // numdec - decimal key
+            // numadd - numpad + key
+            // numsub - numpad - key
+            // nummult - numpad * key
+            // numdiv - numpad ÷ key
+        }[_key] || _key.toLowerCase()
         const _modifiers = keys.join("+").toLowerCase()
                 .replace("cmdorctrl", isMac ? "cmd" : "ctrl")
                 .replace("commandorcontrol", isMac ? "cmd" : "ctrl")
