@@ -216,7 +216,6 @@ class MenuItem {
             this.menuItem.key = this._key
             this.menuItem.modifiers = this._modifiers
         }
-        console.log(`accelerator: ${val} - nwjs: ${this._modifiers} + ${this._key}`)
     }
     get toolTip() {
         return this._tooltip
