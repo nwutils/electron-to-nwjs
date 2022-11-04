@@ -48,7 +48,7 @@ class WebContents {
         var that = this
         this.session.dispatchEvent('will-download', {
             event: new Event('will-download'),
-            item: new DownloadItem(url),
+            item: new DownloadItem(url, that),
             webContents: that
         })
     }
