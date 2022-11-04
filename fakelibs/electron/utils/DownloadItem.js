@@ -43,14 +43,16 @@ class DownloadItem {
         xmlhttp.send();
         this._xmlhttp = xmlhttp
         this.dispatchEvent("updated", this._state)
+
+        this._updateInterval = setInterval(() => that._update(), 1000)
     }
 
 
     _events = {}
-    dispatchEvent(event) {
-        let listeners = this._events[event.type] || [];
+    dispatchEvent(eventName, ...args) {
+        let listeners = this._events[eventName] || [];
         listeners.forEach(listener => {
-            listener.apply(undefined, event.args);
+            listener.apply(undefined, args);
         })
     }
     on(eventName, listener) {
@@ -60,7 +62,11 @@ class DownloadItem {
     }
 
 
+    _update() {
+        this.dispatchEvent("updated", this._state)
+    }
     async _complete(arraybuffer) {
+        clearInterval(this._updateInterval);
         this._state = "completed"
         if (this._savePath === undefined) {
             let result = await dialog.showSaveDialog(this._webContents._window, this._saveDialogOptions || {})
@@ -107,6 +113,7 @@ class DownloadItem {
         return false
     }
     cancel() {
+        clearInterval(this._updateInterval);
         this._xmlhttp.abort();
         this._state = "cancelled"
         this.dispatchEvent("done", this._state)

@@ -40,6 +40,7 @@ const runAndRemoveInputFile = function(input) {
         resolve(filePaths)
       }
     }, {once:true});
+    input.click();
   })
 }
 
@@ -88,6 +89,7 @@ class BaseDialog {
 
     const input = document.createElement("input");
     input.type = "file";
+    input.style.display = "none";
     if (defaultPath) {
       input.setAttribute("nwworkingdir", defaultPath)
     }
@@ -144,6 +146,7 @@ class BaseDialog {
 
     const input = document.createElement("input");
     input.type = "file";
+    input.style.display = "none";
     input.setAttribute("nwsaveas", "")
     if (defaultPath) {
       const defaultPathIsFolder = path.extname(defaultPath).length === 0
