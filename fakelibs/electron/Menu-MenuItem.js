@@ -51,6 +51,7 @@ class MenuItem {
         this._checked = options.checked
         
         this.type = options.type
+        this.accelerator = options.accelerator
 
         if (options.submenu) {
             if (Array.isArray(options.submenu)) {
@@ -90,8 +91,10 @@ class MenuItem {
             menuItemOpts.checked = this._checked
         }
         //menuItemOpts.icon {String} Optional icon for normal item or checkbox
-        //menuItemOpts.key {String} Optional the key of the shortcut
-        //menuItemOpts.modifiers {String} Optional the modifiers of the shortcut
+        if (this._key) {
+            menuItemOpts.key = this._key
+            menuItemOpts.modifiers = this._modifiers
+        }
         if (this._submenu) {
             menuItemOpts.submenu = this._submenu._nwjsContextMenu()
         }
@@ -113,6 +116,9 @@ class MenuItem {
         }
         if (specs.appMethod) {
             this._click = specs.appMethod
+        }
+        if (specs.accelerator) {
+            this.accelerator = specs.accelerator
         }
         if (specs.webContentsMethod) {
             this._click = function() {
@@ -179,6 +185,39 @@ class MenuItem {
         this.label = this._label
         this.submenu = this._submenu
     }
+    get accelerator() {
+        if (!this._accelerator) {
+            return undefined
+        }
+        return this._accelerator
+    }
+    set accelerator(val) {
+        if (!val) {
+            this._key = undefined
+            this._modifiers = undefined
+            this._accelerator = undefined
+            return
+        }
+        if (val.toLowerCase().includes("altgr")) {
+            throwUnsupportedException("MenuItem.accelerator can't support the AltGr key")
+        }
+        let keys = val.split("+")
+        this._key = keys.pop()
+        const _modifiers = keys.join("+").toLowerCase()
+                .replace("cmdorctrl", isMac ? "cmd" : "ctrl")
+                .replace("commandorcontrol", isMac ? "cmd" : "ctrl")
+                .replace("control", "ctrl")
+                .replace("option", "ctrl")
+                .replace("meta", "super")
+                .replace("altgr", "alt")
+        this._modifiers = (_modifiers.length === 0) ? undefined : _modifiers
+        this._accelerator = val
+        if (this.menuItem) {
+            this.menuItem.key = this._key
+            this.menuItem.modifiers = this._modifiers
+        }
+        console.log(`accelerator: ${val} - nwjs: ${this._modifiers} + ${this._key}`)
+    }
     get toolTip() {
         return this._tooltip
     }
@@ -209,8 +248,8 @@ class Menu {
 
     
     static setApplicationMenu(menu) {
-        BrowserWindowManager.getAllWindows().forEach(win => win.setMenu(menu))
         global.__nwjs_app_menu = menu
+        BrowserWindowManager.getAllWindows().forEach(win => win.setMenu(menu))
     }
     static getApplicationMenu() {
         return global.__nwjs_app_menu
