@@ -66,5 +66,19 @@ class Session {
     isSpellCheckerEnabled() {
         return this.spellCheckerEnabled
     }
+
+
+    _events = {}
+    dispatchEvent(event) {
+        let listeners = this._events[event.type] || [];
+        listeners.forEach(listener => {
+            listener.apply(undefined, event.args);
+        })
+    }
+    on(eventName, listener) {
+        this._events[eventName] = this._events[eventName] || []
+        this._events[eventName].push(listener);
+        return this;
+    }
 }
 module.exports = Session

@@ -32,8 +32,8 @@ module.exports = (env, argv) => {
     const stringReplacements = [
         {
             // TODO: Untested
-            search: 'process.resourcesPath',
-            replace: "(process.cwd())"
+            search: 'process.type',
+            replace: JSON.stringify(isMain ? "browser" : "renderer")
         },
         {
             search: '__nwjs_version',

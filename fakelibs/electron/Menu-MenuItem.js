@@ -48,6 +48,7 @@ class MenuItem {
         this._click = options.click
         this._tooltip = options.toolTip
         this._enabled = options.enabled
+        this._visible = options.visible
         this._checked = options.checked
         
         this.type = options.type
@@ -269,6 +270,12 @@ class MenuItem {
         this._enabled = val
         this.menuItem.enabled = val
     }
+    get visible() {
+        return this._visible !== false
+    }
+    set visible(val) {
+        this._visible = val
+    }
     get checked() {
         return this._checked
     }
@@ -362,7 +369,7 @@ class Menu {
             return this.contextMenu
         }
         let contextMenu = new nw.Menu();
-        this.items.forEach(item => contextMenu.append(item.menuItem))
+        this.items.filter(i => i.visible).forEach(item => contextMenu.append(item.menuItem))
         this.contextMenu = contextMenu
         return contextMenu
     }
@@ -373,11 +380,11 @@ class Menu {
         let mainMenu = new nw.Menu({type:"menubar"});
         if (isMac) {
             mainMenu.createMacBuiltin(__nwjs_app_name, {hideEdit:true, hideWindow:true});
-            this.items.forEach(item => mainMenu.append(item.menuItem))
+            this.items.filter(i => i.visible).forEach(item => mainMenu.append(item.menuItem))
             mainMenu.removeAt(0)
         }
         else {
-            this.items.forEach(item => mainMenu.append(item.menuItem))
+            this.items.filter(i => i.visible).forEach(item => mainMenu.append(item.menuItem))
         }
         this.mainMenu = mainMenu
         return mainMenu

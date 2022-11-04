@@ -14,6 +14,7 @@
 
 const session = require('./session')
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
+const DownloadItem = require('./utils/DownloadItem')
 const throwUnsupportedException = require('./utils/unsupported-exception')
 
 class WebContents {
@@ -43,6 +44,14 @@ class WebContents {
     }
 
 
+    downloadURL(url) {
+        var that = this
+        this.session.dispatchEvent('will-download', {
+            event: new Event('will-download'),
+            item: new DownloadItem(url),
+            webContents: that
+        })
+    }
     loadURL(url, options) {
         if (options) {
             throwUnsupportedException("WebContents.loadURL can't support the 'options' argument")
