@@ -557,6 +557,34 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 ## process
 
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`defaultApp`                           | 🌕🌕🌗🌑 | Working
+`isMainFrame`                          | 🌕🌗🌑🌑 | Started
+`mas`                                  | 🌕🌗🌑🌑 | Started
+`noAsar`                               | 🌕🌕🌗🌑 | Working
+`resourcesPath`                        | 🌕🌕🌗🌑 | Working
+`sandboxed`                            | 🌕🌗🌑🌑 | Started
+`contextIsolated`                      | 🌕🌗🌑🌑 | Started
+`traceProcessWarnings`                 | 🌕🌗🌑🌑 | Started
+`type`                                 | 🌑🌑🌑🌑 | Not Planned
+`versions.chrome`                      | 🌕🌕🌗🌑 | Working
+`versions.electron`                    | 🌕🌗🌑🌑 | Started
+`windowsStore`                         | 🌕🌗🌑🌑 | Started
+`contextId`                            | 🌕🌗🌑🌑 | Started
+`crash`                                | 🌕🌕🌗🌑 | Working
+`hang`                                 | 🌑🌑🌑🌑 | Not Planned
+`getCreationTime`                      | 🌕🌗🌑🌑 | Started
+`getHeapStatistics`                    | 🌑🌑🌑🌑 | Not Planned
+`getBlinkMemoryInfo`                   | 🌑🌑🌑🌑 | Not Planned
+`getProcessMemoryInfo`                 | 🌑🌑🌑🌑 | Not Planned
+`getSystemMemoryInfo`                  | 🌑🌑🌑🌑 | Not Planned
+`getSystemVersion`                     | 🌕🌕🌗🌑 | Working
+`getCPUUsage`                          | 🌑🌑🌑🌑 | Not Planned
+`getIOCounters`                        | 🌑🌑🌑🌑 | Not Planned
+
 ## protocol
 
 ## safeStorage
