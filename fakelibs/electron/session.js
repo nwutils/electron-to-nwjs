@@ -71,7 +71,7 @@ class Session {
     _events = {}
     dispatchEvent(event) {
         let listeners = this._events[event.type] || [];
-        listeners.forEach(listener => {
+        listeners.forEach(async listener => {
             listener.apply(undefined, event.args);
         })
     }

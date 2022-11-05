@@ -51,7 +51,7 @@ class DownloadItem {
     _events = {}
     dispatchEvent(eventName, ...args) {
         let listeners = this._events[eventName] || [];
-        listeners.forEach(listener => {
+        listeners.forEach(async listener => {
             listener.apply(undefined, args);
         })
     }
