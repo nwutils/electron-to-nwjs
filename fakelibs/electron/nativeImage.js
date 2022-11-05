@@ -74,7 +74,9 @@ class NativeImage {
         img._scaleFactor = options.scaleFactor || 1.0
         return img
     }
-    // static createFromDataURL(dataURL)
+    static createFromDataURL(dataURL) {
+        
+    }
     // static createFromNamedImage(imageName[, hslShift]) (macOS only)
 
 

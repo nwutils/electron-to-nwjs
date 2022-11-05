@@ -1,6 +1,7 @@
 const app = require('./app')
 const autoUpdater = require('./autoUpdater')
 const BrowserWindow = require('./BrowserWindow')
+const clipboard = require('./clipboard')
 const ContextMenuParams = require('./ContextMenuParams')
 const desktopCapturer = require('./desktopCapturer')
 const dialog = require('./dialog')
@@ -43,7 +44,7 @@ if (__nwjs_is_main) {
         autoUpdater,
         // BrowserView
         BrowserWindow,
-        // clipboard
+        clipboard,
         ContextMenuParams,
         // contentTracing
         // crashReporter
@@ -84,7 +85,7 @@ if (__nwjs_is_main) {
 }
 else {
     module.exports = {
-        // clipboard
+        clipboard,
         // contextBridge
         // crashReporter
         desktopCapturer,
