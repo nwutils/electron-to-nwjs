@@ -42,11 +42,16 @@ class Session {
 
 
     constructor(opts) {
-        this.spellCheckerEnabled = false
+        let that = this
+        this._spellCheckerEnabled = false
         this._webRequest = new WebRequest()
         this._name = opts.name
         this._persistent = opts.persistent
         this._enabledCache = opts.cache
+
+        chrome.settingsPrivate.getPref('browser.enable_spellchecking', function(pref) {
+            that._spellCheckerEnabled = pref.value
+        });
     }
 
 
@@ -59,12 +64,11 @@ class Session {
         return this._persistent
     }
     setSpellCheckerEnabled(enable) {
-        if (enable) {
-            throwUnsupportedException("Session.setSpellCheckerEnabled can't accept the value 'true'")
-        }
+        this._spellCheckerEnabled = enable
+        chrome.settingsPrivate.setPref('browser.enable_spellchecking', enable);
     }
     isSpellCheckerEnabled() {
-        return this.spellCheckerEnabled
+        return this._spellCheckerEnabled
     }
 
 
