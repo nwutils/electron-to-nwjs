@@ -314,7 +314,7 @@ class Menu {
 
 
     _events = {}
-    dispatchEvent(event) {
+    async dispatchEvent(event) {
         let listener = this._events[event.type];
         if (listener) {
             listener(event);
