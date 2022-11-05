@@ -1,3 +1,15 @@
+/*
+  Electron Docs
+  https://www.electronjs.org/docs/latest/api/clipboard
+
+  NW.js Docs
+  https://docs.nwjs.io/en/latest/References/Clipboard/
+
+  Perform copy and paste operations on the system clipboard.
+
+  ?
+*/
+
 const NativeImage = require('./nativeImage')
 const throwUnsupportedException = require('./utils/unsupported-exception')
 
