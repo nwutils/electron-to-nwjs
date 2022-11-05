@@ -565,6 +565,86 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 ## session
 
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`fromPartition`                        | 🌕🌕🌗🌑 | Working
+`defaultSession`                       | 🌕🌕🌗🌑 | Working
+`getCacheSize`                         | 🌑🌑🌑🌑 | Not Planned
+`clearCache`                           | 🌑🌑🌑🌑 | Not Planned
+`clearStorageData`                     | 🌑🌑🌑🌑 | Not Planned
+`flushStorageData`                     | 🌑🌑🌑🌑 | Not Planned
+`setProxy`                             | 🌑🌑🌑🌑 | Not Planned
+`resolveProxy`                         | 🌑🌑🌑🌑 | Not Planned
+`forceReloadProxyConfig`               | 🌑🌑🌑🌑 | Not Planned
+`setDownloadPath`                      | 🌑🌑🌑🌑 | Not Planned
+`enableNetworkEmulation`               | 🌑🌑🌑🌑 | Not Planned
+`preconnect`                           | 🌑🌑🌑🌑 | Not Planned
+`closeAllConnections`                  | 🌑🌑🌑🌑 | Not Planned
+`disableNetworkEmulation`              | 🌑🌑🌑🌑 | Not Planned
+`setCertificateVerifyProc`             | 🌑🌑🌑🌑 | Not Planned
+`setPermissionRequestHandler`          | 🌑🌑🌑🌑 | Not Planned
+`setPermissionCheckHandler`            | 🌑🌑🌑🌑 | Not Planned
+`setDevicePermissionHandler`           | 🌑🌑🌑🌑 | Not Planned
+`setBluetoothPairingHandler`           | 🌑🌑🌑🌑 | Not Planned
+`clearHostResolverCache`               | 🌑🌑🌑🌑 | Not Planned
+`allowNTLMCredentialsForDomains`       | 🌑🌑🌑🌑 | Not Planned
+`setUserAgent`                         | 🌑🌑🌑🌑 | Not Planned
+`isPersistent`                         | 🌕🌗🌑🌑 | Started
+`getUserAgent`                         | 🌑🌑🌑🌑 | Not Planned
+`setSSLConfig`                         | 🌑🌑🌑🌑 | Not Planned
+`getBlobData`                          | 🌑🌑🌑🌑 | Not Planned
+`downloadURL`                          | 🌑🌑🌑🌑 | Not Planned
+`createInterruptedDownload`            | 🌑🌑🌑🌑 | Not Planned
+`clearAuthCache`                       | 🌑🌑🌑🌑 | Not Planned
+`setPreloads`                          | 🌑🌑🌑🌑 | Not Planned
+`getPreloads`                          | 🌑🌑🌑🌑 | Not Planned
+`setCodeCachePath`                     | 🌑🌑🌑🌑 | Not Planned
+`clearCodeCaches`                      | 🌑🌑🌑🌑 | Not Planned
+`setSpellCheckerEnabled`               | 🌕🌕🌗🌑 | Working
+`isSpellCheckerEnabled`                | 🌕🌕🌗🌑 | Working
+`setSpellCheckerLanguages`             | 🌑🌑🌑🌑 | Not Planned
+`getSpellCheckerLanguages`             | 🌑🌑🌑🌑 | Not Planned
+`setSpellCheckerDictionaryDownloadURL` | 🌑🌑🌑🌑 | Not Planned
+`listWordsInSpellCheckerDictionary`    | 🌑🌑🌑🌑 | Not Planned
+`addWordToSpellCheckerDictionary`      | 🌑🌑🌑🌑 | Not Planned
+`removeWordFromSpellCheckerDictionary` | 🌑🌑🌑🌑 | Not Planned
+`loadExtension`                        | 🌑🌑🌑🌑 | Not Planned
+`removeExtension`                      | 🌑🌑🌑🌑 | Not Planned
+`getExtension`                         | 🌑🌑🌑🌑 | Not Planned
+`getAllExtensions`                     | 🌑🌑🌑🌑 | Not Planned
+`getStoragePath`                       | 🌑🌑🌑🌑 | Not Planned
+`availableSpellCheckerLanguages`       | 🌑🌑🌑🌑 | Not Planned
+`spellCheckerEnabled`                  | 🌕🌕🌗🌑 | Working
+`storagePath`                          | 🌑🌑🌑🌑 | Not Planned
+`cookies`                              | 🌑🌑🌑🌑 | Not Planned
+`serviceWorkers`                       | 🌑🌑🌑🌑 | Not Planned
+`webRequest`                           | 🌕🌕🌗🌑 | Working
+`protocol`                             | 🌑🌑🌑🌑 | Not Planned
+`netLog`                               | 🌑🌑🌑🌑 | Not Planned
+
+### Events
+
+**Event**                              | **Rating** | **Status**
+:--                                    | :--        | :--
+`will-download`                        | 🌕🌕🌗🌑 | Working
+`extension-loaded`                     | 🌑🌑🌑🌑 | Not Planned
+`extension-unloaded`                   | 🌑🌑🌑🌑 | Not Planned
+`extension-ready`                      | 🌑🌑🌑🌑 | Not Planned
+`preconnect`                           | 🌑🌑🌑🌑 | Not Planned
+`spellcheck-dictionary-initialized`    | 🌑🌑🌑🌑 | Not Planned
+`spellcheck-dictionary-download-begin` | 🌑🌑🌑🌑 | Not Planned
+`spellcheck-dictionary-download-success`| 🌑🌑🌑🌑 | Not Planned
+`spellcheck-dictionary-download-failure`| 🌑🌑🌑🌑 | Not Planned
+`select-hid-device`                    | 🌑🌑🌑🌑 | Not Planned
+`hid-device-added`                     | 🌑🌑🌑🌑 | Not Planned
+`hid-device-removed`                   | 🌑🌑🌑🌑 | Not Planned
+`hid-device-revoked`                   | 🌑🌑🌑🌑 | Not Planned
+`select-serial-port`                   | 🌑🌑🌑🌑 | Not Planned
+`serial-port-added`                    | 🌑🌑🌑🌑 | Not Planned
+`serial-port-removed`                  | 🌑🌑🌑🌑 | Not Planned
+
 ## ShareMenu
 
 ## shell
