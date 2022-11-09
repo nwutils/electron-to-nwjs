@@ -39,19 +39,19 @@ We have some extra options available for the commands mentioned above. Those are
 ## Config file
 In case you want to save time, not including the same flags everytime you use `electron-to-nwjs`, you can place a config file inside your project folder, and `electron-to-nwjs` will load it. The file must be named `electron-to-nwjs.config.js`, and it must return an object with the following properties (all of which are optional):
 - **target**: Target for the build command.
-  - **architecture**: "x86"|"x64". Target architecture.
-  - **linux**: true|false. Build for Linux.
-  - **mac**: true|false. Build for macOS.
-  - **win**: true|false. Build for Windows.
+  - **architecture**: `"x86"|"x64"`. Target architecture.
+  - **linux**: `true|false`. Build for Linux.
+  - **mac**: `true|false`. Build for macOS.
+  - **win**: `true|false`. Build for Windows.
 - **nwjs**: Configurations related with NW.js.
-  - **chromium-args**: Equivalent to NW.js's `chromium-args` property in package.json.
-  - **node-remote**: Equivalent to NW.js's `node-remote` property in package.json.
-  - **ignoreUnimplementedFeatures**: true|false. Same as the `--ignore-unimplemented-features` flag.
+  - **chromium-args**: String equivalent to NW.js's `chromium-args` property in package.json.
+  - **node-remote**: String equivalent to NW.js's `node-remote` property in package.json.
+  - **ignoreUnimplementedFeatures**: `true|false`. Same as the `--ignore-unimplemented-features` flag.
   - **version**: Same as the `--nwjs-version <version>` flag.
   - **build**: Configurations related with NW.js, but only for the build command.
     - **version**: Same as the `--nwjs-version <version>` flag, but is only applied for the build command.
 - **webpack**: Configurations related with the webpack transpilation.
-  - **entry**: Array of paths to the JS files that need to be transpiled relative to your project folder. Defaults to every JS file in your project folder which is loaded by an HTML file using a `<script>` element.
+  - **entry**: Array of paths ([glob](https://www.npmjs.com/package/simple-glob) compatible) to the JS files that need to be transpiled relative to your project folder. Defaults to every JS file in your project folder which is loaded by an HTML file using a `<script>` element.
   - **externals**: Equivalent to webpack's `externals` property.
 
 ## How does it work?
