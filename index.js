@@ -287,7 +287,6 @@ program
     .option('-l, --linux', 'Build for Linux')
     .option('-w, --win, --windows', 'Build for Windows')
     .option('--nwjs-version <version>', 'NW.js version', currentSystemRecommendedNwjsVersion())
-    .option('--node-version <version>', 'Node version used by NW.js version')
     .option('--x86', 'Build for x86')
     .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
     .action(function () {
