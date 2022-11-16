@@ -26,6 +26,7 @@
   needed, but that will require some refactoring.
 */
 
+const EventEmitter = require('events')
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
 const MenuItemRoles = require('./utils/menu-item-roles')
 const throwUnsupportedException = require('./utils/unsupported-exception')
@@ -39,8 +40,9 @@ class MenuItemConstructorOptions {
 
 }
 
-class MenuItem {
+class MenuItem extends EventEmitter {
     constructor(options) {
+        super()
         const id = Math.floor(Math.random() * 1000000000);
         this.id = options.id || String(id)
         
@@ -310,22 +312,6 @@ class Menu {
             }
         })
         return menu
-    }
-
-
-    _events = {}
-    async emit(eventName, ...args) {
-        let listener = this._events[eventName];
-        if (listener) {
-            listener.apply(undefined, args);
-        }
-    }
-    on(event, listener) {
-        if (event === 'menu-will-close') {
-            throwUnsupportedException("Menu.on 'event' argument can't support the 'menu-will-close' value")
-        }
-        this._events[event] = listener;
-        return this;
     }
 
 

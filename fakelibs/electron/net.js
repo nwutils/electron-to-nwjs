@@ -14,6 +14,7 @@
   replacement, at least to start with.
 */
 
+const EventEmitter = require('events')
 const session = require('./session')
 const fetch = require('cross-fetch')
 
@@ -72,8 +73,9 @@ class IncomingMessage {
     }
 }
 
-class ClientRequest {
+class ClientRequest extends EventEmitter {
     constructor(options) {
+        super()
         if (typeof options === "string") {
             options = {url:options}
         }
@@ -144,20 +146,6 @@ class ClientRequest {
                 that.emit('error', error)
             }
         })
-    }
-
-
-    _events = {}
-    async emit(eventName, ...args) {
-        let listeners = this._events[eventName] || [];
-        listeners.forEach(listener => {
-            listener.apply(undefined, args);
-        })
-    }
-    on(eventName, listener) {
-        this._events[eventName] = this._events[eventName] || []
-        this._events[eventName].push(listener);
-        return this;
     }
 }
 

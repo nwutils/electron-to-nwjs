@@ -1,24 +1,9 @@
-class AutoUpdater {
-    _events = {}
-    async emit(eventName, ...args) {
-        let listeners = this._events[eventName] || [];
-        listeners.forEach(listener => {
-            listener.apply(undefined, args);
-        })
-    }
-    on(event, listener) {
-        this._events[event] = this._events[event] || []
-        this._events[event].push(listener);
-        // 'error'
-        // 'checking-for-update'
-        // 'update-available'
-        // 'update-not-available'
-        // 'update-downloaded'
-        // 'before-quit-for-update'
-        return this;
-    }
+const EventEmitter = require('events');
 
-
+class AutoUpdater extends EventEmitter {
+    constructor() {
+        super()
+    }
     setFeedURL({url, headers, serverType}) {
 
     }

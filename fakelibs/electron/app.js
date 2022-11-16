@@ -14,6 +14,7 @@
 
 const os = require('os');
 const path = require('path');
+const EventEmitter = require('events');
 const child_process = require('child_process')
 const NativeImage = require('./nativeImage')
 
@@ -21,49 +22,30 @@ const isMac = process.platform === 'darwin';
 const isWindows = process.platform === 'win32';
 const isLinux = process.platform === 'linux';
 
-const app = {
+class app extends EventEmitter {
+    constructor() {
+        super()
+    }
+
     // accessibilitySupportEnabled (Windows and macOS only)
     // applicationMenu
     // badgeCount (Linux and macOS only)
-    commandLine: {
+    commandLine = {
         _lines: [],
         appendSwitch(key, value) {
             this._lines.push(value === undefined ? `--${key}` : `--${key}=${value}`)
         }
-    },
+    }
     // dock (macOS only)
-    isPackaged: __nwjs_is_packaged,
-    name: __nwjs_app_name,
+    isPackaged = __nwjs_is_packaged
+    name = __nwjs_app_name
     // userAgentFallback
     // runningUnderARM64Translation (Windows and macOS only)
 
 
-    _onceEvents: {},
-    _events: {},
-    async emit(eventName, ...args) {
-        let listener = this._events[eventName];
-        if (listener) {
-            listener.apply(undefined, args);
-        }
-        let onceListener = this._onceEvents[eventName];
-        if (onceListener) {
-            onceListener.apply(undefined, args);
-            delete this._onceEvents[eventName];
-        }
-    },
-    on(event, listener) {
-        this._events[event] = listener;
-        return this;
-    },
-    once(event, listener) {
-        this._onceEvents[event] = listener;
-        return this;
-    },
-
-
     quit() {
         nw.App.quit()
-    },
+    }
     // exit([exitCode])
     relaunch() {
         // TODO
@@ -77,16 +59,16 @@ const app = {
             child_process.spawn("bash", ["-c", `sleep 1 && open "${appPath}"`])
         }
         this.quit()
-    },
+    }
     _ready() {
         this._isReady = true
         this._whenReadyPromiseResolves.forEach(whenReadyPromiseResolves => whenReadyPromiseResolves())
         this.emit("ready");
-    },
+    }
     isReady() {
         return this._isReady === true
-    },
-    _whenReadyPromiseResolves: [],
+    }
+    _whenReadyPromiseResolves = []
     whenReady() {
         const that = this
         return new Promise((resolve, reject) => {
@@ -95,7 +77,7 @@ const app = {
             }
             that._whenReadyPromiseResolves.push(resolve)
         })
-    },
+    }
     // focus([options])
     // hide() (macOS only)
     // isHidden() (macOS only)
@@ -103,7 +85,7 @@ const app = {
     // setAppLogsPath([path])
     getAppPath() {
         return nw.App.startPath;
-    },
+    }
     getPath(name) {
         switch(name) {
             case "home":        return os.homedir();
@@ -134,27 +116,27 @@ const app = {
             case "crashDumps":  break;
         }
         throw new Error("Unknown path name: %s".replace("%s", name));
-    },
+    }
     async getFileIcon(filePath) {
         return NativeImage.createFromPath(filePath)
-    },
+    }
     // setPath(name, path)
     getVersion() {
         return __nwjs_app_version;
-    },
+    }
     getName() {
         return this.name
-    },
+    }
     setName(name) {
         this.name = name
-    },
+    }
     // getLocale()
     // getLocaleCountryCode()
     // addRecentDocument(path) (Windows and macOS only)
     // clearRecentDocuments() (Windows and macOS only)
     setAsDefaultProtocolClient(protocol, path, args) {
 
-    },
+    }
     // removeAsDefaultProtocolClient(protocol[, path, args]) (Windows and macOS only)
     // isDefaultProtocolClient(protocol[, path, args])
     // getApplicationNameForProtocol(url)
@@ -176,7 +158,7 @@ const app = {
     // configureHostResolver(options)
     disableHardwareAcceleration() {
 
-    },
+    }
     // disableDomainBlockingFor3DAPIs()
     // getAppMetrics()
     // getGPUFeatureStatus()
@@ -199,7 +181,7 @@ const app = {
             return true
         }
         return this.getAppPath().contains("/Applications/")
-    },
+    }
     moveToApplicationsFolder() {
         if (!isMac || !this.isPackaged) {
             return true
@@ -209,4 +191,4 @@ const app = {
     // isSecureKeyboardEntryEnabled() (macOS only)
     // setSecureKeyboardEntryEnabled(enabled) (macOS only)
 }
-module.exports = app
+module.exports = new app()

@@ -12,13 +12,15 @@
   ?
 */
 
-const dialog = require('../dialog')
 const fs = require('fs')
 const path = require('path')
+const EventEmitter = require('events')
+const dialog = require('../dialog')
 const throwUnsupportedException = require('./unsupported-exception')
 
-class DownloadItem {
+class DownloadItem extends EventEmitter {
     constructor(url, webContents) {
+        super()
         this._url = url
         this._webContents = webContents
         this._savePath = undefined
@@ -45,20 +47,6 @@ class DownloadItem {
         this.emit("updated", new Event('updated'), this._state)
 
         this._updateInterval = setInterval(() => that._update(), 1000)
-    }
-
-
-    _events = {}
-    async emit(eventName, ...args) {
-        let listeners = this._events[eventName] || [];
-        listeners.forEach(listener => {
-            listener.apply(undefined, args);
-        })
-    }
-    on(eventName, listener) {
-        this._events[eventName] = this._events[eventName] || []
-        this._events[eventName].push(listener);
-        return this;
     }
 
 
