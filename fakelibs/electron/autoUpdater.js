@@ -1,9 +1,9 @@
 class AutoUpdater {
     _events = {}
-    async dispatchEvent(event) {
-        let listeners = this._events[event.type] || [];
+    async emit(eventName, ...args) {
+        let listeners = this._events[eventName] || [];
         listeners.forEach(listener => {
-            listener(event);
+            listener.apply(undefined, args);
         })
     }
     on(event, listener) {
@@ -26,7 +26,7 @@ class AutoUpdater {
 
     }
     checkForUpdates() {
-        this.dispatchEvent(new Event("update-not-available"))
+        this.emit("update-not-available")
     }
     quitAndInstall() {
         

@@ -107,7 +107,7 @@ class ClientRequest {
             // useSessionCookies
         }
 
-        // that.dispatchEvent({type:'login', args:[...]})
+        // that.emit('login', ...)
 
         let that = this
         fetch(this.url, {
@@ -118,40 +118,40 @@ class ClientRequest {
         }).then(response => {
             that.response = response
 
-            that.dispatchEvent({type:'finish', args:[]})
+            that.emit('finish')
 
             if (response.redirected) {
                 const statusCode = response.status
                 const method = that.method
                 const redirectUrl = response.url
                 const responseHeaders = response.headers.raw()
-                that.dispatchEvent({type:'redirect', args:[statusCode, method, redirectUrl, responseHeaders]})
+                that.emit('redirect', statusCode, method, redirectUrl, responseHeaders)
             }
 
             let setCookie = response.headers.raw()['set-cookie']
-            that.dispatchEvent({type:'response', args:[new IncomingMessage(response, undefined)]})
+            that.emit('response', new IncomingMessage(response, undefined))
 
-            that.dispatchEvent({type:'close', args:[]})
+            that.emit('close')
         }).catch(error => {
-            that.dispatchEvent({type:'finish', args:[]})
+            that.emit('finish')
 
-            that.dispatchEvent({type:'response', args:[new IncomingMessage(undefined, error)]})
+            that.emit('response', new IncomingMessage(undefined, error))
 
             if (error instanceof AbortError) {
-                that.dispatchEvent({type:'abort', args:[]})
+                that.emit('abort')
             }
             else {
-                that.dispatchEvent({type:'error', args:[error]})
+                that.emit('error', error)
             }
         })
     }
 
 
     _events = {}
-    async dispatchEvent(event) {
-        let listeners = this._events[event.type] || [];
+    async emit(eventName, ...args) {
+        let listeners = this._events[eventName] || [];
         listeners.forEach(listener => {
-            listener.apply(undefined, event.args);
+            listener.apply(undefined, args);
         })
     }
     on(eventName, listener) {

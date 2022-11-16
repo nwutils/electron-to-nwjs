@@ -314,10 +314,10 @@ class Menu {
 
 
     _events = {}
-    async dispatchEvent(event) {
-        let listener = this._events[event.type];
+    async emit(eventName, ...args) {
+        let listener = this._events[eventName];
         if (listener) {
-            listener(event);
+            listener.apply(undefined, args);
         }
     }
     on(event, listener) {
@@ -351,7 +351,7 @@ class Menu {
             options.y += menu_mouse_position.viewportY
         }
         this._nwjsContextMenu().popup(options.x, options.y)
-        this.dispatchEvent(new Event('menu-will-show'))
+        this.emit('menu-will-show')
     }
     // closePopup([browserWindow])
     append(item) {

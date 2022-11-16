@@ -42,14 +42,14 @@ class DownloadItem {
         xmlhttp.open("GET", url, true);
         xmlhttp.send();
         this._xmlhttp = xmlhttp
-        this.dispatchEvent("updated", this._state)
+        this.emit("updated", new Event('updated'), this._state)
 
         this._updateInterval = setInterval(() => that._update(), 1000)
     }
 
 
     _events = {}
-    async dispatchEvent(eventName, ...args) {
+    async emit(eventName, ...args) {
         let listeners = this._events[eventName] || [];
         listeners.forEach(listener => {
             listener.apply(undefined, args);
@@ -63,7 +63,7 @@ class DownloadItem {
 
 
     _update() {
-        this.dispatchEvent("updated", this._state)
+        this.emit("updated", new Event('updated'), this._state)
     }
     async _complete(arraybuffer) {
         clearInterval(this._updateInterval);
@@ -84,7 +84,7 @@ class DownloadItem {
 
         const buffer = Buffer.from(arraybuffer);
         fs.writeFileSync(this._savePath, buffer);
-        this.dispatchEvent("done", this._state)
+        this.emit("done", new Event('done'), this._state)
     }
 
 
@@ -116,7 +116,7 @@ class DownloadItem {
         clearInterval(this._updateInterval);
         this._xmlhttp.abort();
         this._state = "cancelled"
-        this.dispatchEvent("done", this._state)
+        this.emit("done", new Event('done'), this._state)
     }
     getURL() {
         return this._url
@@ -129,6 +129,9 @@ class DownloadItem {
     }
     getFilename() {
         let contentDisposition = this.getContentDisposition()
+        if (!contentDisposition) {
+            return this.getURL().split("/").pop()
+        }
         
         let filenameSep = "filename="
         let contentDispositionParts = contentDisposition.split(filenameSep)

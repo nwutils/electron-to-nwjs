@@ -40,15 +40,15 @@ const app = {
 
     _onceEvents: {},
     _events: {},
-    async dispatchEvent(event) {
-        let listener = this._events[event.type];
+    async emit(eventName, ...args) {
+        let listener = this._events[eventName];
         if (listener) {
-            listener(event);
+            listener.apply(undefined, args);
         }
-        let onceListener = this._onceEvents[event.type];
+        let onceListener = this._onceEvents[eventName];
         if (onceListener) {
-            onceListener(event);
-            delete this._onceEvents[event.type];
+            onceListener.apply(undefined, args);
+            delete this._onceEvents[eventName];
         }
     },
     on(event, listener) {
@@ -81,7 +81,7 @@ const app = {
     _ready() {
         this._isReady = true
         this._whenReadyPromiseResolves.forEach(whenReadyPromiseResolves => whenReadyPromiseResolves())
-        this.dispatchEvent(new Event("ready"));
+        this.emit("ready");
     },
     isReady() {
         return this._isReady === true

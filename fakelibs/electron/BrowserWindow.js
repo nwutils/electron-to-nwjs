@@ -102,7 +102,7 @@ class BrowserWindow {
             BrowserWindowManager.removeWindowById(id)
             
             if (BrowserWindowManager.getAllWindows().length === 0) {
-                app.dispatchEvent(new Event("window-all-closed"))
+                app.emit("window-all-closed")
             }
         })
     }
@@ -336,7 +336,11 @@ class BrowserWindow {
 
 
     destroy() {
-        this._getWindow().then(win => win.close(true));
+        let that = this
+        this._getWindow().then(win => {
+            win.close(true)
+            that._isDestroyed = true
+        });
     }
     close() {
         this._getWindow().then(win => win.close());
@@ -350,7 +354,9 @@ class BrowserWindow {
     isFocused() {
         return this._isFocused
     }
-    // isDestroyed
+    isDestroyed() {
+        return this._isDestroyed === true
+    }
     show() {
         this._visible = true;
         this._getWindow().then(win => win.show());
@@ -637,7 +643,9 @@ class BrowserWindow {
     removeMenu() {
         this.setMenu(null)
     }
-    // setProgressBar
+    setProgressBar(progress, options) {
+
+    }
     // setOverlayIcon
     setHasShadow(hasShadow) {
         this._shadow = hasShadow;

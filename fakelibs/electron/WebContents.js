@@ -46,11 +46,11 @@ class WebContents {
 
     downloadURL(url) {
         var that = this
-        this.session.dispatchEvent('will-download', {
-            event: new Event('will-download'),
-            item: new DownloadItem(url, that),
-            webContents: that
-        })
+        this.session.emit('will-download', 
+            new Event('will-download'),
+            new DownloadItem(url, that),
+            that
+        )
     }
     loadURL(url, options) {
         if (options) {
