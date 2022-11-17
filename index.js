@@ -82,8 +82,15 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
         fs_extra_1.default.copySync(opts.projectDir, tmpDir);
         // So the cache and dist folders won't be copied, since they are not only not
         // needed, but they also can be become very big
-        fs_extra_1.default.rmdirSync(path_1.default.resolve(tmpDir, 'cache'), { recursive: true });
-        fs_extra_1.default.rmdirSync(path_1.default.resolve(tmpDir, 'nwjs_dist'), { recursive: true });
+        let ignorableFolder = [
+            path_1.default.resolve(tmpDir, 'cache'),
+            path_1.default.resolve(tmpDir, 'nwjs_dist')
+        ];
+        ignorableFolder.forEach(folder => {
+            if (fs_1.default.existsSync(folder)) {
+                fs_extra_1.default.rmdirSync(folder, { recursive: true });
+            }
+        });
         const projectPackagePath = path_1.default.resolve(tmpDir, 'package.json');
         let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
         const projectPackageJson = JSON.parse(projectPackageStr);
