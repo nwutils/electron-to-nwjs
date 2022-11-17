@@ -13,6 +13,9 @@ module.exports = (function(){
   const isWindows = process.platform === 'win32';
   const isLinux = process.platform === 'linux';
 
+  if (isLinux) {
+    return require('./linux')
+  }
   if (isMac) {
     return require('./mac')
   }
