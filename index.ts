@@ -138,27 +138,26 @@ const loadPackageJsonFromFolder = function(folder:string) {
 
 const listNodeModulesThatShouldntBeKept = function(projectDir:string) {
     let nodeModulesFolder = path.resolve(projectDir, 'node_modules')
-    let packageJson = loadPackageJsonFromFolder(projectDir)
-    let rootDependencies = Object.keys(packageJson.dependencies)
     let neededDependencies:string[] = []
 
     const getAllDependenciesFromModule = function(module:string) {
         let moduleFolder = path.resolve(nodeModulesFolder, module)
         if (!fs.existsSync(moduleFolder)) {
-            return []
+            return
         }
         let moduleJson = loadPackageJsonFromFolder(moduleFolder)
-        let moduleDependencies = Object.keys(moduleJson.dependencies || [])
-        let allDependencies = moduleDependencies.concat([])
-        moduleDependencies.forEach(dep => {
-            allDependencies.push(...getAllDependenciesFromModule(dep))
+        Object.keys(moduleJson.dependencies || {}).forEach(dep => {
+            if (!neededDependencies.includes(dep)) {
+                neededDependencies.push(dep)
+                getAllDependenciesFromModule(dep)
+            }
         })
-        return allDependencies
     }
 
-    rootDependencies.forEach(dep => {
+    let packageJson = loadPackageJsonFromFolder(projectDir)
+    Object.keys(packageJson.dependencies || {}).forEach(dep => {
         neededDependencies.push(dep)
-        neededDependencies.push(...getAllDependenciesFromModule(dep))
+        getAllDependenciesFromModule(dep)
     })
 
     neededDependencies = neededDependencies.filter((v, i, a) => a.indexOf(v) === i)

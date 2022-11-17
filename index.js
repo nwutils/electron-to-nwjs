@@ -127,25 +127,24 @@ const loadPackageJsonFromFolder = function (folder) {
 };
 const listNodeModulesThatShouldntBeKept = function (projectDir) {
     let nodeModulesFolder = path_1.default.resolve(projectDir, 'node_modules');
-    let packageJson = loadPackageJsonFromFolder(projectDir);
-    let rootDependencies = Object.keys(packageJson.dependencies);
     let neededDependencies = [];
     const getAllDependenciesFromModule = function (module) {
         let moduleFolder = path_1.default.resolve(nodeModulesFolder, module);
         if (!fs_1.default.existsSync(moduleFolder)) {
-            return [];
+            return;
         }
         let moduleJson = loadPackageJsonFromFolder(moduleFolder);
-        let moduleDependencies = Object.keys(moduleJson.dependencies || []);
-        let allDependencies = moduleDependencies.concat([]);
-        moduleDependencies.forEach(dep => {
-            allDependencies.push(...getAllDependenciesFromModule(dep));
+        Object.keys(moduleJson.dependencies || {}).forEach(dep => {
+            if (!neededDependencies.includes(dep)) {
+                neededDependencies.push(dep);
+                getAllDependenciesFromModule(dep);
+            }
         });
-        return allDependencies;
     };
-    rootDependencies.forEach(dep => {
+    let packageJson = loadPackageJsonFromFolder(projectDir);
+    Object.keys(packageJson.dependencies || {}).forEach(dep => {
         neededDependencies.push(dep);
-        neededDependencies.push(...getAllDependenciesFromModule(dep));
+        getAllDependenciesFromModule(dep);
     });
     neededDependencies = neededDependencies.filter((v, i, a) => a.indexOf(v) === i);
     //console.log(`Needed dependencies:\n${neededDependencies.map(d => `- ${d}`).join('\n')}\n\n`)
