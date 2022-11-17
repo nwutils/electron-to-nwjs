@@ -195,7 +195,6 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
     let projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
     const projectPackageJson = JSON.parse(projectPackageStr)
     const disableNw2 = Versions.doesVersionMatchesConditions(opts.nwjs.version, ">=0.42.4 <=0.43.0")
-    const enableNapiModules = Versions.doesVersionMatchesConditions(opts.nwjs.version, ">=0.18.6 <=0.25.3")
 
     let nwjs = {} as {[id:string]:any}
     const electronToNwjsConfigJsPath = path.join(projectPath, "electron-to-nwjs.config.js")
@@ -271,7 +270,9 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
 const showWarningForVersionIfNeeded = function(version:string) {
     if (Versions.doesVersionMatchesConditions(version, "<0.14.7")) {
         console.warn("WARNING!!! electron-to-nwjs officially only supports NW.js 0.14.7 and superior versions!")
-        return
+    }
+    if (Versions.doesVersionMatchesConditions(version, "<0.25.4")) {
+        console.warn("WARNING! NW.js 0.25.3 and below are not compatible with Node-API!")
     }
 }
 

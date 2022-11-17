@@ -173,7 +173,6 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
     const projectPackageJson = JSON.parse(projectPackageStr);
     const disableNw2 = Versions.doesVersionMatchesConditions(opts.nwjs.version, ">=0.42.4 <=0.43.0");
-    const enableNapiModules = Versions.doesVersionMatchesConditions(opts.nwjs.version, ">=0.18.6 <=0.25.3");
     let nwjs = {};
     const electronToNwjsConfigJsPath = path_1.default.join(projectPath, "electron-to-nwjs.config.js");
     if (fs_1.default.existsSync(electronToNwjsConfigJsPath)) {
@@ -240,7 +239,9 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
 const showWarningForVersionIfNeeded = function (version) {
     if (Versions.doesVersionMatchesConditions(version, "<0.14.7")) {
         console.warn("WARNING!!! electron-to-nwjs officially only supports NW.js 0.14.7 and superior versions!");
-        return;
+    }
+    if (Versions.doesVersionMatchesConditions(version, "<0.25.4")) {
+        console.warn("WARNING! NW.js 0.25.3 and below are not compatible with Node-API!");
     }
 };
 const program = new commander_1.Command();
