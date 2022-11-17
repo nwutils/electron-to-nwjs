@@ -84,6 +84,17 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
         // needed, but they also can be become very big
         fs_extra_1.default.rmdirSync(path_1.default.resolve(tmpDir, 'cache'), { recursive: true });
         fs_extra_1.default.rmdirSync(path_1.default.resolve(tmpDir, 'nwjs_dist'), { recursive: true });
+        const projectPackagePath = path_1.default.resolve(tmpDir, 'package.json');
+        let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
+        const projectPackageJson = JSON.parse(projectPackageStr);
+        let dependencies = opts.opts.dependencies || {};
+        let devDependencies = opts.opts.devDependencies || {};
+        Object.keys(dependencies).forEach(depName => projectPackageJson.dependencies[depName] = dependencies[depName]);
+        Object.keys(devDependencies).forEach(depName => projectPackageJson.devDependencies[depName] = devDependencies[depName]);
+        projectPackageStr = JSON.stringify(projectPackageJson, null, 2);
+        fs_1.default.writeFileSync(projectPackagePath, projectPackageStr, { encoding: 'utf-8' });
+        const installOutput = child_process_1.default.execSync("npm install", { cwd: tmpDir });
+        console.log(installOutput);
         // So the electron node_module won't be compressed in the end, no matter what
         // That solves a building issue in Mac OS X 10.13 and lower
         fs_extra_1.default.rmdirSync(path_1.default.resolve(tmpDir, 'node_modules', 'electron'), { recursive: true });
