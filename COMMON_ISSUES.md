@@ -17,6 +17,9 @@ NW.js didn't support adding an `Alt` shortcut, so had to change the shortcut to 
 ### I'm using the require function in a HTML file, and my JS isn't finding the DOM elements
 You must load your JS files using the `<script src="">` tag, with `type="module"` if needed. Using `require` will load the file in a different NW.js context.
 
+### I'm referencing a variable (var) from a different JS file, and my JS isn't finding it
+We use webpack to transpile your code into NW.js compatible code. Webpack turns everything it touched into modules, so var's are restricted to their JS files. If you need to access a variable from another JS-file, either require/import that file, or place that variable into the global object.
+
 ### My `<webview>` element isn't behaving like it should
 We are not able to support webview's properly, and since they are being deprecated anyway, try replacing it with an `<iframe>`.
 

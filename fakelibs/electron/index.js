@@ -14,7 +14,9 @@ const net = require('./net')
 const session = require('./session')
 const shell = require('./shell')
 const systemPreferences = require('./systemPreferences')
-const WebContents = require('./WebContents')
+const webContents = require('./WebContents')
+
+const BrowserWindowManager = require('./utils/BrowserWindowManager')
 
 const IpcInc = require('./ipcMain-ipcRenderer')
 const ipcRenderer = IpcInc.ipcRenderer
@@ -79,7 +81,7 @@ if (__nwjs_is_main) {
         systemPreferences,
         // TouchBar
         // Tray
-        WebContents
+        webContents
         // webFrameMain
     }
 }
@@ -91,7 +93,52 @@ else {
         desktopCapturer,
         Event,
         ipcRenderer,
-        nativeImage
+        nativeImage,
         // webFrame
+        remote: {
+            app,
+            autoUpdater,
+            //BrowserView,
+            BrowserWindow,
+            clipboard,
+            //contentTracing,
+            //crashReporter,
+            desktopCapturer,
+            dialog,
+            globalShortcut,
+            //inAppPurchase,
+            ipcMain,
+            Menu,
+            MenuItem,
+            //MessageChannelMain,
+            nativeImage,
+            nativeTheme,
+            net,
+            //netLog,
+            Notification,
+            //powerMonitor,
+            //powerSaveBlocker,
+            //protocol,
+            //screen,
+            session,
+            //ShareMenu,
+            shell,
+            systemPreferences,
+            //TouchBar,
+            //Tray,
+            webContents,
+            //webFrameMain
+            getCurrentWebContents() {
+                return BrowserWindowManager.getCurrentWindowSync()?.webContents
+            },
+            getCurrentWindow() {
+                return BrowserWindowManager.getCurrentWindowSync()
+            },
+            getGlobal(name) {
+                return global[name]
+            },
+            process: process,
+            require: require
+        }
     }
 }

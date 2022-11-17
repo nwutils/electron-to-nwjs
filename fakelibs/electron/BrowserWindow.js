@@ -203,7 +203,6 @@ class BrowserWindow extends EventEmitter {
                 })
                 // 'show'
                 // 'hide'
-                // 'ready-to-show'
                 win.on('maximize', function() {
                     that.emit('maximize')
                 })
@@ -244,6 +243,8 @@ class BrowserWindow extends EventEmitter {
                     that.webContents._isDevToolsOpen = false
                 })
                 that._isFocused = that._visible
+
+                that.emit('ready-to-show')
                 
                 resolve();
             })
@@ -673,7 +674,7 @@ class BrowserWindow extends EventEmitter {
             throwUnsupportedException("BrowserWindow.loadURL can't support the 'options' argument")
         }
         if (url.startsWith("file:")) {
-            url = require('url').fileURLToPath(url)
+            url = require('path').relative(process.cwd(), require('url').fileURLToPath(url))
         }
         return await this._load(url)
     }
