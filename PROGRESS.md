@@ -174,7 +174,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `focus`                                | 🌕🌕🌗🌑 | Working
 `blur`                                 | 🌕🌕🌗🌑 | Working
 `isFocused`                            | 🌕🌕🌗🌑 | Working
-`isDestroyed`                          | 🌑🌑🌑🌑 | Not Planned
+`isDestroyed`                          | 🌕🌕🌗🌑 | Working
 `show`                                 | 🌕🌕🌗🌑 | Working
 `showInactive`                         | 🌑🌑🌑🌑 | Not Planned
 `hide`                                 | 🌕🌕🌗🌑 | Working
@@ -256,7 +256,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `reload`                               | 🌕🌕🌗🌑 | Working
 `setMenu`                              | 🌕🌕🌗🌑 | Working
 `removeMenu`                           | 🌕🌕🌗🌑 | Working
-`setProgressBar`                       | 🌑🌑🌑🌑 | Not Planned
+`setProgressBar`                       | 🌕🌗🌑🌑 | Started
 `setOverlayIcon`                       | 🌑🌑🌑🌑 | Not Planned
 `setHasShadow`                         | 🌕🌕🌗🌑 | Working
 `hasShadow`                            | 🌕🌕🌗🌑 | Working
@@ -707,7 +707,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `static fromDevToolsTargetId`          | 🌑🌑🌑🌑 | Not Planned
 `loadURL`                              | 🌕🌕🌑🌑 | Partially Working
 `loadFile`                             | 🌕🌕🌑🌑 | Partially Working
-`downloadURL`                          | 🌑🌑🌑🌑 | Not Planned
+`downloadURL`                          | 🌕🌕🌗🌑 | Working
 `getURL`                               | 🌑🌑🌑🌑 | Not Planned
 `getTitle`                             | 🌑🌑🌑🌑 | Not Planned
 `isDestroyed`                          | 🌑🌑🌑🌑 | Not Planned
