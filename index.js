@@ -32,7 +32,7 @@ const currentSystemRecommendedNwjsVersion = function () {
     // https://dev.to/thejaredwilcurt/guide-to-nw-js-versions-5d38#osx-support
     let platform = getCurrentOs();
     if (platform === "mac") {
-        let osVersion = child_process_1.default.execSync("sw_vers -productVersion").toString().trim();
+        let osVersion = child_process_1.default.execSync("sw_vers -productVersion", { encoding: 'utf-8' }).toString().trim();
         if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.9")) {
             // NW.js v0.14.7 and below works with 10.6+
             // NW.js v0.15.0 works with 10.9+
@@ -87,13 +87,15 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
         const projectPackagePath = path_1.default.resolve(tmpDir, 'package.json');
         let projectPackageStr = fs_1.default.readFileSync(projectPackagePath, { encoding: 'utf-8' });
         const projectPackageJson = JSON.parse(projectPackageStr);
-        let dependencies = opts.opts.dependencies || {};
-        let devDependencies = opts.opts.devDependencies || {};
-        Object.keys(dependencies).forEach(depName => projectPackageJson.dependencies[depName] = dependencies[depName]);
-        Object.keys(devDependencies).forEach(depName => projectPackageJson.devDependencies[depName] = devDependencies[depName]);
+        const packagesListKeys = ["dependencies", "devDependencies", "peerDependencies",
+            "peerDependenciesMeta", "optionalDependencies", "overrides"];
+        packagesListKeys.forEach(key => {
+            let dependencies = opts.opts[key] || {};
+            Object.keys(dependencies).forEach(depName => projectPackageJson[key][depName] = dependencies[depName]);
+        });
         projectPackageStr = JSON.stringify(projectPackageJson, null, 2);
         fs_1.default.writeFileSync(projectPackagePath, projectPackageStr, { encoding: 'utf-8' });
-        const installOutput = child_process_1.default.execSync("npm install", { cwd: tmpDir });
+        const installOutput = child_process_1.default.execSync("npm install", { cwd: tmpDir, encoding: 'utf-8' });
         console.log(installOutput);
         // So the electron node_module won't be compressed in the end, no matter what
         // That solves a building issue in Mac OS X 10.13 and lower
@@ -339,7 +341,7 @@ program
             nw.on('log', console.log);
             await nw.build();
         }
-        const postDistOutput = child_process_1.default.execSync("npm run nwjs:postdist --if-present", { cwd: projectDir });
+        const postDistOutput = child_process_1.default.execSync("npm run nwjs:postdist --if-present", { cwd: projectDir, encoding: 'utf-8' });
         console.log(postDistOutput);
     });
 });

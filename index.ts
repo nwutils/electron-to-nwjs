@@ -91,10 +91,12 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:b
         let projectPackageStr = fs.readFileSync(projectPackagePath, {encoding: 'utf-8'})
         const projectPackageJson = JSON.parse(projectPackageStr)
 
-        let dependencies = opts.opts.dependencies || {}
-        let devDependencies = opts.opts.devDependencies || {}
-        Object.keys(dependencies).forEach(depName => projectPackageJson.dependencies[depName] = dependencies[depName])
-        Object.keys(devDependencies).forEach(depName => projectPackageJson.devDependencies[depName] = devDependencies[depName])
+        const packagesListKeys = ["dependencies", "devDependencies", "peerDependencies", 
+                                  "peerDependenciesMeta", "optionalDependencies", "overrides"]
+        packagesListKeys.forEach(key => {
+            let dependencies = opts.opts[key] || {}
+            Object.keys(dependencies).forEach(depName => projectPackageJson[key][depName] = dependencies[depName])
+        })
 
         projectPackageStr = JSON.stringify(projectPackageJson, null, 2)
         fs.writeFileSync(projectPackagePath, projectPackageStr, {encoding:'utf-8'})
