@@ -12,14 +12,16 @@
   so both BrowserWindow and WebContents need to make use of it.
 */
 
+const EventEmitter = require('events');
 const app = require('./app')
 const WebContents = require('./WebContents')
 const NativeImage = require('./nativeImage')
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
 const throwUnsupportedException = require('./utils/unsupported-exception')
 
-class BrowserWindow {
+class BrowserWindow extends EventEmitter {
     constructor(opts) {
+        super()
         if (opts === undefined) opts = {};
         else opts = JSON.parse(JSON.stringify(opts));
 
@@ -177,12 +179,60 @@ class BrowserWindow {
                     win.moveTo(that._x, that._y)
                 }
 
-                win.on('focus', function() {
-                    that._isFocused = true
+                // 'page-title-updated'
+                win.on('close', function() {
+                    let event = new Event('close')
+                    that.emit('close', event)
+                    if (!event.defaultPrevented) {
+                        that.destroy()
+                    }
                 })
+                win.on('closed', function() {
+                    that.emit('closed')
+                })
+                // 'session-end'
+                // 'unresponsive'
+                // 'responsive'
                 win.on('blur', function() {
                     that._isFocused = false
+                    that.emit('blur')
                 })
+                win.on('focus', function() {
+                    that._isFocused = true
+                    that.emit('focus')
+                })
+                // 'show'
+                // 'hide'
+                // 'ready-to-show'
+                win.on('maximize', function() {
+                    that.emit('maximize')
+                })
+                // 'unmaximize'
+                win.on('minimize', function() {
+                    that.emit('minimize')
+                })
+                win.on('restore', function() {
+                    that.emit('restore')
+                })
+                // 'will-resize'
+                // 'resize'
+                win.on('resize', function() {
+                    that.emit('resized')
+                })
+                // 'will-move'
+                // 'move'
+                win.on('move', function() {
+                    that.emit('moved')
+                })
+                win.on('enter-fullscreen', function() {
+                    that.emit('enter-full-screen')
+                })
+                win.on('leave-fullscreen', function() {
+                    that.emit('leave-full-screen')
+                })
+                // 'enter-html-full-screen'
+                // 'leave-html-full-screen'
+                // 'always-on-top-changed'
                 win.on('devtools-opened', function() {
                     if (!that._devTools) {
                         win.closeDevTools()
@@ -622,6 +672,9 @@ class BrowserWindow {
         if (options !== undefined) {
             throwUnsupportedException("BrowserWindow.loadURL can't support the 'options' argument")
         }
+        if (url.startsWith("file:")) {
+            url = require('url').fileURLToPath(url)
+        }
         return await this._load(url)
     }
     async loadFile(filePath, options) {
@@ -723,45 +776,6 @@ class BrowserWindow {
     // setTopBrowserView(browserView)
     // getBrowserViews()
     // setTitleBarOverlay(options)
-
-    on(event, callback) {
-        let nwjsEvent = event
-        // 'page-title-updated'
-        
-        switch(event) {
-            case 'close':             nwjsEvent = 'close';          break;
-            case 'closed':            nwjsEvent = 'closed';         break;
-            // 'session-end'
-            // 'unresponsive'
-            // 'responsive'
-            case 'blur':              nwjsEvent = 'blur';           break;
-            case 'focus':             nwjsEvent = 'focus';          break;
-            // 'show'
-            // 'hide'
-            // 'ready-to-show'
-            case 'maximize':          nwjsEvent = 'maximize';         break;
-            // 'unmaximize'
-            case 'minimize':          nwjsEvent = 'minimize';         break;
-            case 'restore':           nwjsEvent = 'restore';          break;
-            // 'will-resize'
-            // 'resize'
-            case 'resized':           nwjsEvent = 'resize';           break;
-            // 'will-move'
-            // 'move'
-            case 'moved':             nwjsEvent = 'move';             break;
-            case 'enter-full-screen': nwjsEvent = 'enter-fullscreen'; break;
-            case 'leave-full-screen': nwjsEvent = 'leave-fullscreen'; break;
-            // 'enter-html-full-screen'
-            // 'leave-html-full-screen'
-            // 'always-on-top-changed'
-        }
-
-        const eventObj = new Event(event)
-        this._getWindow().then(win => win.on(nwjsEvent, function(a1, a2, a3, a4, a5) {
-            return callback(eventObj, a1, a2, a3, a4, a5)
-        }));
-    }
-
 
     _forEachElementWithTagName(tagName, callback) {
         this._getWindow().then(win => {
