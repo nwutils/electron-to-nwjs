@@ -40,9 +40,8 @@ class MenuItemConstructorOptions {
 
 }
 
-class MenuItem extends EventEmitter {
+class MenuItem {
     constructor(options) {
-        super()
         const id = Math.floor(Math.random() * 1000000000);
         this.id = options.id || String(id)
         
@@ -287,8 +286,9 @@ class MenuItem extends EventEmitter {
     }
 }
 
-class Menu {
+class Menu extends EventEmitter {
     constructor() {
+        super()
         this.items = []
     }
 

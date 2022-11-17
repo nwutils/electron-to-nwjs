@@ -195,7 +195,7 @@ class BaseDialog {
       return 0
     }
 
-    throwUnsupportedException("dialog.showMessageBoxSync implementation is not complete yet")
+    throwUnsupportedException("dialog.showMessageBoxSync can't support the 'buttons' property in the 'options' argument")
     return -1
   }
   static async showMessageBox(window, opts) {
