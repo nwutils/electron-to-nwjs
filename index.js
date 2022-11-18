@@ -33,20 +33,20 @@ const currentSystemRecommendedNwjsVersion = function () {
     let platform = getCurrentOs();
     if (platform === "mac") {
         let osVersion = child_process_1.default.execSync("sw_vers -productVersion", { encoding: 'utf-8' }).toString().trim();
-        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.9")) {
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion + ".0", "10.9.0")) {
             // NW.js v0.14.7 and below works with 10.6+
             // NW.js v0.15.0 works with 10.9+
             return "0.14.7";
         }
-        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.10")) {
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion + ".0", "10.10.0")) {
             // NW.js v0.29.0 works with 10.10+
             return "0.28.3";
         }
-        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.11")) {
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion + ".0", "10.11.0")) {
             // NW.js v0.51.0 works with 10.11+
             return "0.50.3";
         }
-        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion, "10.15")) {
+        if (!Versions.isVersionEqualOrSuperiorThanVersion(osVersion + ".0", "10.15.0")) {
             // NW.js v0.64.1 works with 10.15 and no longer accurately updates the plist file
             return "0.64.0";
         }
