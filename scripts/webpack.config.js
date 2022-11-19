@@ -4,6 +4,7 @@ const cheerio = require('cheerio')
 const child_process = require('child_process')
 const glob = require('simple-glob')
 const Versions = require('./utils/versions')
+const nodeExternals = require('./utils/node-externals')
 
 module.exports = (env, argv) => {
     const projectPath = env.projectPath
@@ -115,12 +116,7 @@ module.exports = (env, argv) => {
         .forEach(dep => aliases[dep] = path.join(fakeLibsFolder, dep))
 
     const externals = nwjs.webpack?.externals || {}
-
-    // Workarounds to make libs that import "node:*" work properly
-    const nodeCoreModules = ["buffer", "child_process", "crypto", "fs", "http", "http2", "https",
-                             "net", "os", "path", "stream", "url", "util", "zlib"]
-    nodeCoreModules.forEach(nodeCoreModule => externals[`node:${nodeCoreModule}`] = `require('${nodeCoreModule}')`)
-    externals["fs/promises"] = "require('fs').promises"
+    Object.assign(externals, nodeExternals)
     
     const jsFileByOutputFile = {}
     if (isMain) {
