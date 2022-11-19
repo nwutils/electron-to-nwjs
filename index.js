@@ -216,6 +216,10 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     if (!nwjsConfig.files.includes("**/**")) {
         nwjsConfig.files.unshift("**/**");
     }
+    nwjsConfig.files.push(`!nwjs_build.js`);
+    nwjsConfig.files.push(`!nwjs_start.js`);
+    nwjsConfig.files.push(`!nwjs_build_config.json`);
+    nwjsConfig.files.push(`!nwjs_start_config.json`);
     nwjsConfig.files.push(`!${distDir}/*`);
     let removableDependencies = listNodeModulesThatShouldntBeKept(projectPath);
     removableDependencies.forEach(dep => {
