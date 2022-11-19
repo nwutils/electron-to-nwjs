@@ -60,6 +60,9 @@ const onTmpFolder = async function (dest, callback) {
         tmpDir = fs_1.default.mkdtempSync(path_1.default.join(os_1.default.tmpdir(), appPrefix));
         console.log(`Temporary folder: ${tmpDir}`);
         await callback(tmpDir);
+        if (fs_1.default.existsSync(dest)) {
+            fs_1.default.rmdirSync(dest, { recursive: true });
+        }
         fs_extra_1.default.moveSync(tmpDir, dest);
     }
     catch (e) {
