@@ -5,7 +5,6 @@ import path from 'path'
 import fse from 'fs-extra'
 import { Command } from 'commander';
 import plistUtils from 'plist'
-const NwBuilder = require('nw-builder');
 const HtmlTranspiler = require('./scripts/transpile-html')
 const JsTranspiler = require('./scripts/transpile-js')
 const Versions = require('./scripts/utils/versions')
@@ -65,7 +64,7 @@ const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     finally {
         try {
             if (tmpDir) {
-                fs.rmdirSync(tmpDir, { recursive: true });
+                //fs.rmdirSync(tmpDir, { recursive: true });
             }
         }
         catch (e) {
@@ -74,7 +73,7 @@ const onTmpFolder = async function(callback:(tmpDir:string) => Promise<void>) {
     }
 }
 
-const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:boolean, opts:any}, callback:(tmpDir:string) => Promise<void>) {
+const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:boolean, opts:any}, callback:(tmpDir:string) => void) {
     const prebuildOutput = child_process.execSync("npm run nwjs:prebuild --if-present", {cwd:opts.projectDir, encoding:'utf-8'})
     console.log(prebuildOutput)
 
@@ -125,7 +124,7 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:b
             folder: tmpDir
         })
         
-        await callback(tmpDir)
+        callback(tmpDir)
     })
     .catch(e => console.error(e))
 }
@@ -245,7 +244,6 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
         nwjsConfig.files.unshift("**/**")
     }
 
-    nwjsConfig.files.push("!.git")
     nwjsConfig.files.push(`!${distDir}/*`)
     let removableDependencies = listNodeModulesThatShouldntBeKept(projectPath)
     removableDependencies.forEach(dep => {
@@ -256,7 +254,7 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
         if (file.endsWith("/*")) file = file + "*/**"
         const ignorable = file.startsWith("!")
         if (ignorable) file = file.substring(1)
-        return (ignorable?"!":"") + path.join(projectPath, file)
+        return (ignorable?"!":"") + "./" + file
     })
 
     if (os === "mac") {
@@ -295,45 +293,19 @@ program
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version)
 
     runPrebuildAndCreateNwjsProject({projectDir, prod:false, opts:nwjsConfig}, (tmpDir) => {
-        return new Promise((resolve, reject) => {
-            const config = buildNwjsBuilderConfig(tmpDir, nwjsConfig, getCurrentOs())
+        const config = buildNwjsBuilderConfig(tmpDir, nwjsConfig, getCurrentOs())
 
-            var nw = new NwBuilder({
-                appName: config.appName,
-                appVersion: config.appVersion,
-                files: config.files,
-                version: nwjsConfig.nwjs.version
-            });
-    
-            nw.on('log', (log:string) => {
-                console.log(log)
-    
-                let exitPrefix = "App exited with code "
-                if (log.startsWith(exitPrefix)) {
-                    let exitCode = parseInt(log.substring(exitPrefix.length))
-                    if (exitCode === 0) {
-                        resolve(undefined)
-                    }
-                    else {
-                        reject(new Error(log))
-                    }
-                }
-            });
-            nw.on("stdout", (out:string|Buffer) => {
-                console.log(Buffer.isBuffer(out) ? out.toString() : out)
-            });
-            nw.on("stderr", (out:string|Buffer) => {
-                console.error(Buffer.isBuffer(out) ? out.toString() : out)
-            });
-    
-            nw.run().then(function(){
-                console.info("App started")
-            })
-            .catch(function(error:Error) {
-                console.error("App failed to start");
-                console.error(error);
-            });
-        })
+        const configStr = JSON.stringify({
+            appName: config.appName,
+            appVersion: config.appVersion,
+            files: config.files,
+            version: nwjsConfig.nwjs.version
+        }, null, 2);
+        const configPath = path.join(tmpDir, "nwjs_start_config.json")
+        const scriptPath = path.join(tmpDir, "nwjs_start.js")
+        fs.writeFileSync(configPath, configStr, {encoding:'utf8'})
+        fs.copyFileSync(path.join(__dirname, "nwjs_start.js"), scriptPath)
+        child_process.execSync(`node ./nwjs_start.js`, {cwd:tmpDir})
     })
   });
 
@@ -353,7 +325,7 @@ program
     const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, true, opts)
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version)
 
-    runPrebuildAndCreateNwjsProject({projectDir, prod:true, opts:nwjsConfig}, async (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({projectDir, prod:true, opts:nwjsConfig}, (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => nwjsConfig.target[s]) as ("mac"|"linux"|"win")[]
         if (platforms.length === 0) {
             platforms.push(getCurrentOs())
@@ -367,7 +339,7 @@ program
                 nwjsPlatform = "osx"
             }
             
-            var nw = new NwBuilder({
+            const configStr = JSON.stringify({
                 files: config.files,
                 version: nwjsConfig.nwjs.version,
                 flavor: 'normal',
@@ -386,10 +358,12 @@ program
                 },
                 winIco: config.icon,
                 useRcedit: true
-            });
-    
-            nw.on('log', console.log);
-            await nw.build()
+            }, null, 2);
+            const configPath = path.join(tmpDir, "nwjs_build_config.json")
+            const scriptPath = path.join(tmpDir, "nwjs_build.js")
+            fs.writeFileSync(configPath, configStr, {encoding:'utf8'})
+            fs.copyFileSync(path.join(__dirname, "nwjs_build.js"), scriptPath)
+            child_process.execSync(`node ./nwjs_build.js`, {cwd:tmpDir})
         }
 
         const postDistOutput = child_process.execSync("npm run nwjs:postdist --if-present", {cwd:projectDir, encoding:'utf-8'})

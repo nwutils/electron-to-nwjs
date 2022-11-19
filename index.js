@@ -12,7 +12,6 @@ const path_1 = __importDefault(require("path"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const commander_1 = require("commander");
 const plist_1 = __importDefault(require("plist"));
-const NwBuilder = require('nw-builder');
 const HtmlTranspiler = require('./scripts/transpile-html');
 const JsTranspiler = require('./scripts/transpile-js');
 const Versions = require('./scripts/utils/versions');
@@ -67,7 +66,7 @@ const onTmpFolder = async function (callback) {
     finally {
         try {
             if (tmpDir) {
-                fs_1.default.rmdirSync(tmpDir, { recursive: true });
+                //fs.rmdirSync(tmpDir, { recursive: true });
             }
         }
         catch (e) {
@@ -116,7 +115,7 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
         await HtmlTranspiler({
             folder: tmpDir
         });
-        await callback(tmpDir);
+        callback(tmpDir);
     })
         .catch(e => console.error(e));
 };
@@ -217,7 +216,6 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     if (!nwjsConfig.files.includes("**/**")) {
         nwjsConfig.files.unshift("**/**");
     }
-    nwjsConfig.files.push("!.git");
     nwjsConfig.files.push(`!${distDir}/*`);
     let removableDependencies = listNodeModulesThatShouldntBeKept(projectPath);
     removableDependencies.forEach(dep => {
@@ -229,7 +227,7 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
         const ignorable = file.startsWith("!");
         if (ignorable)
             file = file.substring(1);
-        return (ignorable ? "!" : "") + path_1.default.join(projectPath, file);
+        return (ignorable ? "!" : "") + "./" + file;
     });
     if (os === "mac") {
         const entitlementsFilename = build[os].entitlements;
@@ -262,41 +260,18 @@ program
     const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, false, opts);
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version);
     runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts: nwjsConfig }, (tmpDir) => {
-        return new Promise((resolve, reject) => {
-            const config = buildNwjsBuilderConfig(tmpDir, nwjsConfig, getCurrentOs());
-            var nw = new NwBuilder({
-                appName: config.appName,
-                appVersion: config.appVersion,
-                files: config.files,
-                version: nwjsConfig.nwjs.version
-            });
-            nw.on('log', (log) => {
-                console.log(log);
-                let exitPrefix = "App exited with code ";
-                if (log.startsWith(exitPrefix)) {
-                    let exitCode = parseInt(log.substring(exitPrefix.length));
-                    if (exitCode === 0) {
-                        resolve(undefined);
-                    }
-                    else {
-                        reject(new Error(log));
-                    }
-                }
-            });
-            nw.on("stdout", (out) => {
-                console.log(Buffer.isBuffer(out) ? out.toString() : out);
-            });
-            nw.on("stderr", (out) => {
-                console.error(Buffer.isBuffer(out) ? out.toString() : out);
-            });
-            nw.run().then(function () {
-                console.info("App started");
-            })
-                .catch(function (error) {
-                console.error("App failed to start");
-                console.error(error);
-            });
-        });
+        const config = buildNwjsBuilderConfig(tmpDir, nwjsConfig, getCurrentOs());
+        const configStr = JSON.stringify({
+            appName: config.appName,
+            appVersion: config.appVersion,
+            files: config.files,
+            version: nwjsConfig.nwjs.version
+        }, null, 2);
+        const configPath = path_1.default.join(tmpDir, "nwjs_start_config.json");
+        const scriptPath = path_1.default.join(tmpDir, "nwjs_start.js");
+        fs_1.default.writeFileSync(configPath, configStr, { encoding: 'utf8' });
+        fs_1.default.copyFileSync(path_1.default.join(__dirname, "nwjs_start.js"), scriptPath);
+        child_process_1.default.execSync(`node ./nwjs_start.js`, { cwd: tmpDir });
     });
 });
 program
@@ -314,7 +289,7 @@ program
     const projectDir = path_1.default.resolve('.', opts.project);
     const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, true, opts);
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version);
-    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts: nwjsConfig }, async (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({ projectDir, prod: true, opts: nwjsConfig }, (tmpDir) => {
         const platforms = ["mac", "linux", "win"].filter(s => nwjsConfig.target[s]);
         if (platforms.length === 0) {
             platforms.push(getCurrentOs());
@@ -325,7 +300,7 @@ program
             if (nwjsPlatform === "mac") {
                 nwjsPlatform = "osx";
             }
-            var nw = new NwBuilder({
+            const configStr = JSON.stringify({
                 files: config.files,
                 version: nwjsConfig.nwjs.version,
                 flavor: 'normal',
@@ -344,9 +319,12 @@ program
                 },
                 winIco: config.icon,
                 useRcedit: true
-            });
-            nw.on('log', console.log);
-            await nw.build();
+            }, null, 2);
+            const configPath = path_1.default.join(tmpDir, "nwjs_build_config.json");
+            const scriptPath = path_1.default.join(tmpDir, "nwjs_build.js");
+            fs_1.default.writeFileSync(configPath, configStr, { encoding: 'utf8' });
+            fs_1.default.copyFileSync(path_1.default.join(__dirname, "nwjs_build.js"), scriptPath);
+            child_process_1.default.execSync(`node ./nwjs_build.js`, { cwd: tmpDir });
         }
         const postDistOutput = child_process_1.default.execSync("npm run nwjs:postdist --if-present", { cwd: projectDir, encoding: 'utf-8' });
         console.log(postDistOutput);
