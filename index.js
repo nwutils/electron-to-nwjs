@@ -15,6 +15,7 @@ const plist_1 = __importDefault(require("plist"));
 const HtmlTranspiler = require('./scripts/transpile-html');
 const JsTranspiler = require('./scripts/transpile-js');
 const Versions = require('./scripts/utils/versions');
+const buildDir = "nwjs_build";
 const distDir = "nwjs_dist";
 const getCurrentOs = function () {
     let platform = os_1.default.platform();
@@ -52,38 +53,38 @@ const currentSystemRecommendedNwjsVersion = function () {
     }
     return "0.69.1";
 };
-const onTmpFolder = async function (callback) {
+const onTmpFolder = async function (dest, callback) {
     let tmpDir;
     const appPrefix = 'electron-to-nwjs';
     try {
         tmpDir = fs_1.default.mkdtempSync(path_1.default.join(os_1.default.tmpdir(), appPrefix));
         console.log(`Temporary folder: ${tmpDir}`);
         await callback(tmpDir);
+        fs_extra_1.default.moveSync(tmpDir, dest);
     }
     catch (e) {
-        throw e;
-    }
-    finally {
         try {
-            if (tmpDir) {
-                //fs.rmdirSync(tmpDir, { recursive: true });
+            if (tmpDir && fs_1.default.existsSync(tmpDir)) {
+                fs_1.default.rmdirSync(tmpDir, { recursive: true });
             }
         }
         catch (e) {
             console.error(`An error has occurred while removing the temp folder at ${tmpDir}. Please remove it manually. Error: ${e}`);
         }
+        throw e;
     }
 };
 const runPrebuildAndCreateNwjsProject = function (opts, callback) {
     const prebuildOutput = child_process_1.default.execSync("npm run nwjs:prebuild --if-present", { cwd: opts.projectDir, encoding: 'utf-8' });
     console.log(prebuildOutput);
-    onTmpFolder(async function (tmpDir) {
+    onTmpFolder(path_1.default.join(opts.projectDir, buildDir), async function (tmpDir) {
         fs_extra_1.default.copySync(opts.projectDir, tmpDir);
         // So the cache and dist folders won't be copied, since they are not only not
         // needed, but they also can be become very big
         let ignorableFolder = [
             path_1.default.resolve(tmpDir, 'cache'),
-            path_1.default.resolve(tmpDir, 'nwjs_dist')
+            path_1.default.resolve(tmpDir, buildDir),
+            path_1.default.resolve(tmpDir, distDir)
         ];
         ignorableFolder.forEach(folder => {
             if (fs_1.default.existsSync(folder)) {
@@ -220,6 +221,7 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     nwjsConfig.files.push(`!nwjs_start.js`);
     nwjsConfig.files.push(`!nwjs_build_config.json`);
     nwjsConfig.files.push(`!nwjs_start_config.json`);
+    nwjsConfig.files.push(`!${buildDir}/*`);
     nwjsConfig.files.push(`!${distDir}/*`);
     let removableDependencies = listNodeModulesThatShouldntBeKept(projectPath);
     removableDependencies.forEach(dep => {
