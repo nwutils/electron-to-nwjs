@@ -15,10 +15,11 @@ const asyncWebpack = (config) => {
     })
 }
 
-module.exports = async function({srcFolder, dstFolder, prod, opts}) {
+module.exports = async function({srcFolder, dstFolder, prod, main, opts}) {
     await asyncWebpack(webpackConfigFn({
         prod: prod,
         main: true,
+        mainFilename: main,
         projectPath: srcFolder,
         outputPath: dstFolder,
         opts

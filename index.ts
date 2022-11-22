@@ -78,7 +78,7 @@ const onTmpFolder = async function(dest:string, callback:(tmpDir:string) => Prom
     }
 }
 
-const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:boolean, opts:any}, callback:(tmpDir:string) => void) {
+const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, mainFilename?:string, prod:boolean, opts:any}, callback:(tmpDir:string) => void) {
     const prebuildOutput = child_process.execSync("npm run nwjs:prebuild --if-present", {cwd:opts.projectDir, encoding:'utf-8'})
     console.log(prebuildOutput)
 
@@ -118,13 +118,17 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, prod:b
 
         // So the electron node_module won't be compressed in the end, no matter what
         // That solves a building issue in Mac OS X 10.13 and lower
-        fse.rmdirSync(path.resolve(tmpDir, 'node_modules', 'electron'), {recursive: true})
+        const electronModuleFolder = path.resolve(tmpDir, 'node_modules', 'electron')
+        if (fs.existsSync(electronModuleFolder)) {
+            fse.rmdirSync(electronModuleFolder, {recursive: true})
+        }
         
         await JsTranspiler({
             srcFolder: opts.projectDir, 
             dstFolder: tmpDir, 
             prod: opts.prod,
-            opts: opts.opts
+            opts: opts.opts,
+            main: opts.mainFilename
         })
         await HtmlTranspiler({
             folder: tmpDir
@@ -299,11 +303,16 @@ program
   .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
   .action(function(dir) {
     const opts = this.opts()
-    const projectDir = path.resolve('.', dir)
+    let mainFilename = undefined
+    let projectDir = path.resolve('.', dir)
+    if (projectDir.endsWith(".js")) {
+        mainFilename = path.basename(projectDir)
+        projectDir = path.dirname(projectDir)
+    }
     const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, false, opts)
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version)
 
-    runPrebuildAndCreateNwjsProject({projectDir, prod:false, opts:nwjsConfig}, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({projectDir, mainFilename, prod:false, opts:nwjsConfig}, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir, nwjsConfig, getCurrentOs())
 
         const configStr = JSON.stringify({

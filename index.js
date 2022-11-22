@@ -109,12 +109,16 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
         console.log(installOutput);
         // So the electron node_module won't be compressed in the end, no matter what
         // That solves a building issue in Mac OS X 10.13 and lower
-        fs_extra_1.default.rmdirSync(path_1.default.resolve(tmpDir, 'node_modules', 'electron'), { recursive: true });
+        const electronModuleFolder = path_1.default.resolve(tmpDir, 'node_modules', 'electron');
+        if (fs_1.default.existsSync(electronModuleFolder)) {
+            fs_extra_1.default.rmdirSync(electronModuleFolder, { recursive: true });
+        }
         await JsTranspiler({
             srcFolder: opts.projectDir,
             dstFolder: tmpDir,
             prod: opts.prod,
-            opts: opts.opts
+            opts: opts.opts,
+            main: opts.mainFilename
         });
         await HtmlTranspiler({
             folder: tmpDir
@@ -265,10 +269,15 @@ program
     .option('--ignore-unimplemented-features', 'Ignore features that were not implemented by electron-to-nwjs (produced a warning instead of an exception)', false)
     .action(function (dir) {
     const opts = this.opts();
-    const projectDir = path_1.default.resolve('.', dir);
+    let mainFilename = undefined;
+    let projectDir = path_1.default.resolve('.', dir);
+    if (projectDir.endsWith(".js")) {
+        mainFilename = path_1.default.basename(projectDir);
+        projectDir = path_1.default.dirname(projectDir);
+    }
     const nwjsConfig = getElectronToNwjsProjectConfig(projectDir, false, opts);
     showWarningForVersionIfNeeded(nwjsConfig.nwjs.version);
-    runPrebuildAndCreateNwjsProject({ projectDir, prod: false, opts: nwjsConfig }, (tmpDir) => {
+    runPrebuildAndCreateNwjsProject({ projectDir, mainFilename, prod: false, opts: nwjsConfig }, (tmpDir) => {
         const config = buildNwjsBuilderConfig(tmpDir, nwjsConfig, getCurrentOs());
         const configStr = JSON.stringify({
             appName: config.appName,

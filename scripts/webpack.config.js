@@ -79,7 +79,7 @@ module.exports = (env, argv) => {
 
     const jsFiles = []
     if (isMain) {
-        jsFiles.push(projectPackageJson.main)
+        jsFiles.push(env.mainFilename || projectPackageJson.main)
     }
     else if (nwjs.webpack?.entry !== undefined) {
         jsFiles.push(...glob({cwd:projectPath}, nwjs.webpack.entry))
