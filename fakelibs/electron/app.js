@@ -153,8 +153,22 @@ class app extends EventEmitter {
     setName(name) {
         this.name = name
     }
-    // getLocale()
-    // getLocaleCountryCode()
+    getLocale() {
+        let env = process.env;
+        // LC_ALL=
+        // LC_MESSAGES="en_US.UTF-8"
+        // LANG=en_US.UTF-8
+        // LANGUAGE=en_US
+        let lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE
+        return lang.replace("_", "-").split(".").shift();
+    }
+    getLocaleCountryCode() {
+        let locale = this.getLocale()
+        if (locale.includes("-")) {
+            return locale.split("-").pop()
+        }
+        return ""
+    }
     getSystemLocale() {
         return window.navigator.language
     }
