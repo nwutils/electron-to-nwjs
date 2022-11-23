@@ -4,6 +4,7 @@
 
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/Window/
+  https://developer.chrome.com/docs/extensions/reference/app_window/
 
   Create and control browser windows.
   Only available in the main process.
