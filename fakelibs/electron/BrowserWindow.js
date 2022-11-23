@@ -429,14 +429,18 @@ class BrowserWindow extends EventEmitter {
     unmaximize() {
         this._getWindow().then(win => win.unmaximize());
     }
-    // isMaximized
+    isMaximized() {
+        return this._getChromeWindow().isMaximized()
+    }
     minimize() {
         this._getWindow().then(win => win.minimize());
     }
     restore() {
         this._getWindow().then(win => win.restore());
     }
-    // isMinimized
+    isMinimized() {
+        return this._getChromeWindow().isMinimized()
+    }
     setFullScreen(flag) {
         if (flag) {
             this._getWindow().then(win => win.enterFullscreen());
@@ -455,7 +459,9 @@ class BrowserWindow extends EventEmitter {
     isSimpleFullScreen() {
         return false
     }
-    // isNormal
+    isNormal() {
+        return !this.isMaximized() && !this.isMinimized() && !this.isFullScreen()
+    }
     // setAspectRatio
     setBackgroundColor(backgroundColor) {
         this._backgroundColor = backgroundColor
@@ -780,6 +786,10 @@ class BrowserWindow extends EventEmitter {
     // getBrowserViews()
     // setTitleBarOverlay(options)
 
+    _getChromeWindow() {
+        const id = this.id+""
+        return chrome.app.window.getAll().filter(cw => cw.id === id).pop()
+    }
     _forEachElementWithTagName(tagName, callback) {
         this._getWindow().then(win => {
             let winDocument = win.window.document
