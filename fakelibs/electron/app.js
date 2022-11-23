@@ -46,7 +46,9 @@ class app extends EventEmitter {
     quit() {
         nw.App.quit()
     }
-    // exit([exitCode])
+    exit(exitCode) {
+        process.exit(exitCode);
+    }
     relaunch() {
         // TODO
         // https://github.com/nwjs/nw.js/issues/149
