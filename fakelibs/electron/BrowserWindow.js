@@ -472,8 +472,27 @@ class BrowserWindow extends EventEmitter {
     }
     // previewFile
     // closeFilePreview
-    // setBounds
-    // getBounds
+    setBounds({x, y, width, height}, animate) {
+        if (animate) {
+            throwUnsupportedException("BrowserWindow.setBounds can't support the 'animate' argument")
+        }
+        let bounds = {
+            left: x,
+            top: y,
+            width: width,
+            height: height
+        }
+        this._getChromeWindow().setBounds(bounds)
+    }
+    getBounds() {
+        let bounds = this._getChromeWindow().getBounds()
+        return {
+            x: bounds.left,
+            y: bounds.top,
+            width: bounds.width,
+            height: bounds.height
+        }
+    }
     getBackgroundColor() {
         return this._backgroundColor
     }
