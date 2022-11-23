@@ -155,6 +155,12 @@ class app extends EventEmitter {
     }
     // getLocale()
     // getLocaleCountryCode()
+    getSystemLocale() {
+        return window.navigator.language
+    }
+    getPreferredSystemLanguages() {
+        return window.navigator.languages
+    }
     // addRecentDocument(path) (Windows and macOS only)
     // clearRecentDocuments() (Windows and macOS only)
     setAsDefaultProtocolClient(protocol, path, args) {
