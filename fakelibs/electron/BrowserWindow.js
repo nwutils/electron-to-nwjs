@@ -412,7 +412,9 @@ class BrowserWindow extends EventEmitter {
         this._visible = true;
         this._getWindow().then(win => win.show());
     }
-    // showInactive
+    showInactive() {
+        // TODO: 
+    }
     hide() {
         this._visible = false;
         this._getWindow().then(win => win.hide());

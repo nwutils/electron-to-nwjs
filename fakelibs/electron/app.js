@@ -17,6 +17,8 @@ const path = require('path');
 const EventEmitter = require('events');
 const child_process = require('child_process')
 const NativeImage = require('./nativeImage')
+const BrowserWindowManager = require('./utils/BrowserWindowManager')
+const throwUnsupportedException = require('./utils/unsupported-exception')
 
 const isMac = process.platform === 'darwin';
 const isWindows = process.platform === 'win32';
@@ -25,6 +27,33 @@ const isLinux = process.platform === 'linux';
 class app extends EventEmitter {
     constructor() {
         super()
+
+        const homeFolder = os.homedir()
+        let userDataFolder = path.join(homeFolder, ".config", __nwjs_project_name);
+        if (isMac) {
+            userDataFolder = path.join(homeFolder, "Library", "Application Support", __nwjs_project_name);
+        }
+        if (isWindows) {
+            userDataFolder = path.join(process.env.APPDATA, __nwjs_project_name)
+        }
+        this._pathsCache = {
+            "home":        homeFolder,
+            "appData":     path.dirname(userDataFolder),
+            "userData":    userDataFolder,
+            // "sessionData"
+            "temp":        os.tmpdir(),
+            "exe":         process.execPath,
+            // "module"
+            "desktop":     path.join(homeFolder, "Desktop"),
+            "documents":   path.join(homeFolder, "Documents"),
+            "downloads":   path.join(homeFolder, "Downloads"),
+            "music":       path.join(homeFolder, "Music"),
+            "pictures":    path.join(homeFolder, "Pictures"),
+            "videos":      path.join(homeFolder, "Videos"),
+            // "recent"
+            // "logs"
+            // "crashDumps"
+        }
     }
 
     // accessibilitySupportEnabled (Windows and macOS only)
@@ -80,49 +109,41 @@ class app extends EventEmitter {
             that._whenReadyPromiseResolves.push(resolve)
         })
     }
-    // focus([options])
-    // hide() (macOS only)
-    // isHidden() (macOS only)
-    // show() (macOS only)
+    focus(options) {
+        if (options && options.steal) {
+            throwUnsupportedException("app.focus can't support the 'options' argument")
+        }
+        let win = BrowserWindowManager.getAllWindows().filter(w => w.isVisible()).shift()
+        if (win) {
+            win.focus()
+        }
+    }
+    hide() {
+        BrowserWindowManager.getAllWindows().filter(w => w.isVisible()).forEach(w => w.hide())
+    }
+    isHidden() {
+        return BrowserWindowManager.getAllWindows().filter(w => w.isVisible()).length === 0
+    }
+    show() {
+        BrowserWindowManager.getAllWindows().filter(w => !w.isVisible()).forEach(w => w.showInactive())
+    }
     // setAppLogsPath([path])
     getAppPath() {
         return nw.App.startPath;
     }
     getPath(name) {
-        switch(name) {
-            case "home":        return os.homedir();
-            case "appData":     return path.dirname(this.getPath("userData"));
-            case "userData":
-                if (isLinux) {
-                    return path.join(this.getPath("home"), ".config", __nwjs_project_name);
-                }
-                if (isMac) {
-                    return path.join(this.getPath("home"), "Library", "Application Support", __nwjs_project_name);
-                }
-                if (isWindows) {
-                    return path.join(process.env.APPDATA, __nwjs_project_name)
-                }
-                break;
-            case "sessionData": break;
-            case "temp":        return os.tmpdir();
-            case "exe":         return process.execPath;
-            case "module":      break;
-            case "desktop":     return path.join(this.getPath("home"), "Desktop");
-            case "documents":   return path.join(this.getPath("home"), "Documents");
-            case "downloads":   return path.join(this.getPath("home"), "Downloads");
-            case "music":       return path.join(this.getPath("home"), "Music");
-            case "pictures":    return path.join(this.getPath("home"), "Pictures");
-            case "videos":      return path.join(this.getPath("home"), "Videos");
-            case "recent":      break;
-            case "logs":        break;
-            case "crashDumps":  break;
+        let val = this._pathsCache[name]
+        if (val) {
+            return val
         }
         throw new Error("Unknown path name: %s".replace("%s", name));
     }
     async getFileIcon(filePath) {
         return NativeImage.createFromPath(filePath)
     }
-    // setPath(name, path)
+    setPath(name, path) {
+        this._pathsCache[name] = path
+    }
     getVersion() {
         return __nwjs_app_version;
     }
