@@ -10,7 +10,6 @@ nodeCoreModulesStr.forEach(nodeCoreModule => externals[`node:${nodeCoreModule}`]
 nodeCoreModulesStr.forEach(module => {
     let moduleKeys = Object.keys(require(module))
     moduleKeys.forEach(key => {
-        console.log(`${module}/${key}`)
         externals[`${module}/${key}`] = `require('${module}').${key}`
     })
 })

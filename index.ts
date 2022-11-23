@@ -79,8 +79,7 @@ const onTmpFolder = async function(dest:string, callback:(tmpDir:string) => Prom
 }
 
 const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, mainFilename?:string, prod:boolean, opts:any}, callback:(tmpDir:string) => void) {
-    const prebuildOutput = child_process.execSync("npm run nwjs:prebuild --if-present", {cwd:opts.projectDir, encoding:'utf-8'})
-    console.log(prebuildOutput)
+    child_process.execSync("npm run nwjs:prebuild --if-present", {cwd:opts.projectDir, stdio: 'inherit', encoding:'utf-8'})
 
     onTmpFolder(path.join(opts.projectDir, buildDir), async function(tmpDir) {
         fse.copySync(opts.projectDir, tmpDir)
@@ -112,8 +111,7 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, mainFi
         projectPackageStr = JSON.stringify(projectPackageJson, null, 2)
         fs.writeFileSync(projectPackagePath, projectPackageStr, {encoding:'utf-8'})
 
-        const installOutput = child_process.execSync("npm install", {cwd:tmpDir, encoding:'utf-8'})
-        console.log(installOutput)
+        child_process.execSync("npm install", {cwd:tmpDir, stdio: 'inherit', encoding:'utf-8'})
 
 
         // So the electron node_module won't be compressed in the end, no matter what
@@ -325,7 +323,7 @@ program
         const scriptPath = path.join(tmpDir, "nwjs_start.js")
         fs.writeFileSync(configPath, configStr, {encoding:'utf8'})
         fs.copyFileSync(path.join(__dirname, "nwjs_start.js"), scriptPath)
-        child_process.execSync(`node ./nwjs_start.js`, {cwd:tmpDir})
+        child_process.execSync(`node ./nwjs_start.js`, {cwd:tmpDir, stdio: 'inherit'})
     })
   });
 
@@ -383,11 +381,10 @@ program
             const scriptPath = path.join(tmpDir, "nwjs_build.js")
             fs.writeFileSync(configPath, configStr, {encoding:'utf8'})
             fs.copyFileSync(path.join(__dirname, "nwjs_build.js"), scriptPath)
-            child_process.execSync(`node ./nwjs_build.js`, {cwd:tmpDir})
+            child_process.execSync(`node ./nwjs_build.js`, {cwd:tmpDir, stdio: 'inherit'})
         }
 
-        const postDistOutput = child_process.execSync("npm run nwjs:postdist --if-present", {cwd:projectDir, encoding:'utf-8'})
-        console.log(postDistOutput)
+        child_process.execSync("npm run nwjs:postdist --if-present", {cwd:projectDir, stdio: 'inherit', encoding:'utf-8'})
     })
   });
 

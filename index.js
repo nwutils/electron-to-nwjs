@@ -78,8 +78,7 @@ const onTmpFolder = async function (dest, callback) {
     }
 };
 const runPrebuildAndCreateNwjsProject = function (opts, callback) {
-    const prebuildOutput = child_process_1.default.execSync("npm run nwjs:prebuild --if-present", { cwd: opts.projectDir, encoding: 'utf-8' });
-    console.log(prebuildOutput);
+    child_process_1.default.execSync("npm run nwjs:prebuild --if-present", { cwd: opts.projectDir, stdio: 'inherit', encoding: 'utf-8' });
     onTmpFolder(path_1.default.join(opts.projectDir, buildDir), async function (tmpDir) {
         fs_extra_1.default.copySync(opts.projectDir, tmpDir);
         // So the cache and dist folders won't be copied, since they are not only not
@@ -105,8 +104,7 @@ const runPrebuildAndCreateNwjsProject = function (opts, callback) {
         });
         projectPackageStr = JSON.stringify(projectPackageJson, null, 2);
         fs_1.default.writeFileSync(projectPackagePath, projectPackageStr, { encoding: 'utf-8' });
-        const installOutput = child_process_1.default.execSync("npm install", { cwd: tmpDir, encoding: 'utf-8' });
-        console.log(installOutput);
+        child_process_1.default.execSync("npm install", { cwd: tmpDir, stdio: 'inherit', encoding: 'utf-8' });
         // So the electron node_module won't be compressed in the end, no matter what
         // That solves a building issue in Mac OS X 10.13 and lower
         const electronModuleFolder = path_1.default.resolve(tmpDir, 'node_modules', 'electron');
@@ -289,7 +287,7 @@ program
         const scriptPath = path_1.default.join(tmpDir, "nwjs_start.js");
         fs_1.default.writeFileSync(configPath, configStr, { encoding: 'utf8' });
         fs_1.default.copyFileSync(path_1.default.join(__dirname, "nwjs_start.js"), scriptPath);
-        child_process_1.default.execSync(`node ./nwjs_start.js`, { cwd: tmpDir });
+        child_process_1.default.execSync(`node ./nwjs_start.js`, { cwd: tmpDir, stdio: 'inherit' });
     });
 });
 program
@@ -342,10 +340,9 @@ program
             const scriptPath = path_1.default.join(tmpDir, "nwjs_build.js");
             fs_1.default.writeFileSync(configPath, configStr, { encoding: 'utf8' });
             fs_1.default.copyFileSync(path_1.default.join(__dirname, "nwjs_build.js"), scriptPath);
-            child_process_1.default.execSync(`node ./nwjs_build.js`, { cwd: tmpDir });
+            child_process_1.default.execSync(`node ./nwjs_build.js`, { cwd: tmpDir, stdio: 'inherit' });
         }
-        const postDistOutput = child_process_1.default.execSync("npm run nwjs:postdist --if-present", { cwd: projectDir, encoding: 'utf-8' });
-        console.log(postDistOutput);
+        child_process_1.default.execSync("npm run nwjs:postdist --if-present", { cwd: projectDir, stdio: 'inherit', encoding: 'utf-8' });
     });
 });
 program.parse(process.argv);
