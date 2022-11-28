@@ -51,6 +51,9 @@ class WebContents {
     getTitle() {
         return this._window._getChromeWindow().tabs[0].title
     }
+    isLoading() {
+        return this._window._getChromeWindow().tabs[0].status === "loading"
+    }
 
 
     on(channel, callback) {
