@@ -45,6 +45,12 @@ class WebContents {
     get id() {
         return this._id
     }
+    getURL() {
+        return this._window._getChromeWindow().tabs[0].url
+    }
+    getTitle() {
+        return this._window._getChromeWindow().tabs[0].title
+    }
 
 
     on(channel, callback) {
