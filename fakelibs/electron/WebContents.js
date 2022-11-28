@@ -23,14 +23,27 @@ class WebContents {
     
 
     constructor(win) {
-        this._window = win
+        const id = Math.floor(Math.random() * 1000000000)
         
+        this._id = id
+        this._window = win
         this.session = session.defaultSession
     }
 
 
+    static getAllWebContents() {
+        return BrowserWindowManager.getAllWindows().map(w => w.webContents)
+    }
     static getFocusedWebContents() {
         return BrowserWindowManager.getFocusedWindow().webContents
+    }
+    static fromId(id) {
+        return BrowserWindowManager.getAllWindows().map(w => w.webContents).filter(w => w.id === id).pop()
+    }
+
+
+    get id() {
+        return this._id
     }
 
 

@@ -701,9 +701,9 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 **API**                                | **Rating** | **Status**
 :--                                    | :--        | :--
-`static getAllWebContents`             | 🌑🌑🌑🌑 | Not Planned
+`static getAllWebContents`             | 🌕🌕🌗🌑 | Working
 `static getFocusedWebContents`         | 🌕🌕🌗🌑 | Working
-`static fromId`                        | 🌑🌑🌑🌑 | Not Planned
+`static fromId`                        | 🌕🌕🌗🌑 | Working
 `static fromDevToolsTargetId`          | 🌑🌑🌑🌑 | Not Planned
 `loadURL`                              | 🌕🌕🌑🌑 | Partially Working
 `loadFile`                             | 🌕🌕🌑🌑 | Partially Working
@@ -814,7 +814,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `zoomLevel`                            | 🌑🌑🌑🌑 | Not Planned
 `zoomFactor`                           | 🌑🌑🌑🌑 | Not Planned
 `frameRate`                            | 🌑🌑🌑🌑 | Not Planned
-`id`                                   | 🌑🌑🌑🌑 | Not Planned
+`id`                                   | 🌕🌕🌗🌑 | Working
 `session`                              | 🌑🌑🌑🌑 | Not Planned
 `hostWebContents`                      | 🌑🌑🌑🌑 | Not Planned
 `devToolsWebContents`                  | 🌑🌑🌑🌑 | Not Planned
