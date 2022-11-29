@@ -26,7 +26,7 @@ class WebContents {
         
         this._id = id
         this._window = win
-        this.session = opts.session
+        this._session = opts.session
 
         this._zoomFactor = opts.zoomFactor
         if (this._zoomFactor !== 1.0) {
@@ -48,6 +48,9 @@ class WebContents {
 
     get id() {
         return this._id
+    }
+    get session() {
+        return this._session
     }
     get zoomFactor() {
         return this.getZoomFactor()
@@ -109,7 +112,7 @@ class WebContents {
 
     downloadURL(url) {
         var that = this
-        this.session.emit('will-download', 
+        this._session.emit('will-download', 
             new Event('will-download'),
             new DownloadItem(url, that),
             that
