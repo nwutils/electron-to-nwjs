@@ -28,19 +28,10 @@ class WebContents {
         this._window = win
         this.session = opts.session
 
-        let that = this
         this._zoomFactor = opts.zoomFactor
         if (this._zoomFactor !== 1.0) {
             this.setZoomFactor(this._zoomFactor)
         }
-        chrome.tabs.onZoomChange.addListener(function({newZoomFactor, oldZoomFactor, tabId, zoomSettings}) {
-            win._getChromeWindowAsync().then(w => {
-                let tab = w.tabs[0]
-                if (tab.id === tabId) {
-                    that._zoomFactor = newZoomFactor
-                }
-            })
-        })
     }
 
 
@@ -68,19 +59,23 @@ class WebContents {
         return this._window._getChromeWindow().tabs[0].status === "loading"
     }
     setZoomFactor(factor) {
-        this._window._getChromeWindowAsync().then(w => {
-            let tab = w.tabs[0]
-            chrome.tabs.setZoom(tab.id, factor)
-        })
+        let level = Math.log(1.2) / Math.log(factor)
+        this.setZoomLevel(level)
     }
     getZoomFactor() {
-        return this._zoomFactor
+        if (this._window.window === undefined) {
+            return this._zoomFactor
+        }
+        return Math.pow(1.2, this.getZoomLevel())
     }
     setZoomLevel(level) {
-        this.setZoomFactor(Math.pow(1.2, level))
+        this._zoomFactor = Math.pow(1.2, level)
+        this._window._getWindow().then(nwjsWin => {
+            nwjsWin.zoomLevel = level
+        })
     }
     getZoomLevel() {
-        return Math.log(1.2) / Math.log(this._zoomFactor)
+        return this._window.window?.zoomLevel ?? (Math.log(1.2) / Math.log(this._zoomFactor))
     }
 
 
