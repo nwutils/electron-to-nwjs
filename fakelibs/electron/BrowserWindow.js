@@ -810,6 +810,9 @@ class BrowserWindow extends EventEmitter {
         const id = this.id+""
         return chrome.app.window.getAll().filter(cw => cw.id === id).pop()
     }
+    _getChromeWindowTab() {
+        return this._getChromeWindow().tabs[0]
+    }
     _forEachElementWithTagName(tagName, callback) {
         this._getWindow().then(win => {
             let winDocument = win.window.document

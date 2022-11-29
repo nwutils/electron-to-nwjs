@@ -28,6 +28,14 @@ class WebContents {
         this._id = id
         this._window = win
         this.session = session.defaultSession
+
+        let that = this
+        this._zoomFactor = 1.0
+        chrome.tabs.onZoomChange.addListener(function({newZoomFactor, oldZoomFactor, tabId, zoomSettings}) {
+            if (win._getChromeWindowTab().id === tabId) {
+                that._zoomFactor = newZoomFactor
+            }
+        })
     }
 
 
@@ -46,13 +54,26 @@ class WebContents {
         return this._id
     }
     getURL() {
-        return this._window._getChromeWindow().tabs[0].url
+        return this._window._getChromeWindowTab().url
     }
     getTitle() {
-        return this._window._getChromeWindow().tabs[0].title
+        return this._window._getChromeWindowTab().title
     }
     isLoading() {
-        return this._window._getChromeWindow().tabs[0].status === "loading"
+        return this._window._getChromeWindowTab().status === "loading"
+    }
+    setZoomFactor(factor) {
+        let tab = this._window._getChromeWindowTab()
+        chrome.tabs.setZoom(tab.id, factor)
+    }
+    getZoomFactor() {
+        return this._zoomFactor
+    }
+    setZoomLevel(level) {
+        this.setZoomFactor(Math.pow(1.2, level))
+    }
+    getZoomLevel() {
+        return Math.log(1.2) / Math.log(this._zoomFactor)
     }
 
 
