@@ -58,24 +58,30 @@ class WebContents {
     isLoading() {
         return this._window._getChromeWindow().tabs[0].status === "loading"
     }
+    _zoomLevelFromZoomFactor(factor) {
+        return (Math.log(1.2) / Math.log(factor)) + 1
+    }
+    _zoomFactorFromZoomLevel(level) {
+        return Math.pow(1.2, level - 1)
+    }
     setZoomFactor(factor) {
-        let level = Math.log(1.2) / Math.log(factor)
+        let level = this._zoomLevelFromZoomFactor(factor)
         this.setZoomLevel(level)
     }
     getZoomFactor() {
         if (this._window.window === undefined) {
             return this._zoomFactor
         }
-        return Math.pow(1.2, this.getZoomLevel())
+        return this._zoomFactorFromZoomLevel(this.getZoomLevel())
     }
     setZoomLevel(level) {
-        this._zoomFactor = Math.pow(1.2, level)
+        this._zoomFactor = this._zoomFactorFromZoomLevel(level)
         this._window._getWindow().then(nwjsWin => {
             nwjsWin.zoomLevel = level
         })
     }
     getZoomLevel() {
-        return this._window.window?.zoomLevel ?? (Math.log(1.2) / Math.log(this._zoomFactor))
+        return this._window.window?.zoomLevel ?? this._zoomLevelFromZoomFactor(this._zoomFactor)
     }
 
 
