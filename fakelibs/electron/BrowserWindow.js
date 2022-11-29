@@ -15,6 +15,7 @@
 
 const EventEmitter = require('events');
 const app = require('./app')
+const session = require('./session')
 const WebContents = require('./WebContents')
 const NativeImage = require('./nativeImage')
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
@@ -87,18 +88,61 @@ class BrowserWindow extends EventEmitter {
         // visualEffectState
         // titleBarStyle
         // trafficLightPosition
-        this._roundedCorners = opts.roundedCorners === undefined ? true : opts.roundedCorners;
+        this._roundedCorners = opts.roundedCorners ?? true;
         // fullscreenWindowTitle
         // thickFrame
         // vibrancy
         // zoomToPageWidth
         // tabbingIdentifier
         opts.webPreferences = opts.webPreferences || {};
-        this._devTools = opts.webPreferences.devTools === undefined ? true : opts.webPreferences.devTools;
-        let zoomFactor = opts.webPreferences.zoomFactor === undefined ? 1.0 : opts.webPreferences.zoomFactor;
+        this._devTools = opts.webPreferences.devTools ?? true;
+        // opts.webPreferences.nodeIntegration
+        // opts.webPreferences.nodeIntegrationInWorker
+        // opts.webPreferences.nodeIntegrationInSubFrames
+        // opts.webPreferences.preload
+        // opts.webPreferences.sandbox
+        let _session = opts.session ?? session.defaultSession
+        // opts.webPreferences.partition
+        let _zoomFactor = opts.webPreferences.zoomFactor ?? 1.0;
+        // opts.webPreferences.javascript
+        // opts.webPreferences.webSecurity
+        // opts.webPreferences.allowRunningInsecureContent
+        // opts.webPreferences.images
+        // opts.webPreferences.imageAnimationPolicy
+        // opts.webPreferences.textAreasAreResizable
+        // opts.webPreferences.webgl
+        // opts.webPreferences.plugins
+        // opts.webPreferences.experimentalFeatures
+        // opts.webPreferences.scrollBounce
+        // opts.webPreferences.enableBlinkFeatures
+        // opts.webPreferences.disableBlinkFeatures
+        // opts.webPreferences.defaultFontFamily
+        // opts.webPreferences.defaultFontSize
+        // opts.webPreferences.defaultMonospaceFontSize
+        // opts.webPreferences.minimumFontSize
+        // opts.webPreferences.defaultEncoding
+        // opts.webPreferences.backgroundThrottling
+        // opts.webPreferences.offscreen
+        // opts.webPreferences.contextIsolation
+        // opts.webPreferences.webviewTag
+        // opts.webPreferences.additionalArguments
+        // opts.webPreferences.safeDialogs
+        // opts.webPreferences.safeDialogsMessage
+        // opts.webPreferences.disableDialogs
+        // opts.webPreferences.navigateOnDragDrop
+        // opts.webPreferences.autoplayPolicy
+        // opts.webPreferences.disableHtmlFullscreenWindowResize
+        // opts.webPreferences.accessibleTitle
+        // opts.webPreferences.spellcheck
+        // opts.webPreferences.enableWebSQL
+        // opts.webPreferences.v8CacheOptions
+        // opts.webPreferences.enablePreferredSizeMode
         // titleBarOverlay
 
-        this._webContents = new WebContents(this, {zoomFactor});
+        this._webContents = new WebContents(this, {
+            session: _session,
+            zoomFactor: _zoomFactor
+        });
 
         BrowserWindowManager.addWindow(this)
 

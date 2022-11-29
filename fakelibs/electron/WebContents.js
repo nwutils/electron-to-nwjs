@@ -12,7 +12,6 @@
   so both BrowserWindow and WebContents need to make use of it.
 */
 
-const session = require('./session')
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
 const DownloadItem = require('./utils/DownloadItem')
 const throwUnsupportedException = require('./utils/unsupported-exception')
@@ -27,7 +26,7 @@ class WebContents {
         
         this._id = id
         this._window = win
-        this.session = session.defaultSession
+        this.session = opts.session
 
         let that = this
         this._zoomFactor = opts.zoomFactor
