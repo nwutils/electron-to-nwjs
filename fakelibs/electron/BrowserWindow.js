@@ -28,7 +28,6 @@ class BrowserWindow extends EventEmitter {
 
         const id = Math.floor(Math.random() * 1000000000);
         
-        this._webContents = new WebContents(this);
         this._id = id;
         this._autoHideMenuBar = opts.autoHideMenuBar || false;
         this._simpleFullscreen = opts.simpleFullscreen || false;
@@ -96,8 +95,10 @@ class BrowserWindow extends EventEmitter {
         // tabbingIdentifier
         opts.webPreferences = opts.webPreferences || {};
         this._devTools = opts.webPreferences.devTools === undefined ? true : opts.webPreferences.devTools;
+        let zoomFactor = opts.webPreferences.zoomFactor === undefined ? 1.0 : opts.webPreferences.zoomFactor;
         // titleBarOverlay
 
+        this._webContents = new WebContents(this, {zoomFactor});
 
         BrowserWindowManager.addWindow(this)
 
@@ -810,8 +811,9 @@ class BrowserWindow extends EventEmitter {
         const id = this.id+""
         return chrome.app.window.getAll().filter(cw => cw.id === id).pop()
     }
-    _getChromeWindowTab() {
-        return this._getChromeWindow().tabs[0]
+    async _getChromeWindowAsync() {
+        await this._getWindow()
+        return this._getChromeWindow()
     }
     _forEachElementWithTagName(tagName, callback) {
         this._getWindow().then(win => {
