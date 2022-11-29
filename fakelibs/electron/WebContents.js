@@ -49,6 +49,18 @@ class WebContents {
     get id() {
         return this._id
     }
+    get zoomFactor() {
+        return this.getZoomFactor()
+    }
+    set zoomFactor(factor) {
+        this.setZoomFactor(factor)
+    }
+    get zoomLevel() {
+        return this.getZoomLevel()
+    }
+    set zoomLevel(level) {
+        this.setZoomLevel(level)
+    }
     getURL() {
         return this._window._getChromeWindow().tabs[0].url
     }
