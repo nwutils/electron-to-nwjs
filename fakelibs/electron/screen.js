@@ -50,10 +50,16 @@ class Screen extends EventEmitter {
 
     constructor() {
         let that = this
+        
         nw.Screen.on('displayAdded', (screen) => {
-            let newDisplay = new Display(screen)
-            that._screens.push(newDisplay)
-            that.emit('display-added', new Event('display-added'), newDisplay)
+            let newDisplay = that._screens.filter(s => s.id === screen.id).pop()
+            if (newDisplay) {
+                newDisplay._updateValues(screen)
+            } else {
+                newDisplay = new Display(screen)
+                that._screens.push(newDisplay)
+                that.emit('display-added', new Event('display-added'), newDisplay)
+            }
         });
         nw.Screen.on('displayRemoved', (screen) => {
             let oldDisplay = that._screens.filter(s => s.id === screen.id).pop()
@@ -65,6 +71,17 @@ class Screen extends EventEmitter {
             oldDisplay._updateValues(screen)
             that.emit('display-metrics-changed', new Event('display-metrics-changed'), oldDisplay)
         });
+
+        let initialScreens = nw.Screen.screens
+        initialScreens.forEach(screen => {
+            let newDisplay = that._screens.filter(s => s.id === screen.id).pop()
+            if (newDisplay) {
+                newDisplay._updateValues(screen)
+            } else {
+                newDisplay = new Display(screen)
+                that._screens.push(newDisplay)
+            }
+        })
     }
     
     getCursorScreenPoint() {
