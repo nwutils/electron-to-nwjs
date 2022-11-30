@@ -4,6 +4,7 @@
 
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/Window/
+  https://developer.chrome.com/docs/extensions/reference/tabs/#type-Tab
 
   Render and control web pages.
   Only available in the main process.
