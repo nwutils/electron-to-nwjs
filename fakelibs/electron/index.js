@@ -13,6 +13,7 @@ const Notification = require('./Notification')
 const net = require('./net')
 const session = require('./session')
 const shell = require('./shell')
+const screen = require('./screen')
 const systemPreferences = require('./systemPreferences')
 const webContents = require('./WebContents')
 
@@ -70,11 +71,11 @@ if (__nwjs_is_main) {
         Notification,
         // powerMonitor
         // powerSaveBlocker
-        // process,
+        process,
         // protocol
         // pushNotifications
         // safeStorage
-        // screen
+        screen,
         session,
         // ShareMenu
         shell,
@@ -119,7 +120,7 @@ else {
             //powerMonitor,
             //powerSaveBlocker,
             //protocol,
-            //screen,
+            screen,
             session,
             //ShareMenu,
             shell,
