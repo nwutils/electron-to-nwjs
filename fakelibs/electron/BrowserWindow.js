@@ -247,8 +247,17 @@ class BrowserWindow extends EventEmitter {
                     that._isFocused = true
                     that.emit('focus')
                 })
-                // 'show'
-                // 'hide'
+                win.document.addEventListener('visibilitychange', () => {
+                    let visibilityState = win.document.visibilityState
+                    if (visibilityState === "visible") {
+                        that._visible = true
+                        that.emit('show')
+                    }
+                    if (visibilityState === "hidden") {
+                        that._visible = false
+                        that.emit('hide')
+                    }
+                })
                 win.on('maximize', function() {
                     that.emit('maximize')
                 })
@@ -455,15 +464,21 @@ class BrowserWindow extends EventEmitter {
         return this._isDestroyed === true
     }
     show() {
-        this._visible = true;
-        this._getWindow().then(win => win.show());
+        let that = this
+        this._getWindow().then(win => {
+            win.show()
+            that._visible = true
+        });
     }
     showInactive() {
         // TODO: 
     }
     hide() {
-        this._visible = false;
-        this._getWindow().then(win => win.hide());
+        let that = this
+        this._getWindow().then(win => {
+            win.hide()
+            that._visible = false
+        });
     }
     isVisible() {
         return this._visible;
