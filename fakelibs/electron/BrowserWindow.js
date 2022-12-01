@@ -587,7 +587,8 @@ class BrowserWindow extends EventEmitter {
         if (!win) {
             return [undefined, undefined]
         }
-        return [win.window.document.clientWidth, win.window.document.clientHeight]
+        const document = win.window.document
+        return [document.clientWidth, document.clientHeight]
     }
     setMinimumSize(width, height) {
         this._minWidth = width
@@ -876,8 +877,7 @@ class BrowserWindow extends EventEmitter {
         return this._getChromeWindow()
     }
     _forEachElementWithTagName(tagName, callback) {
-        this._getWindow().then(win => {
-            let winDocument = win.window.document
+        this._getDocument().then(winDocument => {
             winDocument.addEventListener("DOMNodeInserted", function(e) {
                 try {
                     if (e.target.tagName.toLowerCase() === tagName) {
@@ -886,8 +886,8 @@ class BrowserWindow extends EventEmitter {
                 } catch(ex) {}
             }, false);
 
-            let webviews = [...winDocument.getElementsByTagName(tagName)]
-            webviews.forEach(webview => callback(webview))
+            let els = [...winDocument.getElementsByTagName(tagName)]
+            els.forEach(webview => callback(webview))
         })
     }
 }
