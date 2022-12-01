@@ -54,27 +54,17 @@ const currentSystemRecommendedNwjsVersion = function () {
     return "0.69.1";
 };
 const onTmpFolder = async function (dest, callback) {
-    let tmpDir;
     const appPrefix = 'electron-to-nwjs';
+    let tmpDir = fs_1.default.mkdtempSync(path_1.default.join(os_1.default.tmpdir(), appPrefix));
+    console.log(`Temporary folder: ${tmpDir}`);
     try {
-        tmpDir = fs_1.default.mkdtempSync(path_1.default.join(os_1.default.tmpdir(), appPrefix));
-        console.log(`Temporary folder: ${tmpDir}`);
         await callback(tmpDir);
+    }
+    finally {
         if (fs_1.default.existsSync(dest)) {
             fs_1.default.rmdirSync(dest, { recursive: true });
         }
         fs_extra_1.default.moveSync(tmpDir, dest);
-    }
-    catch (e) {
-        try {
-            if (tmpDir && fs_1.default.existsSync(tmpDir)) {
-                fs_1.default.rmdirSync(tmpDir, { recursive: true });
-            }
-        }
-        catch (e) {
-            console.error(`An error has occurred while removing the temp folder at ${tmpDir}. Please remove it manually. Error: ${e}`);
-        }
-        throw e;
     }
 };
 const runPrebuildAndCreateNwjsProject = function (opts, callback) {
@@ -175,7 +165,7 @@ const getElectronToNwjsProjectConfig = function (projectPath, isBuild, flagOpts)
         flagOsList.forEach(os => config.target[os] = true);
     }
     config.nwjs = config.nwjs || {};
-    config.nwjs.version = (isBuild ? config.nwjs.build?.version : undefined) || config.nwjs.version || flagOpts.nwjsVersion;
+    config.nwjs.version = flagOpts.nwjsVersion || (isBuild ? config.nwjs.build?.version : undefined) || config.nwjs.version;
     config.nwjs.ignoreUnimplementedFeatures = config.nwjs.ignoreUnimplementedFeatures || flagOpts.ignoreUnimplementedFeatures;
     return config;
 };
