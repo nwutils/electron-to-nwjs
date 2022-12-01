@@ -211,6 +211,7 @@ class BrowserWindow extends EventEmitter {
                 that.window = win;
                 win.eval(null, `window.__nwjs_window_id = ${that.id};`)
                 that._windowPromiseResolves.forEach(windowPromiseResolve => windowPromiseResolve(win))
+                const document = win.window.document
 
                 that.setMenu(global.__nwjs_app_menu)
                 that.setOpacity(that._opacity)
@@ -246,8 +247,8 @@ class BrowserWindow extends EventEmitter {
                     that._isFocused = true
                     that.emit('focus')
                 })
-                win.document.addEventListener('visibilitychange', () => {
-                    let visibilityState = win.document.visibilityState
+                document.addEventListener('visibilitychange', () => {
+                    let visibilityState = document.visibilityState
                     if (visibilityState === "visible") {
                         that._visible = true
                         that.emit('show')
