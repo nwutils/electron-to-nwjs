@@ -15,6 +15,7 @@ const session = require('./session')
 const shell = require('./shell')
 const screen = require('./screen')
 const systemPreferences = require('./systemPreferences')
+const Tray = require('./tray')
 const webContents = require('./WebContents')
 
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
@@ -81,7 +82,7 @@ if (__nwjs_is_main) {
         shell,
         systemPreferences,
         // TouchBar
-        // Tray
+        Tray,
         webContents
         // webFrameMain
     }
@@ -126,7 +127,7 @@ else {
             shell,
             systemPreferences,
             //TouchBar,
-            //Tray,
+            Tray,
             webContents,
             //webFrameMain
             getCurrentWebContents() {
