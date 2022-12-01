@@ -179,6 +179,9 @@ class BrowserWindow extends EventEmitter {
             that._windowPromiseResolves.push(resolve)
         })
     }
+    async _getDocument() {
+        return (await this._getWindow()).window.document
+    }
 
 
     _load(url) {
@@ -526,8 +529,7 @@ class BrowserWindow extends EventEmitter {
     // setAspectRatio
     setBackgroundColor(backgroundColor) {
         this._backgroundColor = backgroundColor
-        this._getWindow().then(win => {
-            const document = win.window.document
+        this._getDocument().then(document => {
             document.body.style["background-color"] = backgroundColor;
         });
     }
@@ -798,8 +800,7 @@ class BrowserWindow extends EventEmitter {
     }
     setOpacity(opacity) {
         this._opacity = opacity
-        this._getWindow().then(win => {
-            const document = win.window.document
+        this._getDocument().then(document => {
             document.body.style["opacity"] = `${opacity}`;
         });
     }

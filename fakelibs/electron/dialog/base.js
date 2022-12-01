@@ -84,9 +84,8 @@ class BaseDialog {
       throwUnsupportedException("dialog.showOpenDialog can't support the 'dontAddToRecent' value in the 'properties' argument")
     }
 
-    const nwjsWin = await window._getWindow()
-    const document = nwjsWin.window.document
-
+    const document = await window._getDocument()
+    
     const input = document.createElement("input");
     input.type = "file";
     input.style.display = "none";
@@ -141,8 +140,7 @@ class BaseDialog {
       throwUnsupportedException("dialog.showOpenDialog can't support the 'dontAddToRecent' value in the 'properties' argument")
     }
 
-    const nwjsWin = await window._getWindow()
-    const document = nwjsWin.window.document
+    const document = await window._getDocument()
 
     const input = document.createElement("input");
     input.type = "file";
