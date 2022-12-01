@@ -16,6 +16,7 @@ const EventEmitter = require('events')
 class Tray extends EventEmitter {
 
     constructor(image, guid) {
+        super()
         this._image = image
         this._tray = new nw.Tray({ icon: image._temporaryPngFilePath() });
     }

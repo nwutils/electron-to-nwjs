@@ -49,6 +49,7 @@ class Screen extends EventEmitter {
     _screens = []
 
     constructor() {
+        super()
         let that = this
         
         nw.Screen.on('displayAdded', (screen) => {

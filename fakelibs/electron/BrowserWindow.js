@@ -189,7 +189,6 @@ class BrowserWindow extends EventEmitter {
                 title: that._title,
                 width: that._width,
                 height: that._height,
-                toolbar: false,
                 icon: that._icon,
                 position: that._center ? 'center' : 'null',
                 min_width: that._minWidth,
