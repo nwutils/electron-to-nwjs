@@ -121,6 +121,10 @@ class NativeImage {
     // getScaleFactors()
     // addRepresentation(options)
     // isMacTemplateImage (macOS only)
+
+    _temporaryPngFilePath() {
+        
+    }
 }
 
 module.exports = NativeImage
