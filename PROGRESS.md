@@ -22,7 +22,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 **API**                                | **Rating** | **Status**
 :--                                    | :--        | :--
 `accessibilitySupportEnabled`          | 🌑🌑🌑🌑 | Not Planned
-`applicationMenu`                      | 🌑🌑🌑🌑 | Not Planned
+`applicationMenu`                      | 🌕🌕🌗🌑 | Working
 `badgeCount`                           | 🌑🌑🌑🌑 | Not Planned
 `commandLine`                          | 🌕🌗🌑🌑 | Started
 `dock`                                 | 🌑🌑🌑🌑 | Not Planned
