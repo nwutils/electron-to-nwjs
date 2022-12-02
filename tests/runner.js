@@ -10,7 +10,6 @@ for(var key in process.env) {
 
 class TestRunner {
     constructor(projectDir) {
-        console.log("Project dir: " + projectDir)
         this.projectDir = projectDir
         this.testScriptName = "__test.js"
         this.sep1 = uuidv4()

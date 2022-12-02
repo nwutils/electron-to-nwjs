@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "./build_index.sh && node ./index.js start ./www",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cd tests && node ./index.js",
     "dist": "./build_index.sh && node ./index.js build --win --x86"
   },
   "author": {
