@@ -23,7 +23,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 :--                                    | :--        | :--
 `accessibilitySupportEnabled`          | 🌑🌑🌑🌑 | Not Planned
 `applicationMenu`                      | 🌕🌕🌗🌑 | Working
-`badgeCount`                           | 🌑🌑🌑🌑 | Not Planned
+`badgeCount`                           | 🌕🌕🌗🌑 | Working
 `commandLine`                          | 🌕🌗🌑🌑 | Started
 `dock`                                 | 🌑🌑🌑🌑 | Not Planned
 `isPackaged`                           | 🌕🌕🌕🌕 | Released

@@ -4,6 +4,7 @@
 
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/App/
+  http://docs.nwjs.io/en/latest/References/Window/#winsetbadgelabellabel
 
   Control your application's event lifecycle.
   Only available in the main process.
@@ -64,7 +65,14 @@ class app extends EventEmitter {
     set applicationMenu(menu) {
         Menu.setApplicationMenu(menu)
     }
-    // badgeCount (Linux and macOS only)
+    get badgeCount() {
+        return global.__nwjs_badge_count || 0
+    }
+    set badgeCount(badgeCount) {
+        global.__nwjs_badge_count = badgeCount || 0
+        let badgeCountStr = (badgeCount || "").toString()
+        BrowserWindowManager.getAllWindows().forEach(w => w.window.setBadgeLabel(badgeCountStr))
+    }
     commandLine = {
         _lines: [],
         appendSwitch(key, value) {
