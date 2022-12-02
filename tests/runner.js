@@ -37,21 +37,16 @@ class TestRunner {
     runWithElectron(script) {
         this._writeScriptToProjectFolder(script)
         let projectDir = this.projectDir
-        console.log("Starting Electron execution...")
-        let output = child_process.execSync("npx electron __test", {env, cwd:projectDir, encoding:'utf8'})
-        console.log("Stopping Electron execution...")
+        let output = child_process.execSync("npx electron .", {env, cwd:projectDir, encoding:'utf8'})
         this._removeScriptFromProjectFolder()
         let cleanOutput = output.split(this.sep1).pop().split(this.sep2).shift()
-        console.log(cleanOutput)
-        return JSON.parse(cleanOutput)
+        return cleanOutput.trim()
     }
     runWithElectronToNWjs(script) {
         this._writeScriptToProjectFolder(script)
         let projectDir = this.projectDir
-        console.log("Starting NW.js execution...")
-        let output = child_process.spawnSync("npx", ["electron-to-nwjs", "start", this.testScriptName],
+        let output = child_process.spawnSync("npx", ["electron-to-nwjs", "start", "."],
                                             {env, cwd:projectDir, encoding:'utf8', timeout:60*1000})
-        console.log("Stopping NW.js execution...")
         this._removeScriptFromProjectFolder()
         output = output.stderr.split("\n").map(line => {
                 let startSep = ")] "
@@ -70,8 +65,7 @@ class TestRunner {
                 return line.substring(1, line.length - 1)
             }).join("\n")
         let cleanOutput = output.split(this.sep1).pop().split(this.sep2).shift()
-        console.log(cleanOutput)
-        return JSON.parse(cleanOutput)
+        return cleanOutput.trim()
     }
     compare(script) {
         const output1 = this.runWithElectron(script)
