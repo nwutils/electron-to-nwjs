@@ -276,6 +276,9 @@ const showWarningForVersionIfNeeded = function(version:string) {
     if (Versions.doesVersionMatchesConditions(version, "<0.14.7")) {
         console.warn("WARNING!!! electron-to-nwjs officially only supports NW.js 0.14.7 and superior versions!")
     }
+    if (["0.42.4", "0.42.5", "0.42.6"].includes(version)) {
+        console.warn("WARNING!!! That NW.js version is known not to work properly!")
+    }
     if (Versions.doesVersionMatchesConditions(version, "<0.25.4")) {
         console.warn("WARNING! NW.js 0.25.3 and below are not compatible with Node-API!")
     }
