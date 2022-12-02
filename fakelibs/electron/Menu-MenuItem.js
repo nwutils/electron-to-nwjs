@@ -298,7 +298,7 @@ class Menu extends EventEmitter {
         BrowserWindowManager.getAllWindows().forEach(win => win.setMenu(menu))
     }
     static getApplicationMenu() {
-        return global.__nwjs_app_menu
+        return global.__nwjs_app_menu || null
     }
     // static sendActionToFirstResponder(action) (macOS only)
     static buildFromTemplate(template) {

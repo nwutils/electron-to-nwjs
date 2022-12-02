@@ -16,6 +16,7 @@ const os = require('os');
 const path = require('path');
 const EventEmitter = require('events');
 const child_process = require('child_process')
+const {Menu} = require('./Menu-MenuItem')
 const NativeImage = require('./nativeImage')
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
 const throwUnsupportedException = require('./utils/unsupported-exception')
@@ -57,7 +58,12 @@ class app extends EventEmitter {
     }
 
     // accessibilitySupportEnabled (Windows and macOS only)
-    // applicationMenu
+    get applicationMenu() {
+        return Menu.getApplicationMenu()
+    }
+    set applicationMenu(menu) {
+        Menu.setApplicationMenu(menu)
+    }
     // badgeCount (Linux and macOS only)
     commandLine = {
         _lines: [],
