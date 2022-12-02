@@ -26,29 +26,29 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `badgeCount`                           | 🌑🌑🌑🌑 | Not Planned
 `commandLine`                          | 🌕🌗🌑🌑 | Started
 `dock`                                 | 🌑🌑🌑🌑 | Not Planned
-`isPackaged`                           | 🌕🌕🌕🌗 | Tested
-`name`                                 | 🌕🌕🌕🌗 | Tested
+`isPackaged`                           | 🌕🌕🌕🌕 | Released
+`name`                                 | 🌕🌕🌕🌕 | Released
 `userAgentFallback`                    | 🌑🌑🌑🌑 | Not Planned
 `runningUnderARM64Translation`         | 🌑🌑🌑🌑 | Not Planned
 `quit`                                 | 🌕🌕🌗🌑 | Working
-`exit`                                 | 🌑🌑🌑🌑 | Not Planned
+`exit`                                 | 🌕🌗🌑🌑 | Started
 `relaunch`                             | 🌕🌑🌑🌑 | Planned
-`isReady`                              | 🌕🌕🌕🌗 | Tested
+`isReady`                              | 🌕🌕🌕🌕 | Released
 `whenReady`                            | 🌕🌕🌗🌑 | Working
-`focus`                                | 🌑🌑🌑🌑 | Not Planned
-`hide`                                 | 🌑🌑🌑🌑 | Not Planned
-`isHidden`                             | 🌑🌑🌑🌑 | Not Planned
-`show`                                 | 🌑🌑🌑🌑 | Not Planned
+`focus`                                | 🌕🌕🌑🌑 | Partially Working
+`hide`                                 | 🌕🌕🌗🌑 | Working
+`isHidden`                             | 🌕🌕🌗🌑 | Working
+`show`                                 | 🌕🌕🌗🌑 | Working
 `setAppLogsPath`                       | 🌑🌑🌑🌑 | Not Planned
 `getAppPath`                           | 🌕🌕🌗🌑 | Working
 `getPath`                              | 🌕🌕🌑🌑 | Partially Working
 `getFileIcon`                          | 🌑🌑🌑🌑 | Not Planned
-`setPath`                              | 🌕🌕🌕🌗 | Tested
-`getVersion`                           | 🌕🌕🌕🌗 | Tested
-`getName`                              | 🌕🌕🌕🌗 | Tested
-`setName`                              | 🌕🌕🌕🌗 | Tested
+`setPath`                              | 🌕🌕🌕🌕 | Released
+`getVersion`                           | 🌕🌕🌕🌕 | Released
+`getName`                              | 🌕🌕🌕🌕 | Released
+`setName`                              | 🌕🌕🌕🌕 | Released
 `getLocale`                            | 🌕🌕🌗🌑 | Working
-`getLocaleCountryCode`                 | 🌕🌕🌕🌗 | Tested
+`getLocaleCountryCode`                 | 🌕🌕🌕🌕 | Released
 `getSystemLocale`                      | 🌕🌕🌗🌑 | Working
 `getPreferredSystemLanguages`          | 🌕🌕🌗🌑 | Working
 `addRecentDocument`                    | 🌑🌑🌑🌑 | Not Planned
