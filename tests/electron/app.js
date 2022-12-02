@@ -54,18 +54,18 @@ module.exports = (testRunner) => {
             `)
         },
         test_getLocale: () => {
-            // TODO: Test not passing
+            // TODO: Test not passing. Expected "" but was "en-US"
             return testRunner.compare(`console.log(require('electron').app.getLocale())`)
         },
         test_getLocaleCountryCode: () => {
             return testRunner.compare(`console.log(require('electron').app.getLocaleCountryCode())`)
         },
         test_getSystemLocale: () => {
-            // TODO: Test not passing
+            // TODO: Test not passing. Expected "" but was "en-US"
             return testRunner.compare(`console.log(require('electron').app.getSystemLocale())`)
         },
         test_getPreferredSystemLanguages: () => {
-            // TODO: Test not passing
+            // TODO: Test not passing. Expected "" but was "en-US"
             return testRunner.compare(`console.log(require('electron').app.getSystemLocale())`)
         }
     }

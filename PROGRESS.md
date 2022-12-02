@@ -26,14 +26,14 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `badgeCount`                           | 🌑🌑🌑🌑 | Not Planned
 `commandLine`                          | 🌕🌗🌑🌑 | Started
 `dock`                                 | 🌑🌑🌑🌑 | Not Planned
-`isPackaged`                           | 🌕🌕🌗🌑 | Working
-`name`                                 | 🌕🌕🌗🌑 | Working
+`isPackaged`                           | 🌕🌕🌕🌗 | Tested
+`name`                                 | 🌕🌕🌕🌗 | Tested
 `userAgentFallback`                    | 🌑🌑🌑🌑 | Not Planned
 `runningUnderARM64Translation`         | 🌑🌑🌑🌑 | Not Planned
 `quit`                                 | 🌕🌕🌗🌑 | Working
 `exit`                                 | 🌑🌑🌑🌑 | Not Planned
 `relaunch`                             | 🌕🌑🌑🌑 | Planned
-`isReady`                              | 🌕🌕🌗🌑 | Working
+`isReady`                              | 🌕🌕🌕🌗 | Tested
 `whenReady`                            | 🌕🌕🌗🌑 | Working
 `focus`                                | 🌑🌑🌑🌑 | Not Planned
 `hide`                                 | 🌑🌑🌑🌑 | Not Planned
@@ -43,12 +43,14 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `getAppPath`                           | 🌕🌕🌗🌑 | Working
 `getPath`                              | 🌕🌕🌑🌑 | Partially Working
 `getFileIcon`                          | 🌑🌑🌑🌑 | Not Planned
-`setPath`                              | 🌑🌑🌑🌑 | Not Planned
-`getVersion`                           | 🌕🌕🌗🌑 | Working
-`getName`                              | 🌕🌕🌗🌑 | Working
-`setName`                              | 🌕🌕🌗🌑 | Working
-`getLocale`                            | 🌑🌑🌑🌑 | Not Planned
-`getLocaleCountryCode`                 | 🌑🌑🌑🌑 | Not Planned
+`setPath`                              | 🌕🌕🌕🌗 | Tested
+`getVersion`                           | 🌕🌕🌕🌗 | Tested
+`getName`                              | 🌕🌕🌕🌗 | Tested
+`setName`                              | 🌕🌕🌕🌗 | Tested
+`getLocale`                            | 🌕🌕🌗🌑 | Working
+`getLocaleCountryCode`                 | 🌕🌕🌕🌗 | Tested
+`getSystemLocale`                      | 🌕🌕🌗🌑 | Working
+`getPreferredSystemLanguages`          | 🌕🌕🌗🌑 | Working
 `addRecentDocument`                    | 🌑🌑🌑🌑 | Not Planned
 `clearRecentDocuments`                 | 🌑🌑🌑🌑 | Not Planned
 `setAsDefaultProtocolClient`           | 🌑🌑🌑🌑 | Not Planned
