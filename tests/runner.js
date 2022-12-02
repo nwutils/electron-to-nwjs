@@ -49,18 +49,21 @@ class TestRunner {
                 let startSep = ")] "
                 let finalSep = ", source: chrome-extension://"
                 let lineParts = line.split(finalSep)
-                lineParts.pop()
+                if (lineParts.length > 1) {
+                    lineParts.pop()
+                }
                 lineParts = lineParts.join(finalSep).split(startSep)
-                lineParts.shift()
-                if (lineParts.length === 0) {
-                    return ""
+                if (lineParts.length > 1) {
+                    lineParts.shift()
                 }
                 line = lineParts.join(startSep)
                 if (line.trim().length === 0) {
                     return ""
                 }
                 return line.substring(1, line.length - 1)
-            }).join("\n")
+            })
+            .filter(l => l.length > 0)
+            .join("\n")
         let cleanOutput = output.split(this.sep1).pop().split(this.sep2).shift()
         return cleanOutput.trim()
     }

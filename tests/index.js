@@ -32,13 +32,18 @@ allTestFiles.forEach(allTestFile => {
     const testClassName = path.relative(__dirname, allTestFile)
     const testClass = require(allTestFile)(testRunner)
     const testNames = Object.keys(testClass)
+    let failureCount = 0
+    let successCount = 0
     testNames.forEach(testName => {
         try {
             testClass[testName]()
             console.info("\x1b[32m%s\x1b[0m", `PASSED: ${testClassName}:${testName}`)
+            successCount++
         }
         catch(e) {
             console.error("\x1b[31m%s\x1b[0m", `FAILED: ${testClassName}:${testName}: ${e.message}`)
+            failureCount++
         }
     })
+    console.log(`Result: ${successCount} out of ${successCount + failureCount} have passed`)
 })

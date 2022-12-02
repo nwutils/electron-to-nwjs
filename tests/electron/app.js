@@ -12,54 +12,26 @@ module.exports = (testRunner) => {
         test_getAppPath: () => {
             return testRunner.compare(`console.log(require('electron').app.getAppPath())`)
         },
-        test_getPath_home: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("home"))`)
+        test_getPath: () => {
+            return testRunner.compare(`
+                console.log(require('electron').app.getPath("home"))
+                console.log(require('electron').app.getPath("appData"))
+                console.log(require('electron').app.getPath("userData"))
+                // console.log(require('electron').app.getPath("sessionData"))
+                console.log(require('electron').app.getPath("temp"))
+                // console.log(require('electron').app.getPath("exe"))
+                // console.log(require('electron').app.getPath("module"))
+                console.log(require('electron').app.getPath("desktop"))
+                console.log(require('electron').app.getPath("documents"))
+                console.log(require('electron').app.getPath("downloads"))
+                console.log(require('electron').app.getPath("music"))
+                console.log(require('electron').app.getPath("pictures"))
+                console.log(require('electron').app.getPath("videos"))
+                // console.log(require('electron').app.getPath("recent"))
+                // console.log(require('electron').app.getPath("logs"))
+                // console.log(require('electron').app.getPath("crashDumps"))
+            `)
         },
-        test_getPath_appData: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("appData"))`)
-        },
-        test_getPath_userData: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("userData"))`)
-        },
-        // test_getPath_sessionData: () => {
-        //     return testRunner.compare(`console.log(require('electron').app.getPath("sessionData"))`)
-        // },
-        test_getPath_temp: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("temp"))`)
-        },
-        // test_getPath_exe: () => {
-        //     return testRunner.compare(`console.log(require('electron').app.getPath("exe"))`)
-        // },
-        // test_getPath_module: () => {
-        //     return testRunner.compare(`console.log(require('electron').app.getPath("module"))`)
-        // },
-        test_getPath_desktop: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("desktop"))`)
-        },
-        test_getPath_documents: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("documents"))`)
-        },
-        test_getPath_downloads: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("downloads"))`)
-        },
-        test_getPath_music: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("music"))`)
-        },
-        test_getPath_pictures: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("pictures"))`)
-        },
-        test_getPath_videos: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("videos"))`)
-        },
-        test_getPath_recent: () => {
-            return testRunner.compare(`console.log(require('electron').app.getPath("recent"))`)
-        },
-        // test_getPath_logs: () => {
-        //     return testRunner.compare(`console.log(require('electron').app.getPath("logs"))`)
-        // },
-        // test_getPath_crashDumps: () => {
-        //     return testRunner.compare(`console.log(require('electron').app.getPath("crashDumps"))`)
-        // },
         test_setPath: () => {
             return testRunner.compare(`
                 const app = require('electron').app
