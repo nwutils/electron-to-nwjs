@@ -18,15 +18,13 @@ class TestRunner {
 
     _writeScriptToProjectFolder(script) {
         script = `
-            var output = function() {
-                ${script}
-            }()
             console.log("${this.sep1}")
-            console.log(JSON.stringify(output))
+            try {
+                ${script}
+            }
+            catch(e){}
             console.log("${this.sep2}")
-            setTimeout(function(){
-                require('electron').app.quit();
-            }, 200)
+            require('electron').app.quit();
         `
         fs.writeFileSync(path.join(this.projectDir, this.testScriptName), script, {encoding:'utf8'})
     }

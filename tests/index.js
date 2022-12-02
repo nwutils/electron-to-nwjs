@@ -29,16 +29,16 @@ const listAllJsFilesFromFolder = function(folder) {
 listAllJsFilesFromFolder(electronFolder)
 
 allTestFiles.forEach(allTestFile => {
-    const testClassName = path.relative(__dirname, allTestFile).replaceAll("/", ".")
+    const testClassName = path.relative(__dirname, allTestFile)
     const testClass = require(allTestFile)(testRunner)
     const testNames = Object.keys(testClass)
     testNames.forEach(testName => {
         try {
             testClass[testName]()
-            console.info(`PASSED: ${testClassName}.${testName}`)
+            console.info("\x1b[32m%s\x1b[0m", `PASSED: ${testClassName}:${testName}`)
         }
         catch(e) {
-            console.error(`FAILED: ${testClassName}.${testName}: ${e.message}`)
+            console.error("\x1b[31m%s\x1b[0m", `FAILED: ${testClassName}:${testName}: ${e.message}`)
         }
     })
 })
