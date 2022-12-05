@@ -1,6 +1,7 @@
 /*
   Electron Docs
   https://www.electronjs.org/docs/latest/api/app
+  https://www.electronjs.org/docs/latest/api/dock
 
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/App/
@@ -44,6 +45,15 @@ class Dock {
     }
     cancelBounce(id) {
         BrowserWindowManager.getAllWindows().forEach(w => w._cancelBounce(id))
+    }
+    setBadge(badge) {
+        global.__nwjs_badge_label = badge
+        let badgeCount = global.__nwjs_badge_count || 0
+        let badgeStr = global.__nwjs_badge_label || (badgeCount || "").toString()
+        BrowserWindowManager.getAllWindows().forEach(w => w.window.setBadgeLabel(badgeStr))
+    }
+    getBadge() {
+        return global.__nwjs_badge_label
     }
 }
 
@@ -91,8 +101,8 @@ class app extends EventEmitter {
     }
     set badgeCount(badgeCount) {
         global.__nwjs_badge_count = badgeCount || 0
-        let badgeCountStr = (badgeCount || "").toString()
-        BrowserWindowManager.getAllWindows().forEach(w => w.window.setBadgeLabel(badgeCountStr))
+        let badgeStr = global.__nwjs_badge_label || (badgeCount || "").toString()
+        BrowserWindowManager.getAllWindows().forEach(w => w.window.setBadgeLabel(badgeStr))
     }
     commandLine = {
         _lines: [],
