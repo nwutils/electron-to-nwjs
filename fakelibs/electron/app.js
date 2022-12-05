@@ -46,6 +46,7 @@ class Dock {
     cancelBounce(id) {
         BrowserWindowManager.getAllWindows().forEach(w => w._cancelBounce(id))
     }
+    // downloadFinished
     setBadge(badge) {
         global.__nwjs_badge_label = badge
         let badgeCount = global.__nwjs_badge_count || 0
@@ -55,6 +56,12 @@ class Dock {
     getBadge() {
         return global.__nwjs_badge_label
     }
+    // hide
+    // show
+    // isVisible
+    // setMenu
+    // getMenu
+    // setIcon
 }
 
 class app extends EventEmitter {
