@@ -167,6 +167,10 @@ const getElectronToNwjsProjectConfig = function (projectPath, isBuild, flagOpts)
     config.nwjs = config.nwjs || {};
     config.nwjs.version = flagOpts.nwjsVersion || (isBuild ? config.nwjs.build?.version : undefined) || config.nwjs.version;
     config.nwjs.ignoreUnimplementedFeatures = config.nwjs.ignoreUnimplementedFeatures || flagOpts.ignoreUnimplementedFeatures;
+    let projectPackageJson = loadPackageJsonFromFolder(projectPath);
+    let electronPackageJson = loadPackageJsonFromFolder(path_1.default.join(projectPath, "node_modules", "electron"));
+    let electronVersion = (projectPackageJson.build || {}).electronVersion || electronPackageJson.version || "19.1.4";
+    config.electronVersion = electronVersion;
     return config;
 };
 const buildNwjsBuilderConfig = function (projectPath, opts, os) {
@@ -189,6 +193,8 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     ];
     projectPackageJson["chromium-args"] = flags.join(" ");
     projectPackageJson["node-remote"] = nwjs["node-remote"];
+    projectPackageJson["build"] = projectPackageJson["build"] || {};
+    projectPackageJson["build"]["electronVersion"] = opts.electronVersion;
     console.log("");
     console.log(`chromium-args: ${projectPackageJson["chromium-args"]}`);
     console.log(`node-remote: ${projectPackageJson["node-remote"] || ""}`);

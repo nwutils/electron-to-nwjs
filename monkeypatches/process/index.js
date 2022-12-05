@@ -11,7 +11,7 @@ process.contextIsolated = false // TODO
 process.traceProcessWarnings = false // TODO
 // process.type
 process.versions.chrome = process.versions.chromium
-process.versions.electron = "19.1.4"
+process.versions.electron = __electron_version
 process.windowsStore = false // TODO
 process.contextId = undefined // TODO
 

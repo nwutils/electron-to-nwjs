@@ -188,6 +188,11 @@ const getElectronToNwjsProjectConfig = function(projectPath:string, isBuild:bool
     config.nwjs.version = flagOpts.nwjsVersion || (isBuild ? config.nwjs.build?.version : undefined) || config.nwjs.version
     config.nwjs.ignoreUnimplementedFeatures = config.nwjs.ignoreUnimplementedFeatures || flagOpts.ignoreUnimplementedFeatures
     
+    let projectPackageJson = loadPackageJsonFromFolder(projectPath)
+    let electronPackageJson = loadPackageJsonFromFolder(path.join(projectPath, "node_modules", "electron"))
+    let electronVersion = (projectPackageJson.build || {}).electronVersion || electronPackageJson.version || "19.1.4"
+    config.electronVersion = electronVersion
+    
     return config
 }
 
@@ -213,6 +218,9 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
     ]
     projectPackageJson["chromium-args"] = flags.join(" ")
     projectPackageJson["node-remote"] = nwjs["node-remote"]
+    
+    projectPackageJson["build"] = projectPackageJson["build"] || {}
+    projectPackageJson["build"]["electronVersion"] = opts.electronVersion
 
     console.log("")
     console.log(`chromium-args: ${projectPackageJson["chromium-args"]}`)

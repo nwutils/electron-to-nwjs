@@ -29,12 +29,17 @@ module.exports = (env, argv) => {
     }
     const nwjsVersion = opts.nwjs.version
     const nwjsVersionRedux = nwjsVersion.split(".").slice(0, 2).join(".")
+    const electronVersion = opts.electronVersion
 
     const stringReplacements = [
         {
             // TODO: Untested
             search: 'process.type',
             replace: JSON.stringify(isMain ? "browser" : "renderer")
+        },
+        {
+            search: '__electron_version',
+            replace: JSON.stringify(electronVersion)
         },
         {
             search: '__nwjs_version',
