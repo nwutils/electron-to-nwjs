@@ -21,7 +21,7 @@ You must load your JS files using the `<script src="">` tag, with `type="module"
 We use webpack to transpile your code into NW.js compatible code. Webpack turns everything it touched into modules, so var's are restricted to their JS files. If you need to access a variable from another JS-file, either require/import that file, or place that variable into the global object.
 
 ### My `<webview>` element isn't behaving like it should
-We are not able to support webview's properly, and since they are being deprecated anyway, try replacing it with an `<iframe>`.
+We are not able to support webview's properly at the moment. Try replacing it with an `<iframe>`.
 
 ### My application is crashing right after opening a window
 Do you have an iframe in that window? In older NW.js versions, [an uncaught exception inside an iframe could make NW.js crash](https://github.com/nwjs/nw.js/issues/5148). Just add the `sandbox` attribute to that iframe, and the problem will be fixed.
