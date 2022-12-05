@@ -248,6 +248,7 @@ class BrowserWindow extends EventEmitter {
                 })
                 win.on('focus', function() {
                     that._isFocused = true
+                    that.__attentions = {}
                     that.emit('focus')
                 })
                 document.addEventListener('visibilitychange', () => {
@@ -867,6 +868,38 @@ class BrowserWindow extends EventEmitter {
     // setTopBrowserView(browserView)
     // getBrowserViews()
     // setTitleBarOverlay(options)
+
+    __attentions = {}
+    _bounce(type) {
+        let nwjsWin = this.window
+        
+        type = type || "informational"
+        if (process.platform === 'darwin') {
+            if (type === "critical") {
+                nwjsWin.requestAttention(999)
+            } else {
+                nwjsWin.requestAttention(-999)
+            }
+        }
+        else {
+            nwjsWin.requestAttention(999)
+        }
+
+        const id = Math.floor(Math.random() * 1000000000);
+        __attentions[id] = type
+    }
+    _cancelBounce(id) {
+        let type = __attentions[id]
+        if (!type) {
+            return
+        }
+
+        delete __attentions[id]
+        let attenttionCount = Object.keys(__attentions).length
+        if (attenttionCount === 0) {
+            nwjsWin.requestAttention(false)
+        }
+    }
 
     _getChromeWindow() {
         const id = this.id+""

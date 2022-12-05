@@ -26,6 +26,27 @@ const isMac = process.platform === 'darwin';
 const isWindows = process.platform === 'win32';
 const isLinux = process.platform === 'linux';
 
+class Dock {
+    constructor() {
+    }
+
+    bounce(type) {
+        let win = BrowserWindowManager.getFocusedWindow()
+        if (win) {
+            return -1
+        }
+
+        win = BrowserWindowManager.getAllWindows().map(w => w.window).filter(w => w !== undefined).shift()
+        if (!win) {
+            return
+        }
+        win._bounce(type)
+    }
+    cancelBounce(id) {
+        BrowserWindowManager.getAllWindows().forEach(w => w._cancelBounce(id))
+    }
+}
+
 class app extends EventEmitter {
     constructor() {
         super()
@@ -79,7 +100,7 @@ class app extends EventEmitter {
             this._lines.push(value === undefined ? `--${key}` : `--${key}=${value}`)
         }
     }
-    // dock (macOS only)
+    dock = new Dock()
     isPackaged = __nwjs_is_packaged
     name = __nwjs_app_name
     // userAgentFallback
