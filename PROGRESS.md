@@ -184,10 +184,10 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `isModal`                              | 🌑🌑🌑🌑 | Not Planned
 `maximize`                             | 🌕🌕🌗🌑 | Working
 `unmaximize`                           | 🌕🌕🌗🌑 | Working
-`isMaximized`                          | 🌑🌑🌑🌑 | Not Planned
+`isMaximized`                          | 🌕🌕🌗🌑 | Working
 `minimize`                             | 🌕🌕🌗🌑 | Working
 `restore`                              | 🌕🌕🌗🌑 | Working
-`isMinimized`                          | 🌑🌑🌑🌑 | Not Planned
+`isMinimized`                          | 🌕🌕🌗🌑 | Working
 `setFullScreen`                        | 🌕🌕🌗🌑 | Working
 `isFullScreen`                         | 🌕🌕🌗🌑 | Working
 `setSimpleFullScreen`                  | 🌑🌑🌑🌑 | Not Planned
