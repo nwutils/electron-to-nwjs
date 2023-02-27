@@ -113,6 +113,12 @@ class WebContents {
         return this._window.window?.zoomLevel ?? this._zoomLevelFromZoomFactor(this._zoomFactor)
     }
 
+    undo() {
+        this._window._getDocument().then(document => document.execCommand('undo'))
+    }
+    redo() {
+        this._window._getDocument().then(document => document.execCommand('redo'))
+    }
     cut() {
         this._window._getDocument().then(document => document.execCommand('cut'))
     }

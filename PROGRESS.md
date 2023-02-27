@@ -747,8 +747,8 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `setZoomLevel`                         | 🌕🌕🌗🌑 | Working
 `getZoomLevel`                         | 🌕🌕🌗🌑 | Working
 `setVisualZoomLevelLimits`             | 🌑🌑🌑🌑 | Not Planned
-`undo`                                 | 🌑🌑🌑🌑 | Not Planned
-`redo`                                 | 🌑🌑🌑🌑 | Not Planned
+`undo`                                 | 🌕🌕🌗🌑 | Working
+`redo`                                 | 🌕🌕🌗🌑 | Working
 `cut`                                  | 🌕🌕🌗🌑 | Working
 `copy`                                 | 🌕🌕🌗🌑 | Working
 `copyImageAt`                          | 🌑🌑🌑🌑 | Not Planned
@@ -759,7 +759,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `unselect`                             | 🌑🌑🌑🌑 | Not Planned
 `replace`                              | 🌑🌑🌑🌑 | Not Planned
 `replaceMisspelling`                   | 🌑🌑🌑🌑 | Not Planned
-`insertText`                           | 🌑🌑🌑🌑 | Not Planned
+`insertText`                           | 🌕🌕🌗🌑 | Working
 `findInPage`                           | 🌑🌑🌑🌑 | Not Planned
 `stopFindInPage`                       | 🌑🌑🌑🌑 | Not Planned
 `capturePage`                          | 🌑🌑🌑🌑 | Not Planned
