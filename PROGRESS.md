@@ -712,9 +712,9 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `downloadURL`                          | 🌕🌕🌗🌑 | Working
 `getURL`                               | 🌕🌕🌗🌑 | Working
 `getTitle`                             | 🌕🌕🌗🌑 | Working
-`isDestroyed`                          | 🌑🌑🌑🌑 | Not Planned
+`isDestroyed`                          | 🌕🌕🌗🌑 | Working
 `focus`                                | 🌕🌕🌗🌑 | Working
-`isFocused`                            | 🌑🌑🌑🌑 | Not Planned
+`isFocused`                            | 🌕🌕🌗🌑 | Working
 `isLoading`                            | 🌕🌕🌗🌑 | Working
 `isLoadingMainFrame`                   | 🌑🌑🌑🌑 | Not Planned
 `isWaitingForResponse`                 | 🌑🌑🌑🌑 | Not Planned

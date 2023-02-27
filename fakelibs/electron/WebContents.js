@@ -72,6 +72,9 @@ class WebContents {
     getTitle() {
         return this._window._getChromeWindow().tabs[0].title
     }
+    isDestroyed() {
+        return this._window.isDestroyed()
+    }
     focus() {
         return this._window.focus()
     }
