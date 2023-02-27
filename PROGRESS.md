@@ -713,13 +713,13 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `getURL`                               | 🌕🌕🌗🌑 | Working
 `getTitle`                             | 🌕🌕🌗🌑 | Working
 `isDestroyed`                          | 🌑🌑🌑🌑 | Not Planned
-`focus`                                | 🌑🌑🌑🌑 | Not Planned
+`focus`                                | 🌕🌕🌗🌑 | Working
 `isFocused`                            | 🌑🌑🌑🌑 | Not Planned
 `isLoading`                            | 🌕🌕🌗🌑 | Working
 `isLoadingMainFrame`                   | 🌑🌑🌑🌑 | Not Planned
 `isWaitingForResponse`                 | 🌑🌑🌑🌑 | Not Planned
 `stop`                                 | 🌑🌑🌑🌑 | Not Planned
-`reload`                               | 🌑🌑🌑🌑 | Not Planned
+`reload`                               | 🌕🌕🌗🌑 | Working
 `reloadIgnoringCache`                  | 🌑🌑🌑🌑 | Not Planned
 `canGoBack`                            | 🌑🌑🌑🌑 | Not Planned
 `canGoForward`                         | 🌑🌑🌑🌑 | Not Planned
@@ -749,13 +749,13 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `setVisualZoomLevelLimits`             | 🌑🌑🌑🌑 | Not Planned
 `undo`                                 | 🌑🌑🌑🌑 | Not Planned
 `redo`                                 | 🌑🌑🌑🌑 | Not Planned
-`cut`                                  | 🌑🌑🌑🌑 | Not Planned
-`copy`                                 | 🌑🌑🌑🌑 | Not Planned
+`cut`                                  | 🌕🌕🌗🌑 | Working
+`copy`                                 | 🌕🌕🌗🌑 | Working
 `copyImageAt`                          | 🌑🌑🌑🌑 | Not Planned
-`paste`                                | 🌑🌑🌑🌑 | Not Planned
+`paste`                                | 🌕🌕🌗🌑 | Working
 `pasteAndMatchStyle`                   | 🌑🌑🌑🌑 | Not Planned
-`delete`                               | 🌑🌑🌑🌑 | Not Planned
-`selectAll`                            | 🌑🌑🌑🌑 | Not Planned
+`delete`                               | 🌕🌕🌗🌑 | Working
+`selectAll`                            | 🌕🌕🌗🌑 | Working
 `unselect`                             | 🌑🌑🌑🌑 | Not Planned
 `replace`                              | 🌑🌑🌑🌑 | Not Planned
 `replaceMisspelling`                   | 🌑🌑🌑🌑 | Not Planned

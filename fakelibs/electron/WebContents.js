@@ -5,6 +5,7 @@
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/Window/
   https://developer.chrome.com/docs/extensions/reference/tabs/#type-Tab
+  https://developer.chrome.com/blog/cut-and-copy-commands/
 
   Render and control web pages.
   Only available in the main process.
@@ -71,8 +72,17 @@ class WebContents {
     getTitle() {
         return this._window._getChromeWindow().tabs[0].title
     }
+    focus() {
+        return this._window.focus()
+    }
+    isFocused() {
+        return this._window.isFocused()
+    }
     isLoading() {
         return this._window._getChromeWindow().tabs[0].status === "loading"
+    }
+    reload() {
+        return this._window.reload()
     }
     _zoomLevelFromZoomFactor(factor) {
         return (Math.log(1.2) / Math.log(factor)) + 1
@@ -98,6 +108,30 @@ class WebContents {
     }
     getZoomLevel() {
         return this._window.window?.zoomLevel ?? this._zoomLevelFromZoomFactor(this._zoomFactor)
+    }
+
+    cut() {
+        this._window._getDocument().then(document => document.execCommand('cut'))
+    }
+    copy() {
+        this._window._getDocument().then(document => document.execCommand('copy'))
+    }
+    // copyImageAt
+    paste() {
+        this._window._getDocument().then(document => document.execCommand('paste'))
+    }
+    // pasteAndMatchStyle
+    delete() {
+        this._window._getDocument().then(document => document.execCommand('delete'))
+    }
+    selectAll() {
+        this._window._getDocument().then(document => document.execCommand('selectAll'))
+    }
+    // unselect
+    // replace
+    // replaceMisspelling
+    async insertText(text) {
+        (await this._window._getDocument()).execCommand('insertText', false, text)
     }
 
 
