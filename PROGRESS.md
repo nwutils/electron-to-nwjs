@@ -710,12 +710,12 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `loadURL`                              | 🌕🌕🌑🌑 | Partially Working
 `loadFile`                             | 🌕🌕🌑🌑 | Partially Working
 `downloadURL`                          | 🌕🌕🌗🌑 | Working
-`getURL`                               | 🌑🌑🌑🌑 | Not Planned
-`getTitle`                             | 🌑🌑🌑🌑 | Not Planned
+`getURL`                               | 🌕🌕🌗🌑 | Working
+`getTitle`                             | 🌕🌕🌗🌑 | Working
 `isDestroyed`                          | 🌑🌑🌑🌑 | Not Planned
 `focus`                                | 🌑🌑🌑🌑 | Not Planned
 `isFocused`                            | 🌑🌑🌑🌑 | Not Planned
-`isLoading`                            | 🌑🌑🌑🌑 | Not Planned
+`isLoading`                            | 🌕🌕🌗🌑 | Working
 `isLoadingMainFrame`                   | 🌑🌑🌑🌑 | Not Planned
 `isWaitingForResponse`                 | 🌑🌑🌑🌑 | Not Planned
 `stop`                                 | 🌑🌑🌑🌑 | Not Planned
@@ -742,10 +742,10 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `setAudioMuted`                        | 🌑🌑🌑🌑 | Not Planned
 `isAudioMuted`                         | 🌑🌑🌑🌑 | Not Planned
 `isCurrentlyAudible`                   | 🌑🌑🌑🌑 | Not Planned
-`setZoomFactor`                        | 🌑🌑🌑🌑 | Not Planned
-`getZoomFactor`                        | 🌑🌑🌑🌑 | Not Planned
-`setZoomLevel`                         | 🌑🌑🌑🌑 | Not Planned
-`getZoomLevel`                         | 🌑🌑🌑🌑 | Not Planned
+`setZoomFactor`                        | 🌕🌕🌗🌑 | Working
+`getZoomFactor`                        | 🌕🌕🌗🌑 | Working
+`setZoomLevel`                         | 🌕🌕🌗🌑 | Working
+`getZoomLevel`                         | 🌕🌕🌗🌑 | Working
 `setVisualZoomLevelLimits`             | 🌑🌑🌑🌑 | Not Planned
 `undo`                                 | 🌑🌑🌑🌑 | Not Planned
 `redo`                                 | 🌑🌑🌑🌑 | Not Planned
@@ -813,11 +813,11 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `setImageAnimationPolicy`              | 🌑🌑🌑🌑 | Not Planned
 `audioMuted`                           | 🌑🌑🌑🌑 | Not Planned
 `userAgent`                            | 🌑🌑🌑🌑 | Not Planned
-`zoomLevel`                            | 🌑🌑🌑🌑 | Not Planned
-`zoomFactor`                           | 🌑🌑🌑🌑 | Not Planned
+`zoomLevel`                            | 🌕🌕🌗🌑 | Working
+`zoomFactor`                           | 🌕🌕🌗🌑 | Working
 `frameRate`                            | 🌑🌑🌑🌑 | Not Planned
 `id`                                   | 🌕🌕🌗🌑 | Working
-`session`                              | 🌑🌑🌑🌑 | Not Planned
+`session`                              | 🌕🌕🌗🌑 | Working
 `hostWebContents`                      | 🌑🌑🌑🌑 | Not Planned
 `devToolsWebContents`                  | 🌑🌑🌑🌑 | Not Planned
 `debugger`                             | 🌑🌑🌑🌑 | Not Planned
