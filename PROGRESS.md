@@ -270,7 +270,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `setThumbnailToolTip`                  | 🌑🌑🌑🌑 | Not Planned
 `setAppDetails`                        | 🌑🌑🌑🌑 | Not Planned
 `showDefinitionForSelection`           | 🌑🌑🌑🌑 | Not Planned
-`setIcon`                              | 🌑🌑🌑🌑 | Not Planned
+`setIcon`                              | 🌕🌕🌗🌑 | Working
 `setWindowButtonVisibility`            | 🌑🌑🌑🌑 | Not Planned
 `setAutoHideMenuBar`                   | 🌕🌕🌗🌑 | Working
 `isMenuBarAutoHide`                    | 🌕🌕🌗🌑 | Working
