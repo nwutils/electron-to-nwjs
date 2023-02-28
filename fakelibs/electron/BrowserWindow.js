@@ -815,7 +815,9 @@ class BrowserWindow extends EventEmitter {
     // setThumbnailToolTip
     // setAppDetails
     // showDefinitionForSelection
-    // setIcon
+    setIcon(icon) {
+        _getChromeWindowAsync().then(win => win.icon = icon.toDataURL())
+    }
     // setWindowButtonVisibility
     setAutoHideMenuBar(hide) {
         this._autoHideMenuBar = hide
