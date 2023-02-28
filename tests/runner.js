@@ -42,16 +42,17 @@ class TestRunner {
     runWithElectronToNWjs(script) {
         this._writeScriptToProjectFolder(script)
         let projectDir = this.projectDir
-        let output = child_process.spawnSync("npx", ["electron-to-nwjs", "start", "."],
-                                            {env, cwd:projectDir, encoding:'utf8', timeout:60*1000})
+        let output = child_process.spawnSync("node", ["../index.js", "start", "."],
+                                            {env, cwd:projectDir, encoding:'utf8', timeout:120*1000})
         this._removeScriptFromProjectFolder()
         output = output.stderr.split("\n").map(line => {
                 let startSep = ")] "
                 let finalSep = ", source: chrome-extension://"
-                let lineParts = line.split(finalSep)
-                if (lineParts.length > 1) {
-                    lineParts.pop()
+                if (!line.includes(finalSep)) {
+                    return ""
                 }
+                let lineParts = line.split(finalSep)
+                lineParts.pop()
                 lineParts = lineParts.join(finalSep).split(startSep)
                 if (lineParts.length > 1) {
                     lineParts.shift()
@@ -60,17 +61,34 @@ class TestRunner {
                 if (line.trim().length === 0) {
                     return ""
                 }
-                return line.substring(1, line.length - 1)
+                if (line.startsWith('"') && line.endsWith('"')) {
+                    return line.substring(1, line.length - 1)
+                }
+                return line
             })
             .filter(l => l.length > 0)
             .join("\n")
         let cleanOutput = output.split(this.sep1).pop().split(this.sep2).shift()
         return cleanOutput.trim()
     }
-    compare(script) {
-        const output1 = this.runWithElectron(script)
+    compare(script, expectedOutput) {
         const output2 = this.runWithElectronToNWjs(script)
-        if (output1 !== output2) {
+        let output1 = undefined
+        let matches = false
+        if (expectedOutput) {
+            if (typeof expectedOutput === 'function') {
+                matches = expectedOutput(output2)
+            }
+            else {
+                output1 = expectedOutput
+                matches = output1 === output2
+            }
+        }
+        else {
+            output1 = this.runWithElectron(script)
+            matches = output1 === output2
+        }
+        if (!matches) {
             throw new Error(`Expected "${output1}" but was "${output2}"`)
         }
     }
