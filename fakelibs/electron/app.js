@@ -80,10 +80,10 @@ class app extends EventEmitter {
             "home":        homeFolder,
             "appData":     path.dirname(userDataFolder),
             "userData":    userDataFolder,
-            // "sessionData"
+            "sessionData": userDataFolder,
             "temp":        os.tmpdir(),
             "exe":         process.execPath,
-            // "module"
+            // "module":      process.execPath,
             "desktop":     path.join(homeFolder, "Desktop"),
             "documents":   path.join(homeFolder, "Documents"),
             "downloads":   path.join(homeFolder, "Downloads"),

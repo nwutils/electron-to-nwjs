@@ -20,7 +20,7 @@ module.exports = (testRunner) => {
                 console.log(require('electron').app.getPath("home"))
                 console.log(require('electron').app.getPath("appData"))
                 console.log(require('electron').app.getPath("userData"))
-                // console.log(require('electron').app.getPath("sessionData"))
+                console.log(require('electron').app.getPath("sessionData"))
                 console.log(require('electron').app.getPath("temp"))
                 // console.log(require('electron').app.getPath("exe"))
                 // console.log(require('electron').app.getPath("module"))
@@ -55,20 +55,14 @@ module.exports = (testRunner) => {
                 console.log(app.getName())
             `)
         },
-        test_getLocale: () => {
+        test_localeAndLanguageFunctions: () => {
             // TODO: Test not passing. Expected "" but was "en-US"
-            return testRunner.compare(`console.log(require('electron').app.getLocale())`)
-        },
-        test_getLocaleCountryCode: () => {
-            return testRunner.compare(`console.log(require('electron').app.getLocaleCountryCode())`)
-        },
-        test_getSystemLocale: () => {
-            // TODO: Test not passing. Expected "" but was "en-US"
-            return testRunner.compare(`console.log(require('electron').app.getSystemLocale())`)
-        },
-        test_getPreferredSystemLanguages: () => {
-            // TODO: Test not passing. Expected "" but was "en-US"
-            return testRunner.compare(`console.log(require('electron').app.getPreferredSystemLanguages()[0])`)
+            return testRunner.compare(`
+                console.log(require('electron').app.getLocale())
+                console.log(require('electron').app.getLocaleCountryCode())
+                console.log(require('electron').app.getSystemLocale())
+                console.log(require('electron').app.getPreferredSystemLanguages()[0])
+            `)
         }
     }
 }
