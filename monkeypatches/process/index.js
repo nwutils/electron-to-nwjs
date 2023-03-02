@@ -1,15 +1,15 @@
 const child_process = require('child_process')
 const os = require('os')
 
-process.defaultApp = !__nwjs_is_packaged ? true : undefined
+process.defaultApp = !__nwjs_is_packaged ? false : undefined // TODO
 process.isMainFrame = false // TODO
-process.mas = false // TODO
+process.mas = undefined // TODO
 process.noAsar = true
 process.resourcesPath = process.cwd() // TODO: Untested
 process.sandboxed = false // TODO
 process.contextIsolated = false // TODO
 process.traceProcessWarnings = false // TODO
-// process.type
+process.type = __nwjs_is_main ? "browser" : "renderer" // TODO
 process.versions.chrome = process.versions.chromium
 process.versions.electron = __electron_version
 process.windowsStore = false // TODO
