@@ -16,7 +16,11 @@ process.windowsStore = false // TODO
 process.contextId = undefined // TODO
 
 process.crash = function() {
-    nw.App.crashBrowser()
+    if (__nwjs_is_main) {
+        nw.App.crashBrowser()
+    } else {
+        nw.App.crashRenderer()
+    }
 }
 process.hang = function() {
     // TODO
