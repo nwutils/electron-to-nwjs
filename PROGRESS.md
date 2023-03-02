@@ -347,6 +347,30 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 
 ## clipboard
 
+### API
+
+**API**                                | **Rating** | **Status**
+:--                                    | :--        | :--
+`static readText`                      | 🌕🌕🌑🌑 | Partially Working
+`static writeText`                     | 🌕🌕🌑🌑 | Partially Working
+`static readHTML`                      | 🌕🌕🌑🌑 | Partially Working
+`static writeHTML`                     | 🌕🌕🌑🌑 | Partially Working
+`static readImage`                     | 🌕🌕🌑🌑 | Partially Working
+`static writeImage`                    | 🌕🌕🌑🌑 | Partially Working
+`static readRTF`                       | 🌕🌕🌑🌑 | Partially Working
+`static writeRTF`                      | 🌕🌕🌑🌑 | Partially Working
+`static readBookmark`                  | 🌑🌑🌑🌑 | Not Planned
+`static writeBookmark`                 | 🌑🌑🌑🌑 | Not Planned
+`static readFindText`                  | 🌑🌑🌑🌑 | Not Planned
+`static writeFindText`                 | 🌑🌑🌑🌑 | Not Planned
+`static clear`                         | 🌕🌕🌑🌑 | Partially Working
+`static availableFormats`              | 🌕🌕🌑🌑 | Partially Working
+`static has`                           | 🌑🌑🌑🌑 | Not Planned
+`static read`                          | 🌑🌑🌑🌑 | Not Planned
+`static readBuffer`                    | 🌑🌑🌑🌑 | Not Planned
+`static writeBuffer`                   | 🌑🌑🌑🌑 | Not Planned
+`static write`                         | 🌑🌑🌑🌑 | Not Planned
+
 ## contentTracing
 
 ## contextBridge
@@ -453,7 +477,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `submenu`                              | 🌕🌕🌗🌑 | Working
 `type`                                 | 🌕🌕🌗🌑 | Working
 `role`                                 | 🌑🌑🌑🌑 | Not Planned
-`accelerator`                          | 🌑🌑🌑🌑 | Not Planned
+`accelerator`                          | 🌕🌕🌑🌑 | Partially Working
 `userAccelerator`                      | 🌑🌑🌑🌑 | Not Planned
 `icon`                                 | 🌑🌑🌑🌑 | Not Planned
 `sublabel`                             | 🌑🌑🌑🌑 | Not Planned

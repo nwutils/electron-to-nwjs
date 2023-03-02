@@ -70,12 +70,19 @@ class app extends EventEmitter {
 
         const homeFolder = os.homedir()
         let userDataFolder = path.join(homeFolder, ".config", __nwjs_project_name);
+        let crashDumpsFolder = path.join(userDataFolder, "Crash Reports")
         if (isMac) {
             userDataFolder = path.join(homeFolder, "Library", "Application Support", __nwjs_project_name);
+            crashDumpsFolder = path.join(userDataFolder, "CrashPad", __nwjs_project_name)
         }
         if (isWindows) {
             userDataFolder = path.join(process.env.APPDATA, __nwjs_project_name)
+            crashDumpsFolder = path.join(userDataFolder, "User Data", "CrashPad")
+            if (__nwjs_version_lt_0_21_5) {
+                crashDumpsFolder = path.join(process.env.APPDATA, "Chromium", "User Data", "CrashPad")
+            }
         }
+
         this._pathsCache = {
             "home":        homeFolder,
             "appData":     path.dirname(userDataFolder),
@@ -92,7 +99,7 @@ class app extends EventEmitter {
             "videos":      path.join(homeFolder, "Videos"),
             // "recent"
             // "logs"
-            // "crashDumps"
+            "crashDumps":  crashDumpsFolder
         }
     }
 
@@ -194,6 +201,9 @@ class app extends EventEmitter {
         return NativeImage.createFromPath(filePath)
     }
     setPath(name, path) {
+        if (name === "crashDumps") {
+            throwUnsupportedException("app.setPath can't support the 'crashDumps' value as the 'name' argument")
+        }
         this._pathsCache[name] = path
     }
     getVersion() {
