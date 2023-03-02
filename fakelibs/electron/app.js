@@ -5,7 +5,8 @@
 
   NW.js Docs
   https://docs.nwjs.io/en/latest/References/App/
-  http://docs.nwjs.io/en/latest/References/Window/#winsetbadgelabellabel
+  https://docs.nwjs.io/en/latest/References/Window/#winsetbadgelabellabel
+  https://docs.nwjs.io/en/latest/For%20Developers/Understanding%20Crash%20Dump/
 
   Control your application's event lifecycle.
   Only available in the main process.

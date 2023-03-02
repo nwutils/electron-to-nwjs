@@ -3,6 +3,7 @@ const autoUpdater = require('./autoUpdater')
 const BrowserWindow = require('./BrowserWindow')
 const clipboard = require('./clipboard')
 const ContextMenuParams = require('./ContextMenuParams')
+const crashReporter = require('./crashReporter')
 const desktopCapturer = require('./desktopCapturer')
 const dialog = require('./dialog')
 const globalShortcut = require('./globalShortcut')
@@ -42,6 +43,8 @@ if (!__nwjs_is_main) {
     });
 }
 
+process.crashReporter = crashReporter
+
 if (__nwjs_is_main) {
     module.exports = {
         app,
@@ -51,7 +54,7 @@ if (__nwjs_is_main) {
         clipboard,
         ContextMenuParams,
         // contentTracing
-        // crashReporter
+        crashReporter,
         desktopCapturer,
         dialog,
         Event,
@@ -91,7 +94,7 @@ else {
     module.exports = {
         clipboard,
         // contextBridge
-        // crashReporter
+        crashReporter,
         desktopCapturer,
         Event,
         ipcRenderer,
@@ -104,7 +107,7 @@ else {
             BrowserWindow,
             clipboard,
             //contentTracing,
-            //crashReporter,
+            crashReporter,
             desktopCapturer,
             dialog,
             globalShortcut,

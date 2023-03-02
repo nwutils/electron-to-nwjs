@@ -32,7 +32,6 @@ module.exports = (testRunner) => {
                 console.log(require('electron').app.getPath("videos"))
                 // console.log(require('electron').app.getPath("recent"))
                 // console.log(require('electron').app.getPath("logs"))
-                // console.log(require('electron').app.getPath("crashDumps"))
             `)
         },
         test_setPath: () => {
