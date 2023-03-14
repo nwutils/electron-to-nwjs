@@ -389,8 +389,8 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `showOpenDialog`                       | 🌕🌕🌑🌑 | Partially Working (macOS 64%, others 26%)
 `showSaveDialogSync`                   | 🌕🌕🌑🌑 | Partially Working (macOS 33%)
 `showSaveDialog`                       | 🌕🌕🌑🌑 | Partially Working (macOS 33%, others 14%)
-`showMessageBoxSync`                   | 🌕🌕🌑🌑 | Partially Working (macOS 50%, others 25%)
-`showMessageBox`                       | 🌕🌕🌑🌑 | Partially Working (macOS 50%, others 25%)
+`showMessageBoxSync`                   | 🌕🌕🌑🌑 | Partially Working (macOS 50%, Linux 40%, Windows 25%)
+`showMessageBox`                       | 🌕🌕🌑🌑 | Partially Working (macOS 50%, Linux 40%, Windows 25%)
 `showErrorBox`                         | 🌕🌕🌑🌑 | Partially Working (macOS 100%, others 33%)
 `showCertificateTrustDialog`           | 🌑🌑🌑🌑 | Not Planned
 
