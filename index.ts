@@ -76,14 +76,18 @@ const runPrebuildAndCreateNwjsProject = function(opts:{projectDir:string, mainFi
         // So the cache and dist folders won't be copied, since they are not only not
         // needed, but they also can be become very big
         let ignorableFolder = [
-            path.resolve(tmpDir, 'cache'),
-            path.resolve(tmpDir, buildDir),
-            path.resolve(tmpDir, distDir)
+            {original:path.resolve(opts.projectDir, 'cache'),  temp:path.resolve(tmpDir, 'cache')},
+            {original:path.resolve(opts.projectDir, buildDir), temp:path.resolve(tmpDir, buildDir)},
+            {original:path.resolve(opts.projectDir, distDir),  temp:path.resolve(tmpDir, distDir)}
         ]
         ignorableFolder.forEach(folder => {
-            if (fs.existsSync(folder)) {
-                fse.rmdirSync(folder, {recursive: true})
+            if (!fs.existsSync(folder.original)) {
+                fs.mkdirSync(folder.original)
             }
+            if (fs.existsSync(folder.temp)) {
+                fse.rmdirSync(folder.temp, {recursive: true})
+            }
+            fs.symlinkSync(folder.original, folder.temp)
         })
 
         const projectPackagePath = path.resolve(tmpDir, 'package.json')
