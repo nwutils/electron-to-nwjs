@@ -76,8 +76,8 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `getAppMetrics`                        | 🌑🌑🌑🌑 | Not Planned
 `getGPUFeatureStatus`                  | 🌑🌑🌑🌑 | Not Planned
 `getGPUInfo`                           | 🌑🌑🌑🌑 | Not Planned
-`setBadgeCount`                        | 🌑🌑🌑🌑 | Not Planned
-`getBadgeCount`                        | 🌑🌑🌑🌑 | Not Planned
+`setBadgeCount`                        | 🌕🌕🌗🌑 | Working
+`getBadgeCount`                        | 🌕🌕🌗🌑 | Working
 `isUnityRunning`                       | 🌑🌑🌑🌑 | Not Planned
 `getLoginItemSettings`                 | 🌑🌑🌑🌑 | Not Planned
 `setLoginItemSettings`                 | 🌑🌑🌑🌑 | Not Planned

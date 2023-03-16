@@ -115,6 +115,9 @@ class app extends EventEmitter {
         return global.__nwjs_badge_count || 0
     }
     set badgeCount(badgeCount) {
+        if (badgeCount === undefined && isMac) {
+            global.__nwjs_badge_label = "."
+        }
         global.__nwjs_badge_count = badgeCount || 0
         let badgeStr = global.__nwjs_badge_label || (badgeCount || "").toString()
         BrowserWindowManager.getAllWindows().forEach(w => w.window.setBadgeLabel(badgeStr))
@@ -269,8 +272,12 @@ class app extends EventEmitter {
     // getAppMetrics()
     // getGPUFeatureStatus()
     // getGPUInfo(infoType)
-    // setBadgeCount([count]) (Linux and macOS only)
-    // getBadgeCount() (Linux and macOS only)
+    setBadgeCount(count) {
+        this.badgeCount = count
+    }
+    getBadgeCount() {
+        return this.badgeCount
+    }
     // isUnityRunning() (Linux only)
     // getLoginItemSettings([options]) (Windows and macOS only)
     // setLoginItemSettings(settings) (Windows and macOS only)
