@@ -338,9 +338,17 @@ class Menu extends EventEmitter {
         }
 
         // TODO: NW.js 0.64.0 doesn't respect the coordinates of the Menu (at least in macOS);
-        // Add warning based in the version (need to verify when this was fixed, and when that started)
+        // Add warning based in the version (need to verify when this was fixed, and when that started);
+        // Doesn't happen with 0.65.1 on Linux, but I can't test 0.64.0 on Linux because it won't launch 
+        // with that version in my machine.
         // https://dl.nwjs.io/
         
+        if (__nwjs_version_gte_0_64_0 && __nwjs_version_lte_0_64_0) {
+            if (isMac) {
+                throwUnsupportedException("Menu.popup isn't working properly in macOS with your NW.js version: x and y coordinates are not being respected")
+            }
+        }
+
         this._nwjsContextMenu().popup(options.x, options.y)
         this.emit('menu-will-show')
     }
