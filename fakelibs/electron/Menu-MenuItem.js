@@ -26,7 +26,7 @@
   needed, but that will require some refactoring.
 */
 
-const EventEmitter = require('events')
+const EventEmitter = require('events');
 const BrowserWindowManager = require('./utils/BrowserWindowManager')
 const MenuItemRoles = require('./utils/menu-item-roles')
 const throwUnsupportedException = require('./utils/unsupported-exception')
@@ -336,6 +336,11 @@ class Menu extends EventEmitter {
             options.x += menu_mouse_position.viewportX
             options.y += menu_mouse_position.viewportY
         }
+
+        // TODO: NW.js 0.64.0 doesn't respect the coordinates of the Menu (at least in macOS);
+        // Add warning based in the version (need to verify when this was fixed, and when that started)
+        // https://dl.nwjs.io/
+        
         this._nwjsContextMenu().popup(options.x, options.y)
         this.emit('menu-will-show')
     }

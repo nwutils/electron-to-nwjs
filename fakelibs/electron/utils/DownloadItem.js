@@ -57,7 +57,7 @@ class DownloadItem extends EventEmitter {
         clearInterval(this._updateInterval);
         this._state = "completed"
         if (this._savePath === undefined) {
-            let result = await dialog.showSaveDialog(this._webContents._window, this._saveDialogOptions || {})
+            let result = await dialog.showSaveDialog(this._webContents?._window, this._saveDialogOptions || {})
             if (result.canceled) {
                 this._state = "cancelled"
                 return
