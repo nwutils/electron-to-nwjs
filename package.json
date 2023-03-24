@@ -16,7 +16,7 @@
     "email": "vitormm@portingkit.com"
   },
   "license": "MIT",
-  "repository": "https://github.com/vitor251093/electron-to-nwjs",
+  "repository": "https://github.com/nwutils/electron-to-nwjs",
   "dependencies": {
     "@babel/core": "^7.12.10",
     "@babel/plugin-transform-regenerator": "^7.12.1",
