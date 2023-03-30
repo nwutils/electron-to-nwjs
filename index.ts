@@ -230,6 +230,8 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
     let appName = (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown"
     projectPackageJson["product_string"] = appName
 
+    let iconPath = path.join("build", (build[os] || {}).icon || ({mac:"icon.icns", linux:"icon.icns", win:"icon.ico"}[os]))
+
     console.log("")
     console.log(`chromium-args: ${projectPackageJson["chromium-args"]}`)
     console.log(`node-remote: ${projectPackageJson["node-remote"] || ""}`)
@@ -245,7 +247,7 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
         company: authorName,
         copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
         files: (build[os] || {}).files || build.files || ["**/**"],
-        icon: path.join("build", (build[os] || {}).icon || ({mac:"icon.icns", linux:"icon.icns", win:"icon.ico"}[os]))
+        icon: iconPath
     }
 
     nwjsConfig.icon = path.join(projectPath, nwjsConfig.icon)

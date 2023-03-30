@@ -202,6 +202,7 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     projectPackageJson["build"]["electronVersion"] = opts.electronVersion;
     let appName = (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown";
     projectPackageJson["product_string"] = appName;
+    let iconPath = path_1.default.join("build", (build[os] || {}).icon || ({ mac: "icon.icns", linux: "icon.icns", win: "icon.ico" }[os]));
     console.log("");
     console.log(`chromium-args: ${projectPackageJson["chromium-args"]}`);
     console.log(`node-remote: ${projectPackageJson["node-remote"] || ""}`);
@@ -215,7 +216,7 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
         company: authorName,
         copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
         files: (build[os] || {}).files || build.files || ["**/**"],
-        icon: path_1.default.join("build", (build[os] || {}).icon || ({ mac: "icon.icns", linux: "icon.icns", win: "icon.ico" }[os]))
+        icon: iconPath
     };
     nwjsConfig.icon = path_1.default.join(projectPath, nwjsConfig.icon);
     if (!fs_1.default.existsSync(nwjsConfig.icon)) {
