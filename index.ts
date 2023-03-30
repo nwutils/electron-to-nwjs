@@ -223,8 +223,12 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
     projectPackageJson["chromium-args"] = flags.join(" ")
     projectPackageJson["node-remote"] = nwjs["node-remote"]
     
-    projectPackageJson["build"] = projectPackageJson["build"] || {}
+    let build = (projectPackageJson.build || {})
+    projectPackageJson["build"] = build
     projectPackageJson["build"]["electronVersion"] = opts.electronVersion
+
+    let appName = (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown"
+    projectPackageJson["product_string"] = appName
 
     console.log("")
     console.log(`chromium-args: ${projectPackageJson["chromium-args"]}`)
@@ -234,10 +238,9 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
     projectPackageStr = JSON.stringify(projectPackageJson, null, 2)
     fs.writeFileSync(projectPackagePath, projectPackageStr, {encoding:'utf-8'})
 
-    let build = (projectPackageJson.build || {})
     let authorName = (projectPackageJson.author || {}).name || "Unknown"
     let nwjsConfig:{[id:string]:any} = {
-        appName: (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown",
+        appName: appName,
         appVersion: projectPackageJson.version,
         company: authorName,
         copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,

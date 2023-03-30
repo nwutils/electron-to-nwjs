@@ -197,18 +197,20 @@ const buildNwjsBuilderConfig = function (projectPath, opts, os) {
     ];
     projectPackageJson["chromium-args"] = flags.join(" ");
     projectPackageJson["node-remote"] = nwjs["node-remote"];
-    projectPackageJson["build"] = projectPackageJson["build"] || {};
+    let build = (projectPackageJson.build || {});
+    projectPackageJson["build"] = build;
     projectPackageJson["build"]["electronVersion"] = opts.electronVersion;
+    let appName = (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown";
+    projectPackageJson["product_string"] = appName;
     console.log("");
     console.log(`chromium-args: ${projectPackageJson["chromium-args"]}`);
     console.log(`node-remote: ${projectPackageJson["node-remote"] || ""}`);
     console.log("");
     projectPackageStr = JSON.stringify(projectPackageJson, null, 2);
     fs_1.default.writeFileSync(projectPackagePath, projectPackageStr, { encoding: 'utf-8' });
-    let build = (projectPackageJson.build || {});
     let authorName = (projectPackageJson.author || {}).name || "Unknown";
     let nwjsConfig = {
-        appName: (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown",
+        appName: appName,
         appVersion: projectPackageJson.version,
         company: authorName,
         copyright: (build[os] || {}).copyright || build.copyright || `Copyright © ${new Date().getFullYear()} ${authorName}. All rights reserved`,
