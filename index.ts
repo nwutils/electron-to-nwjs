@@ -230,6 +230,11 @@ const buildNwjsBuilderConfig = function(projectPath:string, opts:any, os:"mac"|"
     let appName = (build[os] || {}).productName || build.productName || projectPackageJson.name || "Unknown"
     projectPackageJson["product_string"] = appName
 
+    projectPackageJson["build"]["mac"] = projectPackageJson["build"]["mac"] || {}
+    projectPackageJson["build"]["mac"]["extendInfo"] = projectPackageJson["build"]["mac"]["extendInfo"] || {}
+    let plistExtras = projectPackageJson["build"]["mac"]["extendInfo"]
+    plistExtras["CFBundleDisplayName"] = plistExtras["CFBundleDisplayName"] || appName
+
     let iconPath = path.join("build", (build[os] || {}).icon || ({mac:"icon.icns", linux:"icon.icns", win:"icon.ico"}[os]))
 
     console.log("")
