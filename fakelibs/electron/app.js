@@ -307,8 +307,9 @@ class app extends EventEmitter {
 
 const appInstance = new app()
 
-nw.App.on('open', function(filePath) {
-    appInstance.emit("open-file", new Event("open-file"), filePath)
+nw.App.on('open', function(cmdline) {
+    // TODO: Needs to be properly done
+    //appInstance.emit("open-file", new Event("open-file"), cmdline)
 });
 
 module.exports = appInstance

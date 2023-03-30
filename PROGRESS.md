@@ -105,7 +105,7 @@ How far electron-to-nwjs went mapping the Electron module to NW.js
 `before-quit`                          | 🌑🌑🌑🌑 | Not Planned
 `will-quit`                            | 🌑🌑🌑🌑 | Not Planned
 `quit`                                 | 🌑🌑🌑🌑 | Not Planned
-`open-file`                            | 🌕🌕🌗🌑 | Working
+`open-file`                            | 🌕🌗🌑🌑 | Started
 `open-url`                             | 🌑🌑🌑🌑 | Not Planned
 `activate`                             | 🌑🌑🌑🌑 | Not Planned
 `continue-activity`                    | 🌑🌑🌑🌑 | Not Planned
