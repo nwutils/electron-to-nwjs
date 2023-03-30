@@ -304,4 +304,11 @@ class app extends EventEmitter {
     // isSecureKeyboardEntryEnabled() (macOS only)
     // setSecureKeyboardEntryEnabled(enabled) (macOS only)
 }
-module.exports = new app()
+
+const appInstance = new app()
+
+nw.App.on('open', function(filePath) {
+    appInstance.emit("open-file", new Event("open-file"), filePath)
+});
+
+module.exports = appInstance
