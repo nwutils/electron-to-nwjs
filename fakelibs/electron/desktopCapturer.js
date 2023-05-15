@@ -14,6 +14,8 @@
 */
 
 class desktopCapturer {
-    
+  async getSources(options) { // {types:string[], thumbnailSize:{width:number, height:number}, fetchWindowIcons:boolean}
+    return []
+  }
 }
 module.exports = desktopCapturer
