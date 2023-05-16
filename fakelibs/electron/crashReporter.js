@@ -4,6 +4,7 @@
 
   NW.js Docs
   https://docs.nwjs.io/en/latest/For%20Developers/Understanding%20Crash%20Dump/
+  https://chromium.googlesource.com/chromiumos/platform2/+/master/crash-reporter/docs/design.md
 
   Submit crash reports to a remote server.
 
