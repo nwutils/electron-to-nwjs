@@ -328,10 +328,13 @@ program
         const config = buildNwjsBuilderConfig(tmpDir, nwjsConfig, getCurrentOs())
 
         const configStr = JSON.stringify({
-            appName: config.appName,
-            appVersion: config.appVersion,
-            files: config.files,
-            version: nwjsConfig.nwjs.version
+            srcDir: config.files.join(" "),
+            mode: "run",
+            version: nwjsConfig.nwjs.version,
+            app: {
+                name: config.appName,
+                icon: config.icon
+            }
         }, null, 2);
         const configPath = path.join(tmpDir, "nwjs_start_config.json")
         const scriptPath = path.join(tmpDir, "nwjs_start.js")
@@ -372,23 +375,22 @@ program
             }
             
             const configStr = JSON.stringify({
-                files: config.files,
+                srcDir: config.files.join(" "),
+                mode: "build",
                 version: nwjsConfig.nwjs.version,
                 flavor: 'normal',
-                platforms: [nwjsPlatform + (nwjsConfig.target.architecture === "x86" ? "32" : "64")],
-                appName: config.appName,
-                appVersion: config.appVersion,
-                buildDir: path.resolve(projectDir, path.join('.', distDir)),
-                // macCredits (path to your credits.html)
-                macIcns: config.icon,
-                macPlist: config.macPlist,
-                winVersionString: {
-                    'CompanyName': config.company,
-                    'FileDescription': config.appName,
-                    'ProductName': config.appName,
-                    'LegalCopyright': config.copyright
+                platform: nwjsPlatform,
+                arch: nwjsConfig.target.architecture,
+                outDir: path.resolve(projectDir, path.join('.', distDir)),
+                app: {
+                    name: config.appName,
+                    icon: config.icon,
+                    company: config.company,
+                    fileDescription: config.appName,
+                    productName: config.appName,
+                    legalCopyright: config.copyright
                 },
-                winIco: config.icon,
+                macPlist: config.macPlist,
                 useRcedit: true
             }, null, 2);
             const configPath = path.join(tmpDir, "nwjs_build_config.json")

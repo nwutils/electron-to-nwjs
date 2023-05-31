@@ -1,6 +1,8 @@
-const NwBuilder = require('nw-builder');
+const { nwbuild } = require('nw-builder');
 
-var nw = new NwBuilder(require('./nwjs_start_config.json'));
+const options = require('./nwjs_start_config.json')
+
+nwbuild(options);
 
 nw.on('log', (log) => {
     console.log(log)
