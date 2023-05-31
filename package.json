@@ -30,7 +30,7 @@
     "csv-parse": "^4.15.0",
     "fs-extra": "^10.1.0",
     "get-windows-shortcut-properties": "^1.1.0",
-    "nw-builder": "^3.5.7",
+    "nw-builder": "^4.2.3",
     "plist": "^3.0.6",
     "regenerator-runtime": "^0.13.10",
     "semver": "^7.3.8",
