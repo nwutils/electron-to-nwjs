@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+    - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        os:
+        - macos-15
+        - ubuntu-24.04
+        - windows-2025
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+      - name: Setup Volta
+        uses: volta-cli/action@v4.2.1
+      - name: Install dependencies
+        run: npm ci
+      - name: Check for linting errors
+        run: npm run lint
+      - name: Run tests
+        run: npm run test
