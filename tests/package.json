@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^36.1.0",
+    "electron": "^41.4.0",
     "electron-to-nwjs": "^1.13.0",
-    "uuid": "^11.1.0"
+    "uuid": "^14.0.0"
   }
 }
